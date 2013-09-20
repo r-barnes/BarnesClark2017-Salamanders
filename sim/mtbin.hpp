@@ -18,7 +18,7 @@ class MtBin {
     unsigned int startofdead;
 
     ///Kill random salamanders with probability prob
-    void mortaliate();
+    void mortaliate(double t);
 
     ///Return the temperature of the bin at a given time
     double temp(double t) const;

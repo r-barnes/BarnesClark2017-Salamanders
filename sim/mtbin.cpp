@@ -1,5 +1,6 @@
 #include "mtbin.hpp"
 #include "data.hpp"
+#include <algorithm>
 
 MtBin::MtBin(){
   startofdead=0;
@@ -7,12 +8,17 @@ MtBin::MtBin(){
 
 MtBin::MtBin(double binx) : MtBin(binx) {}
 
-void MtBin::mortaliate() {
-  double mytemp=temp();
+void MtBin::mortaliate(double t) {
+  ///If there are no living salamanders, then don't do anything
+  if(startofdead==0) return;
 
-  for(auto &s: bin){
-    if(s.pDie(mytemp)){
-      s.dead=true;
+  double mytemp=temp(t);
+
+  for(unsigned int s=0;s<startofdead;++s){
+    if(bin[s].pDie(mytemp)){
+      bin[s].dead=true;
+      std::swap(bin[s],bin[startofdead-1]);
+      --startofdead;
     }
   }
 }
