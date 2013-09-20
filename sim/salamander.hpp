@@ -21,7 +21,7 @@ class Salamander {
     void randomizeGeneome();
 
     ///Given an input temperature, should the salamander die?
-    void pDie(double temp) const;
+    bool pDie(double temp) const;
 
     ///Neutral genes
     genetype genes;
