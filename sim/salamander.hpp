@@ -4,7 +4,7 @@
 class Salamander {
   public:
     ///Gene Type
-      typedef long long genetype;
+      typedef unsigned long long genetype;
     ///Initialize a new salamander
     Salamander();
 
@@ -13,6 +13,9 @@ class Salamander {
 
     ///Number of bits shared between two genomes
     unsigned int similarity(const Salamander &b) const;
+
+    ///Mutate this salamander's genome
+    void mutate();
   private:
     genetype genes; ///< Neutral genes
     double otemp;      ///< Optimal temperature for this salamander
