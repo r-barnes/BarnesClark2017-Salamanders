@@ -88,3 +88,8 @@ void MtBin::addSalamander(const Salamander &s) {
 unsigned int MtBin::alive() const {
   return bin.size()-startofdead;
 }
+
+void MtBin::breed(double t){
+  unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
+ 
+}

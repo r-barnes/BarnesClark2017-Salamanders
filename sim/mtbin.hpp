@@ -31,7 +31,7 @@ class MtBin {
     double area(double t) const;
     
     ///Karrying Kapacity of the bin given its area at a given time
-    ///Returns a number (0, binsize).
+    ///Returns a number [0, binsize].
     unsigned int kkap(double t) const;    
 
     ///Kill all the salamanders in the bin and reset startofdead
@@ -42,6 +42,9 @@ class MtBin {
 
     ///Return number of living salamanders in this bin
     unsigned int alive() const;
+
+    ///Given my neighbouring bins, performing breeding within me and my neighbours
+    void breed(double t);
 
   private:
     void killSalamander(int i);
