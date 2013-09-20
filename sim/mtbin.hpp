@@ -10,7 +10,9 @@ class MtBin {
     MtBin(double binx);
 
     std::array<Salamander, 1000> bin;
-    double binx;
+
+    ///Height of this bin above sealevel
+    double height;
 
     ///Location of the first dead salamander on the list
     ///if startofdead==bin.size() then there are no more
