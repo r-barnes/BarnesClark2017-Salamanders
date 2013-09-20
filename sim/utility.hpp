@@ -1,7 +1,8 @@
 #ifndef _utility
 #define _utility
 
-double ele_fxn(double elevation, double time); //Give elevation as altitude in 1000m, and t in 1000 years ago (i.e. 0.001MYA)
+///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
+double MountainElevation(double elevation, double time);
 
 template<class T>
 T countbits(T a){

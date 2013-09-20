@@ -4,16 +4,12 @@
 using namespace std;
 
 int main(){
-  //One elevation bin of the mountain
-  typedef array<Salamander, 1000> mtbin;
-
   //Profile of the mountain
-  array<mtbin, 10000> mts;
+  array< MtBin, 10000> mts;
 
   //Start off by killing everything
-  for(unsigned int x=0;x<mts.size();++x)
-    for(auto &s: mts[x])
-      s.dead=true;
+  for(auto &m: mts)
+    m.killAll();
 
   //Find cell corresponding to optimal happy temperature
   //Make a salamander in that cell alive

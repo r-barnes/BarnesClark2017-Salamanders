@@ -1,14 +1,20 @@
 #include <cstdlib>
 #include <cmath>
 
+///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
+double MountainElevation(double elevation, double time) {
+  double elek=12.029753;
+  double elesigma=0.211410;
+  double elemu=0.245547;
+  double pi=3.141593;
+  double deltasd=2.881572e-09;
 
-double ele_fxn(double elevation, double time) { //Give elevation as altitude in 1000m, and t in 1000 years ago (i.e. 0.001MYA)
-  double elek=12.029753, elesigma=0.211410, elemu=0.245547, pi=3.141593, deltasd=2.881572e-09;
-  double area;
-  
-  
-  area = elek*(1/sqrt(2*pi*pow(elesigma+time*deltasd*1000,2)))*exp((-pow(elevation-elemu,2))/(2*pow(elesigma+time*deltasd*1000,2)));
-  //Outputs area in units of km2
-  area *= 100000;
+  double area = elek
+                * ( 1/sqrt( 2*pi*pow(elesigma+time*deltasd*1000, 2) ))
+                * exp(
+                        ( -pow(elevation-elemu, 2) )
+                      / (2 * pow(elesigma+time*deltasd*1000, 2))
+                  );
+  area *= 100000; //Convert area to units of km2
   return area;
 }
