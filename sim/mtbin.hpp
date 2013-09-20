@@ -43,8 +43,11 @@ class MtBin {
     ///Return number of living salamanders in this bin
     unsigned int alive() const;
 
-    ///Given my neighbouring bins, performing breeding within me and my neighbours
+    ///Breed salamanders within this bin if there is carrying capacity available
     void breed(double t);
+
+    ///Swap some salamanders with those in another bin
+    void diffuse(MtBin &a);
 
   private:
     void killSalamander(int i);
