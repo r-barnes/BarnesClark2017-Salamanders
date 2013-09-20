@@ -11,6 +11,7 @@ auto normaldice=std::bind(distribution,generator);
 Salamander::Salamander(){
   genes=0;
   otemp=0;
+  dead=false;
 }
 
 Salamander Salamander::breed(const Salamander &b) const {

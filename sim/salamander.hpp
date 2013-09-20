@@ -25,6 +25,8 @@ class Salamander {
 
     ///Optimal temperature for this salamander
     double otemp;
+
+    bool dead;
 };
 
 #endif
