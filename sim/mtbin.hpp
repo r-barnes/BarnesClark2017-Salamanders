@@ -32,7 +32,7 @@ class MtBin {
     
     ///Karrying Kapacity of the bin given its area at a given time
     ///Returns a number (0, binsize).
-    double kkap(double t) const;    
+    unsigned int kkap(double t) const;    
 
     ///Kill all the salamanders in the bin and reset startofdead
     void killAll();

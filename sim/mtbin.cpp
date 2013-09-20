@@ -3,6 +3,8 @@
 #include "utility.hpp"
 #include <algorithm>
 #include <cassert>
+#include <random>
+#include <cmath>
 
 std::default_random_engine rgen;
 
@@ -24,7 +26,7 @@ void MtBin::mortaliate(double t) {
   if(startofdead==0) return;
 
   double mytemp=temp(t); //Current temperature of bin
-  int maxalive=kkap();   //Current carrying capacity of the bin
+  unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
 
   //For each salamander, check to see if it dies
   for(unsigned int s=0;s<startofdead && s<maxalive;++s){
@@ -38,7 +40,7 @@ void MtBin::mortaliate(double t) {
   //Make a random number generator which points uniformly at all living individuals
   std::uniform_int_distribution<int> rdist(0, alive()-1);
   while(alive()>maxalive){
-    int i=rgen(rdist);          //Get an individual
+    int i=rdist(rgen);          //Get an individual
     if(bin[i].dead) continue;   //If the individual is already dead, ignore it
     killSalamander(i);
   }
@@ -64,14 +66,14 @@ double MtBin::area(double t) const {
   return MountainArea(height, t);
 }
 
-double MtBin::kkap(double t) const {
+unsigned int MtBin::kkap(double t) const {
   int maxsalamander_perarea = 1000000; //Maximum number of salamanders per square km
   int salamanders_perpopulation = 1000; //Number of salamanders per genotype that we are modeling
   int maxarea = 2270080; //Maximum area possible for bins in current model;
   double maxpopulations_inbin = maxsalamander_perarea*area(t)/salamanders_perpopulation; //Maximum number of populations in this bin at this time
   double maxpopulations_ever = maxsalamander_perarea*maxarea/salamanders_perpopulation; //Maximum number of populations in any bin at any time
     
-  return min((maxpopulations_inbin)/(maxpopulations_ever), 1)*binsize;
+  return std::min((maxpopulations_inbin)/(maxpopulations_ever), 1.0)*binmax;
 }
 
 void MtBin::killAll() {
