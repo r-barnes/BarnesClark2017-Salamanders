@@ -92,5 +92,14 @@ unsigned int MtBin::alive() const {
 
 void MtBin::breed(double t){
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
- 
+
+  if(alive()>=kkap(t)) return;     //The bin is too full for us to breed
+
+  ///Make a random number generator that considers only the parents
+  std::uniform_int_distribution<int> rdist(0, alive()-1);
+  for(int i=0;i<10;++i){
+    int parenta=rdist(rgen);
+    int parentb=rdist(rgen);
+    if(parenta.similar
+  }
 }

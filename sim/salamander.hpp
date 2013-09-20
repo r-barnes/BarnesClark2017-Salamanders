@@ -13,7 +13,7 @@ class Salamander {
     Salamander breed(const Salamander &b) const;
 
     ///Number of bits shared between two genomes
-    bool similar(const Salamander &b) const;
+    bool pSimilar(const Salamander &b) const;
 
     ///Mutate this salamander's genome
     void mutate();
