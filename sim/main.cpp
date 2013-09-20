@@ -42,6 +42,5 @@ int main(){
       if(m>0) mts[m].diffuse(mts[m-1]);
       if(m<mts.size()-1) mts[m].diffuse(mts[m+1]);
     }
-    DetermineWhatSpeciesAreWhereAndHowManyAndSuch();
   }
 }
