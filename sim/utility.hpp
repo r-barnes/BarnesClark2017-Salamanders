@@ -1,8 +1,6 @@
 #ifndef _utility
 #define _utility
 
-double gaussrand();
-
 template<class T>
 T countbits(T a){
   unsigned int c; // c accumulates the total bits set in combined

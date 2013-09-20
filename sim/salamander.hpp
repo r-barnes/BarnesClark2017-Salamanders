@@ -16,9 +16,15 @@ class Salamander {
 
     ///Mutate this salamander's genome
     void mutate();
-  private:
-    genetype genes; ///< Neutral genes
-    double otemp;      ///< Optimal temperature for this salamander
+
+    ///Randomize this salamander's genome
+    void randomizeGeneome();
+
+    ///Neutral genes
+    genetype genes;
+
+    ///Optimal temperature for this salamander
+    double otemp;
 };
 
 #endif

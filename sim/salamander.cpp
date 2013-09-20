@@ -1,16 +1,22 @@
 #include "salamander.hpp"
 #include "utility.hpp"
 #include <cstdlib>
+#include <random>
+#include <functional>
+
+std::default_random_engine generator;
+std::normal_distribution<double> distribution(0,1);
+auto normaldice=std::bind(distribution,generator);
 
 Salamander::Salamander(){
-  genes=1;
-  otemp=1;
+  genes=0;
+  otemp=0;
 }
 
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander temp;
   temp.genes=genes & b.genes;
-  temp.otemp= (otemp+b.otemp)/2+gaussrand();
+  temp.otemp= (otemp+b.otemp)/2+normaldice();
 
   Salamander::genetype selector=1;
   Salamander::genetype shared_genes=genes ^ b.genes;
@@ -34,6 +40,15 @@ void Salamander::mutate(){
     if(rand()%10==0)
       genes^=mutator;
     mutator=mutator<<1;
+  }
+}
+
+void Salamander::randomizeGeneome(){
+  Salamander::genetype selector=1;
+  for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
+    if(rand()%2==0)
+      genes|=selector;
+    selector=selector<<1;
   }
 }
 
