@@ -1,5 +1,9 @@
-Phylo::Phylo(Salamander::genetype &genes0, double t0, int parent0){
-  genes=genes0;
-  emergence=t0;
-  parent=parent0;
+#include "phylo.hpp"
+#include "salamander.hpp"
+#include <cstdlib>
+
+Phylo::Phylo(const Salamander &s, double t);
+  genes=s.genes;
+  emergence=t;
+  parent=s.phylo_strain;
 }

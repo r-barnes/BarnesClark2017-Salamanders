@@ -5,7 +5,8 @@
 
 class Phylo {
   public:
-    Phylo(Salamander::genetype &genes, double t, int parent);
+    ///Innitialize new salamandar
+    Phylo(const Salamander &s, double t);
 
     ///Genome of the strain
     Salamander::genetype genes;
