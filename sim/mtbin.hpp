@@ -1,6 +1,8 @@
 #ifndef _mtbin
 #define _mtbin
 
+#define binmax 1000
+
 #include <array>
 #include "salamander.hpp"
 
@@ -9,7 +11,7 @@ class MtBin {
     MtBin();
     MtBin(double binx);
 
-    std::array<Salamander, 1000> bin;
+    std::array<Salamander, binmax> bin;
 
     ///Height of this bin above sealevel
     double height;
@@ -37,6 +39,12 @@ class MtBin {
 
     ///Add a salamander to the bin. Fail silently if there's no room.
     void addSalamander(const Salamander &s);
+
+    ///Return number of living salamanders in this bin
+    unsigned int alive() const;
+
+  private:
+    void killSalamander(int i);
 };
 
 #endif

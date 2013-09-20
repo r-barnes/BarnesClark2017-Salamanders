@@ -3,10 +3,11 @@
 #include <array>
 using namespace std;
 
-int main(){
-  //Profile of the mountain
-  array< MtBin, 10000> mts;
+//Profile of the mountain
+//We allocate this in the global namespace to prevent a stack overflow
+static array< MtBin, 1000> mts;
 
+int main(){
   //Start off by killing everything
   for(auto &m: mts)
     m.killAll();

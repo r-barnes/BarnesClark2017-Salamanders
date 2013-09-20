@@ -4,24 +4,43 @@
 #include <algorithm>
 #include <cassert>
 
+std::default_random_engine rgen;
+
 MtBin::MtBin(){
   startofdead=0;
 }
 
 MtBin::MtBin(double binx) : MtBin(binx) {}
 
+void MtBin::killSalamander(int i) {
+  assert(startofdead>0);
+  bin[i].dead=true;
+  std::swap(bin[i],bin[startofdead-1]);
+  --startofdead;
+}
+
 void MtBin::mortaliate(double t) {
   ///If there are no living salamanders, then don't do anything
   if(startofdead==0) return;
 
-  double mytemp=temp(t);
+  double mytemp=temp(t); //Current temperature of bin
+  int maxalive=kkap();   //Current carrying capacity of the bin
 
-  for(unsigned int s=0;s<startofdead;++s){
-    if(bin[s].pDie(mytemp)){
-      bin[s].dead=true;
-      std::swap(bin[s],bin[startofdead-1]);
-      --startofdead;
-    }
+  //For each salamander, check to see if it dies
+  for(unsigned int s=0;s<startofdead && s<maxalive;++s){
+    if(bin[s].pDie(mytemp))
+      killSalamander(s);
+  }
+
+  //Since the carrying capacity of the bin may have been reduced since we last
+  //mortaliated, kill at random individuals until we are within carrying capacity
+
+  //Make a random number generator which points uniformly at all living individuals
+  std::uniform_int_distribution<int> rdist(0, alive()-1);
+  while(alive()>maxalive){
+    int i=rgen(rdist);          //Get an individual
+    if(bin[i].dead) continue;   //If the individual is already dead, ignore it
+    killSalamander(i);
   }
 }
 
@@ -65,4 +84,8 @@ void MtBin::addSalamander(const Salamander &s) {
   if(startofdead==bin.size()) return;
   bin[startofdead]=s;
   ++startofdead;
+}
+
+unsigned int MtBin::alive() const {
+  return bin.size()-startofdead;
 }
