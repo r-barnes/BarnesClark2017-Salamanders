@@ -15,7 +15,6 @@ Salamander::Salamander(){
   genes=0;
   otemp=0;
   dead=false;
-  evolvable=tr
 }
 
 Salamander Salamander::breed(const Salamander &b) const {

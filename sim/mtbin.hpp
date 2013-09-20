@@ -35,6 +35,9 @@ class MtBin {
 
     ///Add a salamander to the bin. Fail silently if there's no room.
     void addSalamander(const Salamander &s);
+
+    ///Return number of living salamanders in this bin
+    unsigned int alive() const;
 };
 
 #endif

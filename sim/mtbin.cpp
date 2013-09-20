@@ -56,3 +56,7 @@ void MtBin::addSalamander(const Salamander &s) {
   bin[startofdead]=s;
   ++startofdead;
 }
+
+unsigned int MtBin::alive() const {
+  return bin.size()-startofdead;
+}
