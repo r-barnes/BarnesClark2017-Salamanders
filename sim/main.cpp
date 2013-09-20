@@ -10,10 +10,6 @@ static array< MtBin, 1000> mts;
 
 typedef std::deque<Phylo> phylolist;
 
-void DetermineWhatSpeciesAreWhereAndHowManyAndSuch(phylolist &p){
-
-}
-
 int main(){
   phylolist phylos;
 
@@ -37,6 +33,5 @@ int main(){
       if(m>0) mts[m].diffuse(mts[m-1]);
       if(m<mts.size()-1) mts[m].diffuse(mts[m+1]);
     }
-    DetermineWhatSpeciesAreWhereAndHowManyAndSuch();
   }
 }
