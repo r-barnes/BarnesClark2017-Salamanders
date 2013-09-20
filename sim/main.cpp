@@ -4,11 +4,8 @@
 using namespace std;
 
 int main(){
-  //One elevation bin of the mountain
-  typedef array<Salamander, 1000> mtbin;
-
   //Profile of the mountain
-  array<mtbin, 10000> mts;
+  array< MtBin, 10000> mts;
 
   //Start off by killing everything
   for(auto &m: mts)

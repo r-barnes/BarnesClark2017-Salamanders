@@ -7,7 +7,7 @@ MtBin::MtBin(){
 
 MtBin::MtBin(double binx) : MtBin(binx) {}
 
-void MtBin::Mortaliate() {
+void MtBin::mortaliate() {
   double mytemp=temp();
 
   for(auto &s: bin){
@@ -17,11 +17,11 @@ void MtBin::Mortaliate() {
   }
 }
 
-double MtBin::temp() const {
+double MtBin::temp(double t) const {
   
 }
 
-double MtBin::height() const {
+double MtBin::height(double t) const {
 
 }
 

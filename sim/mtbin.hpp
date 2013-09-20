@@ -15,7 +15,7 @@ class MtBin {
     ///Location of the first dead salamander on the list
     ///if startofdead==bin.size() then there are no more
     ///openings in the population
-    int startofdead;
+    unsigned int startofdead;
 
     ///Kill random salamanders with probability prob
     void mortaliate();
