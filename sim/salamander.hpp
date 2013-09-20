@@ -4,7 +4,8 @@
 class Salamander {
   public:
     ///Gene Type
-      typedef unsigned long long genetype;
+    typedef unsigned long long genetype;
+
     ///Initialize a new salamander
     Salamander();
 
@@ -30,6 +31,9 @@ class Salamander {
     double otemp;
 
     bool dead;
+
+    ///The phylogeny this is part of
+    int phylo_strain;
 };
 
 #endif
