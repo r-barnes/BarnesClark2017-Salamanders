@@ -2,7 +2,7 @@
 #define _utility
 
 ///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
-double MountainElevation(double elevation, double time);
+double MountainArea(double elevation, double time);
 
 template<class T>
 T countbits(T a){

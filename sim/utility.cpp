@@ -2,7 +2,7 @@
 #include <cmath>
 
 ///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
-double MountainElevation(double elevation, double time) {
+double MountainArea(double elevation, double time) {
   const double elek=12.029753;
   const double elesigma=0.211410;
   const double elemu=0.245547;
