@@ -1,5 +1,5 @@
 #ifndef _data
 #define _data
-double temps[];
+extern double temps[];
 
 #endif
