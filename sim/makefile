@@ -9,7 +9,7 @@ ODIR=obj
 PRE_FLAGS=-O3
 #PRE_FLAGS=-g
 
-_OBJ = salamander.o main.o utility.o
+_OBJ = salamander.o main.o utility.o mtbin.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.cpp

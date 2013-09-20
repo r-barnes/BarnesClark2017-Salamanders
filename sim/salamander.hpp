@@ -20,6 +20,9 @@ class Salamander {
     ///Randomize this salamander's genome
     void randomizeGeneome();
 
+    ///Given an input temperature, should the salamander die?
+    void pDie(double temp) const;
+
     ///Neutral genes
     genetype genes;
 
