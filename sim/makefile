@@ -3,7 +3,7 @@
 #CFLAGS=-Wall -Wno-unknown-pragmas -DARCGIS -static-libgcc -static-libstdc++ #-fopenmp
 
 CC=g++ -std=c++11
-CFLAGS=-Wall -fopenmp -DNDEBUG #-DARCGIS #-lX11 -pthread #-ltbb
+CFLAGS=-Wall -fopenmp #-DNDEBUG #-DARCGIS #-lX11 -pthread #-ltbb
 
 ODIR=obj
 PRE_FLAGS=-O3
