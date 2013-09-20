@@ -70,7 +70,7 @@ unsigned int MtBin::kkap(double t) const {
   double maxelevation = 2.8-1.846154e-05*t;
   double minarea = MountainArea(maxelevation, t);
   
-  return std::min(area(t)/(minarea), binmax) //Returns a number [1, binmax], with 1 being the size of the smallest bin at time t
+  return std::min(area(t)/(minarea), (double) binmax); //Returns a number [1, binmax], with 1 being the size of the smallest bin at time t
 }
 
 void MtBin::killAll() {
