@@ -38,6 +38,9 @@ class MtBin {
 
     ///Return number of living salamanders in this bin
     unsigned int alive() const;
+
+  private:
+    void killSalamander(int i);
 };
 
 #endif
