@@ -15,6 +15,7 @@ Salamander::Salamander(){
   genes=0;
   otemp=0;
   dead=false;
+  evolvable=tr
 }
 
 Salamander Salamander::breed(const Salamander &b) const {
@@ -68,15 +69,14 @@ bool Salamander::pDie(double temp) const {
   const double logitslope = 0.03051701;
   const double logitint = -2.197225;
   
-  if((temp<0)||(temp>50)) { //Maximual temperature bounds
+  if(!(0<=temp && temp<=50)) { //Maximual temperature bounds
     dead=true;
   } else { //Calculate probability of death if bounds are not exceeded
-    dtemp = pow((otemp - temp), 2);
+    dtemp = pow(otemp-temp, 2);
     pdeath = 1/(1+exp(-(dtemp*logitslope+logitint))); //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     
-    if(unifdice()<pdeath) { //Kill individual with probability pdeath
-        dead=true;
-    }
+    if(unifdice()<pdeath) //Kill individual with probability pdeath
+      dead=true;
   }
   
   return dead;
