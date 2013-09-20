@@ -3,10 +3,13 @@
 #include <cstdlib>
 #include <random>
 #include <functional>
+#include "data.hpp"
 
 std::default_random_engine generator;
-std::normal_distribution<double> distribution(0,1);
-auto normaldice=std::bind(distribution,generator);
+std::normal_distribution<double> normdistribution(0,1);
+std::uniform_real_distribution<double> unifdistribution(0.0,1.0);
+auto normaldice=std::bind(normdistribution,generator);
+auto unifdice=std::bind(unifdistribution,generator);
 
 Salamander::Salamander(){
   genes=0;
@@ -57,3 +60,25 @@ unsigned int Salamander::similarity(const Salamander &b) const {
   Salamander::genetype combined=genes & b.genes;
   return countbits(combined);
 }
+
+bool Salamander::pDie(double temp) const {
+  bool dead=false;
+  double pdeath; // Calculate probability of death give square distance of t, topt
+  double dtemp;
+  const double logitslope = 0.03051701;
+  const double logitint = -2.197225;
+  
+  if((temp<0)||(temp>50)) { //Maximual temperature bounds
+    dead=true;
+  } else { //Calculate probability of death if bounds are not exceeded
+    dtemp = pow((otemp - temp), 2);
+    pdeath = 1/(1+exp(-(dtemp*logitslope+logitint))); //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
+    
+    if(unifdice()<pdeath) { //Kill individual with probability pdeath
+        dead=true;
+    }
+  }
+  
+  return dead;
+}
+
