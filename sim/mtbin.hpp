@@ -26,7 +26,7 @@ class MtBin {
     double temp(double t) const;
 
     ///Return the height of the bin at a given time
-    double height(double t) const;
+    double area(double t) const;
 
     ///Kill all the salamanders in the bin and reset startofdead
     void killAll();

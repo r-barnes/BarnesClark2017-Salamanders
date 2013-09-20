@@ -35,9 +35,9 @@ double MtBin::temp(double t) const {
 
   //Interpolate temperature for this time
   int t0=(int)t;
-  double ta=temps[t0]  +altitude_temp_adjust;
-  double tb=temps[t0+1]+altitude_temp_adjust;
-  return ta+(tb-ta)*(t-t0);
+  double ta=temps[t0];
+  double tb=temps[t0+1];
+  return ta+(tb-ta)*(t-t0)+altitude_temp_adjust;
 }
 
 double MtBin::area(double t) const {
