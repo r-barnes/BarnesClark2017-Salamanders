@@ -45,6 +45,16 @@ double MtBin::area(double t) const {
   return MountainArea(height, t);
 }
 
+double MtBin::kkap(double t) const {
+  int maxsalamander_perarea = 1000000; //Maximum number of salamanders per square km
+  int salamanders_perpopulation = 1000; //Number of salamanders per genotype that we are modeling
+  int maxarea = 2270080; //Maximum area possible for bins in current model;
+  double maxpopulations_inbin = maxsalamander_perarea*area(t)/salamanders_perpopulation; //Maximum number of populations in this bin at this time
+  double maxpopulations_ever = maxsalamander_perarea*maxarea/salamanders_perpopulation; //Maximum number of populations in any bin at any time
+    
+  return min((maxpopulations_inbin)/(maxpopulations_ever), 1)*binsize;
+}
+
 void MtBin::killAll() {
   for(auto &s: bin)
     s.dead=true;

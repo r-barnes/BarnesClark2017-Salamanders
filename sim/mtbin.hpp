@@ -25,8 +25,12 @@ class MtBin {
     ///Return the temperature of the bin at a given time
     double temp(double t) const;
 
-    ///Return the height of the bin at a given time
+    ///Return the area of the bin at a given time
     double area(double t) const;
+    
+    ///Karrying Kapacity of the bin given its area at a given time
+    ///Returns a number (0, binsize).
+    double kkap(double t) const;    
 
     ///Kill all the salamanders in the bin and reset startofdead
     void killAll();
