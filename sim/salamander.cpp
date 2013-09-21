@@ -6,7 +6,7 @@
 #include "data.hpp"
 
 std::default_random_engine generator;
-std::normal_distribution<double> normdistribution(0,1);
+std::normal_distribution<double> normdistribution(0,0.001);
 std::uniform_real_distribution<double> unifdistribution(0.0,1.0);
 auto normaldice=std::bind(normdistribution,generator);
 auto unifdice=std::bind(unifdistribution,generator);
