@@ -107,6 +107,34 @@ void MtBin::breed(double t){
   }
 }
 
-void MtBin::diffuse(MtBin &a) {
+void MtBin::diffuse(double t, MtBin &b) {
+  std::uniform_int_distribution<int> myguys   (0,   alive()-1);
+  std::uniform_int_distribution<int> otherguys(0, b.alive()-1);
+  unsigned int aswapn=  alive()/10;
+  unsigned int bswapn=b.alive()/10;
 
+  int swapc=std::min(aswapn,bswapn);
+  for(int i=0;i<swapc;++i)
+    std::swap(bin[myguys(rgen)], b.bin[otherguys(rgen)]);
+
+  unsigned int ka=  kkap(t);
+  unsigned int kb=b.kkap(t);
+
+  if(aswapn>bswapn){
+    aswapn-=swapc;
+    aswapn=std::min(aswapn,alive()-ka);
+    for(unsigned int i=0;i<aswapn;++i){
+      int temp=myguys(rgen);
+      b.addSalamander(bin[temp]);
+      killSalamander(temp);
+    }
+  } else if(aswapn<bswapn) {
+    bswapn-=swapc;
+    bswapn=std::min(bswapn,b.alive()-kb);
+    for(unsigned int i=0;i<bswapn;++i){
+      int temp=otherguys(rgen);
+      addSalamander(b.bin[temp]);
+      b.killSalamander(temp);
+    }
+  }
 }

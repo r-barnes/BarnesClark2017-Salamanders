@@ -54,8 +54,8 @@ int main(){
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
       mts[m].breed(t);
-      if(m>0) mts[m].diffuse(mts[m-1]);
-      if(m<mts.size()-1) mts[m].diffuse(mts[m+1]);
+      if(m>0)            mts[m].diffuse(t,mts[m-1]);
+      if(m<mts.size()-1) mts[m].diffuse(t,mts[m+1]);
     }
   }
 }

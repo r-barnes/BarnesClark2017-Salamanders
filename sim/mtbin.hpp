@@ -47,7 +47,7 @@ class MtBin {
     void breed(double t);
 
     ///Swap some salamanders with those in another bin
-    void diffuse(MtBin &a);
+    void diffuse(double t, MtBin &a);
 
   private:
     void killSalamander(int i);
