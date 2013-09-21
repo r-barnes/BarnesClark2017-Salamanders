@@ -56,13 +56,13 @@ void Salamander::randomizeGeneome(){
   }
 }
 
-bool Salamander::pSimilarGenome(const Salamander::genotype &b) const {
+bool Salamander::pSimilarGenome(const Salamander::genetype &b) const {
   Salamander::genetype combined=genes & b;
-  return countbits(combined) > 95*8*sizeof(Salamaner::genetype)/100;
+  return countbits(combined) > 95*8*sizeof(Salamander::genetype)/100;
 }
 
 bool Salamander::pSimilar(const Salamander &b) const {
-  return pSimilarGenome(b.genes)
+  return pSimilarGenome(b.genes);
 }
 
 bool Salamander::pDie(double temp) const {
