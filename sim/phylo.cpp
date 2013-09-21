@@ -7,4 +7,5 @@ Phylo::Phylo(const Salamander &s, double t);
   emergence=t;
   parent=s.parent;
   lastchild=t;
+  otemp=s.otemp;
 }

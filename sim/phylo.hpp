@@ -16,6 +16,8 @@ class Phylo {
     double lastchild;
     ///Which strain this one emerged from
     int parent;
+    ///Which otemp did the first parent inherit?
+    double otemp;
 };
 
 #endif
