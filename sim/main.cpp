@@ -11,7 +11,7 @@ static array< MtBin, 1000> mts;
 
 typedef std::vector<Phylo> phylolist;
 
-void DetermineWhatSpeciesAreWhereAndHowManyAndSuch(phylolist &plist, double t){
+void UpdatePhylogeny(double t, phylolist &plist){
   for(auto &m: mts)
   for(auto &s: m.bin){
     /*if(phylolist.size()==0) {
@@ -57,5 +57,6 @@ int main(){
       if(m>0)            mts[m].diffuse(t,mts[m-1]);
       if(m<mts.size()-1) mts[m].diffuse(t,mts[m+1]);
     }
+    UpdatePhylogeny(t, phylos);
   }
 }
