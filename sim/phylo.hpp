@@ -12,8 +12,8 @@ class Phylo {
     Salamander::genetype genes;
     ///When this strain emerged
     double emergence;
-    ///When this strain disappeared
-    double extinction;
+    ///Last time this strain had a child
+    double lastchild;
     ///Which strain this one emerged from
     int parent;
 };

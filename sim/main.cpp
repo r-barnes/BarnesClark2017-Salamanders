@@ -28,6 +28,8 @@ void DetermineWhatSpeciesAreWhereAndHowManyAndSuch(phylolist &plist, double t){
       }
       if(!trigger)
         plist.push_back(Phylo(s, t));
+    } else {
+      plist[s.parent].lastchild=t;
     }
   }
 }
