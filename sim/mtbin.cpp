@@ -100,9 +100,13 @@ void MtBin::breed(double t){
   ///Make a random number generator that considers only the parents
   std::uniform_int_distribution<int> rdist(0, alive()-1);
   while(alive()<maxalive && maxtries>=0){
-    int parenta=rdist(rgen);
-    int parentb=rdist(rgen);
-    if(parenta.similar(parentb))
-      addSalamaber(parenta.breed(parentb));
+    Salamander &parenta=bin[rdist(rgen)];
+    Salamander &parentb=bin[rdist(rgen)];
+    if(parenta.pSimilar(parentb))
+      addSalamander(parenta.breed(parentb));
   }
+}
+
+void MtBin::diffuse(MtBin &a) {
+
 }
