@@ -12,8 +12,11 @@ class Salamander {
     ///Breed this salamander with another to make a baby
     Salamander breed(const Salamander &b) const;
 
-    ///Number of bits shared between two genomes
+    ///Number of bits shared between two salamanders
     bool pSimilar(const Salamander &b) const;
+    
+    ///Number of bits shared between two genomes
+    bool pSimilarGenome(const Salamander::genotype &b) const;
 
     ///Mutate this salamander's genome
     void mutate();
@@ -33,7 +36,7 @@ class Salamander {
     bool dead;
 
     ///The phylogeny this is part of
-    int phylo_strain;
+    int parent;
 };
 
 #endif

@@ -8,15 +8,27 @@ using namespace std;
 //We allocate this in the global namespace to prevent a stack overflow
 static array< MtBin, 1000> mts;
 
-typedef std::deque<Phylo> phylolist;
+typedef std::vector<Phylo> plist;
 
 void DetermineWhatSpeciesAreWhereAndHowManyAndSuch(phylolist &p, double t){
-  if(phylolist.size()==0) {
-     Phylo(s, t);
+  for(auto &m: mts)
+  for(auto &s: m){
+    /*if(phylolist.size()==0) {
+      Phylo(s, t);
+    }*/
+    if(!s.pSimilarGenome(plist[s.parent].genes)) {
+      bool trigger=false;
+      for(unsigned int p=plist.size()-1;p>=0;--p) {
+        if(s.parent==plist[p].parent && s.pSimilarGenome(plist[p].genes) ) {
+          s.phylo_strain=p;
+          trigger=true;
+          break;
+        }
+      }
+      if(!trigger)
+        phylolist.push_back(Phylo(s, t));
+    }
   }
-  
-  
-  deque::
 }
 
 int main(){
