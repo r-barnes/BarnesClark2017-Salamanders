@@ -41,7 +41,7 @@ void OutputPhylo(phylolist &plist){
     cout<<i<<"[label=\""<<plist[i].emergence<<" "<<plist[i].otemp<<"\"];"<<endl;
 
   for(unsigned int i=0;i<plist.size();++i)
-    cout<<i<<"->"<<plist[i].parent<<";"<<endl;
+    cout<<plist[i].parent<<"->"<<i<<";"<<endl;
 
   cout<<"}"<<endl;
 }
