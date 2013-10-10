@@ -75,7 +75,7 @@ int main(){
   //Temperature drops at 9.8 degC/1000m (adiabatic lapse rate of dry air)
   //So (33.5618604122814-12.804279)/9.8=2.1181*1000m=2.11km
 
-  for(double t=0;t<28;t+=0.5){
+  for(double t=0;t<65.001;t+=0.5){
   	cerr<<"#"<<t<<endl;
     unsigned int population_size=0;
     for(unsigned int m=0;m<mts.size();++m){
