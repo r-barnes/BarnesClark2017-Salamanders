@@ -87,7 +87,7 @@ void MtBin::addSalamander(const Salamander &s) {
 }
 
 unsigned int MtBin::alive() const {
-  return bin.size()-startofdead;
+  return startofdead;
 }
 
 void MtBin::breed(double t){
