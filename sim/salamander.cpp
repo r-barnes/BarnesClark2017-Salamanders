@@ -66,20 +66,21 @@ bool Salamander::pSimilar(const Salamander &b) const {
   return pSimilarGenome(b.genes);
 }
 
+//Calculate probability of death give square distance of t, topt
 bool Salamander::pDie(double temp) const {
   bool dead=false;
-  double pdeath; // Calculate probability of death give square distance of t, topt
-  double dtemp;
-  const double logitslope = 0.03051701;
-  const double logitint = -2.197225;
+  const double logitslope =  0.03051701;
+  const double logitint   = -2.197225;
   
-  if(!(0<=temp && temp<=50)) { //Maximual temperature bounds
+  if(!(0<=temp && temp<=50)) { //Temperature bounds
     dead=true;
-  } else { //Calculate probability of death if bounds are not exceeded
-    dtemp = pow(otemp-temp, 2);
-    pdeath = 1/(1+exp(-(dtemp*logitslope+logitint))); //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
+  } else {                     //Find probability of death if bounds are not exceeded
+    double dtemp  = pow(otemp-temp, 2);
+
+    //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
+    double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
     
-    if(unifdice()<pdeath) //Kill individual with probability pdeath
+    if(unifdice()<pdeath)      //Kill individual with probability pdeath
       dead=true;
   }
   
