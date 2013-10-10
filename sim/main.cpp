@@ -34,6 +34,27 @@ void UpdatePhylogeny(double t, phylolist &plist){
   }
 }
 
+void Output(phyolist &plist){
+  cout<<"digraph graphname {"<<endl;
+
+  for(int i=0;i<plist.size();++i){
+    cout<<i<<"[label=\""<<Foo"];
+
+  for(int i=0;i<plist.size();++i){
+    cout<<i<<"->"<<plist[i].parent<<endl;
+  }
+    ///When this strain emerged
+    double emergence;
+    ///Last time this strain had a child
+    double lastchild;
+    ///Which otemp did the first parent inherit?
+    double otemp;
+
+  cout<<"}"<<endl;
+
+}
+
+
 int main(){
   phylolist phylos;
 
