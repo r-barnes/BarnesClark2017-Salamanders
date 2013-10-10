@@ -15,9 +15,8 @@ typedef std::vector<Phylo> phylolist;
 void UpdatePhylogeny(double t, phylolist &plist){
   for(auto &m: mts)
   for(auto &s: m.bin){
-    /*if(phylolist.size()==0) {
-      Phylo(s, t);
-    }*/
+    if(s.dead || s.parent==-1) continue;
+
     if(s.parent==-1){
       plist.push_back(Phylo(s,t));
     } else if(!s.pSimilarGenome(plist[s.parent].genes)) {
