@@ -21,6 +21,7 @@ Salamander::Salamander(){
   genes=genedice();
   otemp=otempdice();
   dead=false;
+  parent=-1;
 }
 
 Salamander Salamander::breed(const Salamander &b) const {
