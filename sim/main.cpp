@@ -41,10 +41,10 @@ void OutputPhylo(phylolist &plist){
   cout<<"digraph graphname {"<<endl;
 
   for(unsigned int i=0;i<plist.size();++i)
-    cout<<i<<"[label=\""<<plist[i].emergence<<" "<<plist[i].otemp<<"\"]";
+    cout<<i<<"[label=\""<<plist[i].emergence<<" "<<plist[i].otemp<<"\"];"<<endl;
 
   for(unsigned int i=0;i<plist.size();++i)
-    cout<<i<<"->"<<plist[i].parent<<endl;
+    cout<<i<<"->"<<plist[i].parent<<";"<<endl;
 
   cout<<"}"<<endl;
 }
@@ -66,7 +66,7 @@ int main(){
   //Temperature drops at 9.8 degC/1000m (adiabatic lapse rate of dry air)
   //So (33.5618604122814-12.804279)/9.8=2.1181*1000m=2.11km
 
-  for(double t=0;t<65001;t+=0.5){
+  for(double t=0;t<28;t+=0.5){
   	cerr<<"#"<<t<<endl;
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
