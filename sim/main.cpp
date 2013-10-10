@@ -19,8 +19,8 @@ void UpdatePhylogeny(double t, phylolist &plist){
 
     if(!s.pSimilarGenome(plist.at(s.parent).genes)) {
       bool trigger=false;
-      for(unsigned int p=plist.size()-1;p>=0;--p) {
-        if(s.parent==plist[p].parent && s.pSimilarGenome(plist[p].genes) ) {
+      for(int p=plist.size()-1;p>=0;--p) {
+        if(s.parent==plist.at(p).parent && s.pSimilarGenome(plist.at(p).genes) ) {
           s.parent=p;
           trigger=true;
           break;
@@ -29,7 +29,7 @@ void UpdatePhylogeny(double t, phylolist &plist){
       if(!trigger)
         plist.push_back(Phylo(s, t));
     } else {
-      plist[s.parent].lastchild=t;
+      plist.at(s.parent).lastchild=t;
     }
   }
 }
