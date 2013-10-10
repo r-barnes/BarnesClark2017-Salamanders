@@ -30,9 +30,9 @@ void Salamander::printGenome() const {
 }
 
 Salamander Salamander::breed(const Salamander &b) const {
-  Salamander temp;
-  temp.genes=genes & b.genes;
-  temp.otemp= (otemp+b.otemp)/2+normaldice();
+  Salamander child;
+  child.genes=genes & b.genes;
+  child.otemp= (otemp+b.otemp)/2+normaldice();
 
   Salamander::genetype selector=1;
   Salamander::genetype shared_genes=genes ^ b.genes;
@@ -43,13 +43,20 @@ Salamander Salamander::breed(const Salamander &b) const {
   //50% probability whether to turn it on or off.
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
     if(shared_genes&selector && rand()%2==0)
-      temp.genes|=selector;
+      child.genes|=selector;
     selector=selector<<1;
   }
 
-  temp.parent=parent;
+  child.mutate();
+/*
+  printGenome();
+  cerr<<"Bits on="<<countbits(genes)<<endl;
+  b.printGenome();
+  temp.printGenome();
+*/
+  child.parent=parent;
 
-  return temp;
+  return child;
 }
 
 void Salamander::mutate(){
