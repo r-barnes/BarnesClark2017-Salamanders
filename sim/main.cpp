@@ -57,6 +57,18 @@ int main(){
   for(auto &m: mts)
     m.killAll();
 
+  Salamander Eve;
+  Eve.parent=0;
+  Eve.otemp =12.804279;
+  Eve.genes =(Salamander::genetype)169113934842922489;
+  Eve.dead  =false;
+
+  for(unsigned int m=0;m<mts.size();++m)
+  for(unsigned int s=0;s<10/*mts.bin.size()*/;++s){
+    mts[m].addSalamander(Eve);
+  }
+  phylos.push_back(Phylo(Eve, 0));
+
   //Find cell corresponding to optimal happy temperature
   //Make a salamander in that cell alive
   //Go forth
