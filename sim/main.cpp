@@ -67,6 +67,7 @@ int main(){
   //So (33.5618604122814-12.804279)/9.8=2.1181*1000m=2.11km
 
   for(double t=0;t<65001;t+=0.5){
+  	cerr<<"#"<<t<<endl;
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
       mts[m].breed(t);
