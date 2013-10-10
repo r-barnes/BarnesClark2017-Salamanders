@@ -77,13 +77,18 @@ int main(){
 
   for(double t=0;t<28;t+=0.5){
   	cerr<<"#"<<t<<endl;
+    unsigned int population_size=0;
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
       mts[m].breed(t);
       if(m>0)            mts[m].diffuse(t,mts[m-1]);
       if(m<mts.size()-1) mts[m].diffuse(t,mts[m+1]);
+      population_size+=mts[m].startofdead;
     }
     UpdatePhylogeny(t, phylos);
+
+    cerr<<"#Species count="<<phylos.size()<<endl;
+    cerr<<"#Population size="<<population_size<<endl;
   }
 
   OutputPhylo(phylos);
