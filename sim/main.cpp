@@ -61,7 +61,7 @@ int main(){
   Eve.dead  =false;
 
   for(unsigned int m=0;m<mts.size();++m)
-  for(unsigned int s=0;s<10/*mts.bin.size()*/;++s){
+  for(unsigned int s=0;s<10;++s){
     mts[m].addSalamander(Eve);
   }
   phylos.push_back(Phylo(Eve, 0));
