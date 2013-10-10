@@ -34,7 +34,9 @@ Salamander Salamander::breed(const Salamander &b) const {
     if(shared_genes&selector && rand()%2==0)
       temp.genes|=selector;
     selector=selector<<1;
-  } 
+  }
+
+  temp.parent=parent;
 
   return temp;
 }
