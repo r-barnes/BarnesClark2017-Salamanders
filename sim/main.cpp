@@ -17,9 +17,7 @@ void UpdatePhylogeny(double t, phylolist &plist){
   for(auto &s: m.bin){
     if(s.dead || s.parent==-1) continue;
 
-    if(s.parent==-1){
-      plist.push_back(Phylo(s,t));
-    } else if(!s.pSimilarGenome(plist[s.parent].genes)) {
+    if(!s.pSimilarGenome(plist.at(s.parent).genes)) {
       bool trigger=false;
       for(unsigned int p=plist.size()-1;p>=0;--p) {
         if(s.parent==plist[p].parent && s.pSimilarGenome(plist[p].genes) ) {
