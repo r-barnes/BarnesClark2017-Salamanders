@@ -4,6 +4,8 @@
 #include <random>
 #include <functional>
 #include "data.hpp"
+#include <iostream>
+using namespace std;
 
 std::default_random_engine generator;
 std::normal_distribution<double> normdistribution(0,0.001);
