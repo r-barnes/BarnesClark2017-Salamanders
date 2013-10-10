@@ -12,6 +12,9 @@ class Salamander {
     ///Breed this salamander with another to make a baby
     Salamander breed(const Salamander &b) const;
 
+    ///Print the salamanders genome as a bit field
+    void printGenome() const;
+
     ///Number of bits shared between two salamanders
     bool pSimilar(const Salamander &b) const;
     
