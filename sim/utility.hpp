@@ -1,6 +1,17 @@
 #ifndef _utility
 #define _utility
 
+#include <iostream>
+
+template<class T>
+void printbits(T a){
+  T selector=1;
+  for(unsigned int i=0;i<sizeof(T)*8;++i){
+    std::cerr<<((a&selector)?'1':'0');
+    selector=selector<<1;
+  }
+  std::cerr<<std::endl;
+}
 ///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
 double MountainArea(double elevation, double time);
 
