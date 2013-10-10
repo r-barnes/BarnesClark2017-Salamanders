@@ -11,9 +11,15 @@ std::uniform_real_distribution<double> unifdistribution(0.0,1.0);
 auto normaldice=std::bind(normdistribution,generator);
 auto unifdice=std::bind(unifdistribution,generator);
 
+std::normal_distribution<double> genedist(0,std::numeric_limits<Salamander::genetype>::max());
+auto genedice=std::bind(genedist,generator);
+
+std::normal_distribution<double> otempdist(12.804279,3);
+auto otempdice=std::bind(otempdist,generator);
+
 Salamander::Salamander(){
-  genes=0;
-  otemp=0;
+  genes=genedice();
+  otemp=otempdice();
   dead=false;
 }
 
