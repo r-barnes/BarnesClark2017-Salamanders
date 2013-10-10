@@ -3,6 +3,7 @@
 #include "phylo.hpp"
 #include <array>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 //Profile of the mountain
@@ -34,24 +35,16 @@ void UpdatePhylogeny(double t, phylolist &plist){
   }
 }
 
-void Output(phyolist &plist){
+void OutputPhylo(phylolist &plist){
   cout<<"digraph graphname {"<<endl;
 
-  for(int i=0;i<plist.size();++i){
-    cout<<i<<"[label=\""<<Foo"];
+  for(unsigned int i=0;i<plist.size();++i)
+    cout<<i<<"[label=\""<<plist[i].emergence<<" "<<plist[i].otemp<<"\"]";
 
-  for(int i=0;i<plist.size();++i){
+  for(unsigned int i=0;i<plist.size();++i)
     cout<<i<<"->"<<plist[i].parent<<endl;
-  }
-    ///When this strain emerged
-    double emergence;
-    ///Last time this strain had a child
-    double lastchild;
-    ///Which otemp did the first parent inherit?
-    double otemp;
 
   cout<<"}"<<endl;
-
 }
 
 
@@ -80,4 +73,6 @@ int main(){
     }
     UpdatePhylogeny(t, phylos);
   }
+
+  OutputPhylo(phylos);
 }
