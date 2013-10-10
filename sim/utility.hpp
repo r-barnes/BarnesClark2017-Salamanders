@@ -12,8 +12,6 @@ void printbits(T a){
   }
   std::cerr<<std::endl;
 }
-///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
-double MountainArea(double elevation, double time);
 
 template<class T>
 T countbits(T a){
