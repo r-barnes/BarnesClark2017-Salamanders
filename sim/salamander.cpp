@@ -60,8 +60,9 @@ void Salamander::randomizeGeneome(){
 }
 
 bool Salamander::pSimilarGenome(const Salamander::genetype &b) const {
-  Salamander::genetype combined=genes & b;
-  return countbits(combined) > 98*8*sizeof(Salamander::genetype)/100;
+  Salamander::genetype combined=(genes & b) | (~genes & ~b);
+  unsigned int shared_genes=countbits(combined);
+  return shared_genes > 32;//95*8*sizeof(Salamander::genetype)/100;
 }
 
 bool Salamander::pSimilar(const Salamander &b) const {
