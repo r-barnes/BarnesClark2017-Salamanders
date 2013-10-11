@@ -60,10 +60,11 @@ Salamander Salamander::breed(const Salamander &b) const {
 }
 
 void Salamander::mutate(){
-  const unsigned int mutation_probability=1000;
+  const unsigned int mutation_probability=10000;
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
     if(rand()%mutation_probability==0){
+//      std::cerr<<"GAAAH! MUTATION"<<std::endl;
       genes^=mutator;
     }
     mutator=mutator<<1;
@@ -82,7 +83,7 @@ void Salamander::randomizeGeneome(){
 bool Salamander::pSimilarGenome(const Salamander::genetype &b) const {
   Salamander::genetype combined=(genes & b) | (~genes & ~b);
   unsigned int shared_genes=countbits(combined);
-  return shared_genes > 32;//95*8*sizeof(Salamander::genetype)/100;
+  return shared_genes > 63;//95*8*sizeof(Salamander::genetype)/100;
 }
 
 bool Salamander::pSimilar(const Salamander &b) const {
