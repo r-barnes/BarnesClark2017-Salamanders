@@ -46,6 +46,10 @@ void UpdatePhylogeny(double t, phylolist &plist){
 int main(){
   phylolist phylos;
 
+  ////////////////////////////////////
+  //INITIALIZE
+  ////////////////////////////////////
+
   //Start off by killing everything
   for(auto &m: mts)
     m.killAll();
@@ -62,6 +66,15 @@ int main(){
     mts[m].addSalamander(Eve);
   }
   phylos.push_back(Phylo(Eve, 0));
+
+
+
+
+
+  ////////////////////////////////////
+  //MAIN LOOP
+  ////////////////////////////////////
+
 
   //Find cell corresponding to optimal happy temperature
   //Make a salamander in that cell alive
@@ -90,7 +103,9 @@ int main(){
 
 
 
-
+  ////////////////////////////////////
+  //OUTPUT
+  ////////////////////////////////////
   ofstream phylograph("output/phylograph.dot");
   phylograph<<"digraph graphname {"<<endl;
   for(unsigned int i=0;i<phylos.size();++i)
