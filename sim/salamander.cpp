@@ -83,7 +83,7 @@ void Salamander::randomizeGeneome(){
 bool Salamander::pSimilarGenome(const Salamander::genetype &b) const {
   Salamander::genetype combined=(genes & b) | (~genes & ~b);
   unsigned int shared_genes=countbits(combined);
-  return shared_genes > 63;//95*8*sizeof(Salamander::genetype)/100;
+  return shared_genes > 50;//95*8*sizeof(Salamander::genetype)/100;
 }
 
 bool Salamander::pSimilar(const Salamander &b) const {
@@ -95,15 +95,18 @@ bool Salamander::pDie(double temp) const {
   bool dead=false;
   const double logitslope =  0.03051701;
   const double logitint   = -2.197225;
-  
+  //cerr<<"temp = "<<temp<<endl;
   if(!(0<=temp && temp<=50)) { //Temperature bounds
     dead=true;
+        //cerr<<"we have killed with 100-percent prob.!"<<endl;
   } else {                     //Find probability of death if bounds are not exceeded
     double dtemp  = pow(otemp-temp, 2);
 
     //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
-    
+    //cerr<<"pdeath = "<<pdeath<<endl;
+    //cerr<<"otemp = "<<otemp<<endl;
+    //cerr<<"temp = "<<temp<<endl;
     if(unifdice()<pdeath)      //Kill individual with probability pdeath
       dead=true;
   }
