@@ -111,6 +111,8 @@ unsigned int MtBin::alive() const {
 }
 
 void MtBin::breed(double t){
+  if(startofdead==0) return;       //No one is alive here. There can be no breeding.
+
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
   if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
