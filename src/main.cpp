@@ -61,7 +61,7 @@ int main(){
   Eve.genes =(Salamander::genetype)169113934842922489;
   Eve.dead  =false;
 
-  for(unsigned int m=0;m<mts.size();++m)
+  for(unsigned int m=0;m<1;++m)
   for(unsigned int s=0;s<10;++s){
     mts[m].addSalamander(Eve);
   }
