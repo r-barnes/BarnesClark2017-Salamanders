@@ -71,10 +71,9 @@ double MtBin::temp(double t) const {
   assert(t>=0);
   assert(t<=65000);
 
-  double h=area(t); //Get height of the mountain at this time
   //Find out the temperature adjustment for that height
   //assuming a dry air adiabatic lapse rate of 9.8 degC per vertical kilometer
-  double altitude_temp_adjust=-9.8*h;
+  double altitude_temp_adjust=-9.8*height;
 
   //Interpolate temperature for this time
   int t0=(int)t;
