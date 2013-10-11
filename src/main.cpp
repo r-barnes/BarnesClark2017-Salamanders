@@ -83,7 +83,7 @@ int main(){
 
 
 
-  ofstream phylograph("/z/phylograph.dot");
+  ofstream phylograph("../output/phylograph.dot");
   phylograph<<"digraph graphname {"<<endl;
   for(unsigned int i=0;i<phylos.size();++i)
     phylograph<<i<<"[label=\""<<phylos[i].emergence<<" "<<phylos[i].otemp<<"\"];"<<endl;
@@ -92,7 +92,7 @@ int main(){
   phylograph<<"}"<<endl;
   phylograph.close();
 
-  ofstream persistgraph("/z/persistgraph.csv");
+  ofstream persistgraph("../output/persistgraph.csv");
   for(unsigned int i=0;i<phylos.size();++i)
     persistgraph<<phylos[i].emergence<<","<<i<<","<<phylos[i].lastchild<<","<<i<<endl;
   persistgraph.close();
