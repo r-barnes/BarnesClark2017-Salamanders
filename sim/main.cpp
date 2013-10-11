@@ -44,7 +44,8 @@ int main(){
 
   Salamander Eve;
   Eve.parent=0;
-  Eve.otemp =12.804279;
+  Eve.otemp =33.5618604122814;//degC //This is the global average temperature at sea level 65 million years ago.
+                                     //Today, the optimal temperature for salamanders is 12.804279 degC
   Eve.genes =(Salamander::genetype)169113934842922489;
   Eve.dead  =false;
 
