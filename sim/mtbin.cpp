@@ -118,13 +118,17 @@ void MtBin::breed(double t){
   //Maximum number of tries to find a pair to mate
   int maxtries=4*(maxalive-alive());
 
+  int max_babies=10;
+
   ///Make a random number generator that considers only the parents
   std::uniform_int_distribution<int> rdist(0, alive()-1);
-  while(alive()<maxalive && maxtries>=0){
+  while(alive()<maxalive && max_babies>=0 && maxtries>=0){ //TODO: Should be maxtries--
     Salamander &parenta=bin[rdist(rgen)];
     Salamander &parentb=bin[rdist(rgen)];
-    if(parenta.pSimilar(parentb))
+    if(parenta.pSimilar(parentb)){
       addSalamander(parenta.breed(parentb));
+      max_babies--;
+    }
   }
 }
 
