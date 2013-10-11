@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 //Profile of the mountain
@@ -33,19 +34,6 @@ void UpdatePhylogeny(double t, phylolist &plist){
     }
   }
 }
-
-void OutputPhylo(phylolist &plist){
-  cout<<"digraph graphname {"<<endl;
-
-  for(unsigned int i=0;i<plist.size();++i)
-    cout<<i<<"[label=\""<<plist[i].emergence<<" "<<plist[i].otemp<<"\"];"<<endl;
-
-  for(unsigned int i=0;i<plist.size();++i)
-    cout<<plist[i].parent<<"->"<<i<<";"<<endl;
-
-  cout<<"}"<<endl;
-}
-
 
 int main(){
   phylolist phylos;
@@ -91,5 +79,21 @@ int main(){
     cerr<<"#Population size="<<population_size<<endl;
   }
 
-  OutputPhylo(phylos);
+
+
+
+  ofstream phylograph("/z/phylograph.dot");
+  phylograph<<"digraph graphname {"<<endl;
+  for(unsigned int i=0;i<phylos.size();++i)
+    phylograph<<i<<"[label=\""<<phylos[i].emergence<<" "<<phylos[i].otemp<<"\"];"<<endl;
+  for(unsigned int i=0;i<phylos.size();++i)
+    phylograph<<phylos[i].parent<<"->"<<i<<";"<<endl;
+  phylograph<<"}"<<endl;
+  phylograph.close();
+
+  ofstream persistgraph("/z/persistgraph.csv");
+  for(unsigned int i=0;i<phylos.size();++i)
+    persistgraph<<phylos[i].emergence<<","<<i<<","<<phylos[i].lastchild<<","<<i<<endl;
+  persistgraph.close();
+
 }
