@@ -25,7 +25,7 @@ void UpdatePhylogeny(double t, phylolist &plist){
 
       //See if I am similar to any other salamanders, starting with the most recent
       for(int p=plist.size()-1;p>=0;--p) {
-        if( (t-phylo.at(s.parent).lastchild)>=1 ) continue; //TODO: This needs to be adjusted based on the length of timesteps. This is crappy.
+        if( (t-plist.at(s.parent).lastchild)>=1 ) continue; //TODO: This needs to be adjusted based on the length of timesteps. This is crappy.
         //If my parent is the same as this salamander's parent and my genes are similar to this salamander's
         //Then this salamander and I are both part of the first generation of a new species of salamander
         //Therefore, I will consider myself this salamander's child, since its genome is already stored in the phylogeny
