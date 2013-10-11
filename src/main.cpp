@@ -21,6 +21,7 @@ void UpdatePhylogeny(double t, phylolist &plist){
     if(!s.pSimilarGenome(plist.at(s.parent).genes)) {
       bool trigger=false;
       for(int p=plist.size()-1;p>=0;--p) {
+        if( (t-phylo.at(s.parent).lastchild)>=1 ) continue; //TODO: This needs to be adjusted based on the length of timesteps. This is crappy.
         if(s.parent==plist.at(p).parent && s.pSimilarGenome(plist.at(p).genes) ) {
           s.parent=p;
           trigger=true;
