@@ -131,18 +131,22 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
 
 
 
-void Phylogeny::getECDF(const Phylogeny &p, double t) const {
+double Phylogeny::compareECDF(const Phylogeny &p, double t) const {
   mbdStruct mbd=p.meanBranchDistance(t);
   //Build a cumulative distribution function from the existing phylogeny
-  const unsigned int number_of_species=mbd.size();
-  const unsigned int number_of_bins=100;
+  const unsigned int number_of_species = mbd.size();
+  const unsigned int number_of_bins    = 100;
   std::vector<double> ecdf(number_of_bins,0);
   
   std::sort(mbd.begin(),mbd.end());
   
-  double min_mbd      = mbd.front().first;
-  double max_mbd      = mbd.back().first;
-  double mbd_interval = (max_mbd-min_mbd)/(number_of_bins-1);
+  //The following values are taken from data/Kozak_Plethodontid_Data/phylodist_cdf_ecdf.csv
+  double observed_ecdf[number_of_bins]={0.0208333333333333, 0.15625, 0.208333333333333, 0.208333333333333, 0.239583333333333, 0.260416666666667, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.302083333333333, 0.333333333333333, 0.427083333333333, 0.427083333333333, 0.427083333333333, 0.489583333333333, 0.604166666666667, 0.625, 0.645833333333333, 0.65625, 0.65625, 0.6875, 0.6875, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.729166666666667, 0.729166666666667, 0.729166666666667, 0.739583333333333, 0.739583333333333, 0.760416666666667, 0.760416666666667, 0.760416666666667, 0.770833333333333, 0.770833333333333, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.833333333333333, 0.875, 0.90625, 0.90625, 0.927083333333333, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333, 1};
+  
+  //The following values are taken from data/Kozak_Plethodontid_Data/phylodist_cdf_bins.csv
+  const double min_mbd = 73.5209701979;
+  const double max_mbd = 118.6240912604;
+  const double mbd_interval  = (max_mbd-min_mbd)/(number_of_bins-1);
 
   int nbin = 0; // What ecdf bin are we in?
   for(unsigned int i=0;i<number_of_species; i++) {
@@ -154,4 +158,11 @@ void Phylogeny::getECDF(const Phylogeny &p, double t) const {
           ecdf[nbin]++;
       }
   }
+  
+  // compare simulated ecdf with actual ecdf
+  double sum_squared_difference=0;
+  for(unsigned int i=0; i<number_of_bins;i++)
+      sum_squared_difference+=std::pow(ecdf[i]-observed_ecdf[i],2);
+
+  return sum_squared_difference;
 }

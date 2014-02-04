@@ -42,7 +42,7 @@ class Phylogeny {
   typedef std::vector< std::pair<double, int> > mbdStruct;
   mbdStruct meanBranchDistance(double t) const;
   ///Calculate empirical cumulative distribution function of mean branch distances
-  void getECDF(const Phylogeny &p, double t) const;
+  double compareECDF(const Phylogeny &p, double t) const;
 };
 
 #endif
