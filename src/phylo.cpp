@@ -10,7 +10,10 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   otemp=s.otemp;
 }
 
-void Phylogeny::addNode(const Salamander &s, double t){
+
+
+
+Phylogeny::Phylogeny(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
 }
 

@@ -11,7 +11,6 @@ using namespace std;
 //We allocate this in the global namespace to prevent a stack overflow
 
 int main(){
-  Phylogeny phylos;
   vector<MtBin> mts;
   mts.resize(1000);
 
@@ -34,7 +33,7 @@ int main(){
   for(unsigned int s=0;s<10;++s){
     mts[m].addSalamander(Eve);
   }
-  phylos.addNode(Eve, 0);
+  Phylogeny phylos(Eve, 0);
 
 
 
