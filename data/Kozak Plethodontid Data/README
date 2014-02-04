@@ -14,4 +14,5 @@ Run make_phylodist_data.R to read in data from NA-PL.tre. Script writes:
 1.  number_of_taxa.csv (number of extant taxa in the phylogeny),
 2.  phylodist_matrix_avg.csv  (average branch length between all pairs of extant taxa)
 3.  phylodist_matrix.csv (branch length for each taxa averaged among each of its neighbors)
-4.  phylodist_cdf.csv (empirical distrbution function of average branch lengths, for 100 bins)
+4.  phylodist_cdf_bins.csv (bins for the empirical distrbution function of average branch lengths, for 100 bins)
+5.  phylodist_cdf_values.csv (values from the empirical distribution)
