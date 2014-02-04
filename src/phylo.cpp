@@ -1,6 +1,7 @@
 #include "phylo.hpp"
 #include "salamander.hpp"
 #include <cstdlib>
+#include <queue>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   genes=s.genes;
@@ -77,8 +78,9 @@ int Phylogeny::numAlive(double t) const {
   return sum;
 }
 
-double Phylogeny::timeBetweenSpecies(double t) const {
-
+double Phylogeny::timeBetweenSpecies(int a, int b) const {
+  std::queue<int> q;
+  
 }
 
 int Phylogeny::meanBranchDistance(double t) const {
