@@ -39,7 +39,10 @@ class Phylogeny {
   ///Counts the number of species which are alive at a given point in time
   int numAlive(double t) const;
   ///Calculate the mean branch distance for the phylogeny
-  std::vector< std::pair<double, unsigned int> > meanBranchDistance(double t) const;
+  typedef std::vector< std::pair<double, int> > mbdStruct;
+  mbdStruct meanBranchDistance(double t) const;
+  ///Calculate empirical cumulative distribution function of mean branch distances
+  void getECDF(const Phylogeny &p, double t) const;
 };
 
 #endif

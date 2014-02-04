@@ -4,6 +4,7 @@
 #include <queue>
 #include <set>
 #include <cassert>
+#include <algorithm>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   genes=s.genes;
@@ -85,9 +86,9 @@ int Phylogeny::numAlive(double t) const {
   return sum;
 }
 
-std::vector< std::pair<double, unsigned int> > Phylogeny::meanBranchDistance(double t) const {
+Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
   //Mean branch distance structure containing (avg branch dist, species) pairs
-  std::vector< std::pair<double, unsigned int> > mbd;
+  mbdStruct mbd;
 
   //We start by finding those species which are alive at the given time
   std::vector<int> alive;
@@ -126,4 +127,31 @@ std::vector< std::pair<double, unsigned int> > Phylogeny::meanBranchDistance(dou
     i.first/=alive.size()-1;
 
   return mbd;
+}
+
+
+
+void Phylogeny::getECDF(const Phylogeny &p, double t) const {
+  mbdStruct mbd=p.meanBranchDistance(t);
+  //Build a cumulative distribution function from the existing phylogeny
+  const unsigned int number_of_species=mbd.size();
+  const unsigned int number_of_bins=100;
+  std::vector<double> ecdf(number_of_bins,0);
+  
+  std::sort(mbd.begin(),mbd.end());
+  
+  double min_mbd      = mbd.front().first;
+  double max_mbd      = mbd.back().first;
+  double mbd_interval = (max_mbd-min_mbd)/(number_of_bins-1);
+
+  int nbin = 0; // What ecdf bin are we in?
+  for(unsigned int i=0;i<number_of_species; i++) {
+      if(mbd[i].first<=min_mbd+i*mbd_interval) {
+          ecdf[nbin]++;
+      } else {
+          ecdf[nbin]/=number_of_species; //standardize ecdf to 1;
+          nbin++;
+          ecdf[nbin]++;
+      }
+  }
 }
