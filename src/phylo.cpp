@@ -150,19 +150,19 @@ double Phylogeny::compareECDF(const Phylogeny &p, double t) const {
 
   int nbin = 0; // What ecdf bin are we in?
   for(unsigned int i=0;i<number_of_species; i++) {
-      if(mbd[i].first<=min_mbd+i*mbd_interval) {
-          ecdf[nbin]++;
-      } else {
-          ecdf[nbin]/=number_of_species; //standardize ecdf to 1;
-          nbin++;
-          ecdf[nbin]++;
-      }
+    if(mbd[i].first<=min_mbd+i*mbd_interval) {
+      ecdf[nbin]++;
+    } else {
+      ecdf[nbin]/=number_of_species; //standardize ecdf to 1;
+      nbin++;
+      ecdf[nbin]++;
+    }
   }
   
   // compare simulated ecdf with actual ecdf
   double sum_squared_difference=0;
   for(unsigned int i=0; i<number_of_bins;i++)
-      sum_squared_difference+=std::pow(ecdf[i]-observed_ecdf[i],2);
+    sum_squared_difference+=std::pow(ecdf[i]-observed_ecdf[i],2);
 
   return sum_squared_difference;
 }
