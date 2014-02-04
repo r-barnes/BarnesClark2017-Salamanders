@@ -1,6 +1,7 @@
 #include "phylo.hpp"
 #include "salamander.hpp"
 #include <cstdlib>
+#include <queue>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   genes=s.genes;
@@ -65,19 +66,25 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
 }
 
 int Phylogeny::numAlive(double t) const {
+  //One might think this function can be sped up by recognising that phylogenic
+  //nodes are added in monotonically increasing order of time, but that forgets
+  //that old nodes may survive all the way to the present. Thus, an exhaustive
+  //search is necessary
+  
   int sum=0;
   //Loop through the nodes of the phylogeny
   for(const auto &p: nodes){
     //If the phylogenic node came into being before the time in question and
-    //persists past or up to the time in question, then make a note that this
-    //species is alive at the time in question
+    //persists past or up to the given time, then make a note that this species
+    //is alive at the given time
     if(p.emergence<=t && t<=p.lastchild)
       ++sum;
   }
   return sum;
 }
 
-double Phylogeny::timeBetweenSpecies(double t) const {
+double Phylogeny::timeBetweenSpecies(int a, int b) const {
+  std::queue<int> q;
 
 }
 
