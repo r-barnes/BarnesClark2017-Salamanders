@@ -131,8 +131,8 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
 
 
 
-double Phylogeny::compareECDF(const Phylogeny &p, double t) const {
-  mbdStruct mbd=p.meanBranchDistance(t);
+double Phylogeny::compareECDF(double t) const {
+  mbdStruct mbd=meanBranchDistance(t);
   //Build a cumulative distribution function from the existing phylogeny
   const unsigned int number_of_species = mbd.size();
   const unsigned int number_of_bins    = 100;
