@@ -2,6 +2,8 @@
 #include "salamander.hpp"
 #include <cstdlib>
 #include <queue>
+#include <set>
+#include <cassert>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   genes=s.genes;
@@ -70,7 +72,7 @@ int Phylogeny::numAlive(double t) const {
   //nodes are added in monotonically increasing order of time, but that forgets
   //that old nodes may survive all the way to the present. Thus, an exhaustive
   //search is necessary
-  
+
   int sum=0;
   //Loop through the nodes of the phylogeny
   for(const auto &p: nodes){
@@ -83,18 +85,52 @@ int Phylogeny::numAlive(double t) const {
   return sum;
 }
 
-double Phylogeny::timeBetweenSpecies(int a, int b) const {
-  std::queue<int> q;
+std::vector< std::pair<unsigned int,double> > Phylogeny::meanBranchDistance(double t) const {
+  //Mean branch distance structure containing (species, avg branch dist) pairs
+  std::vector< std::pair<unsigned int,double> > mbd;
 
-}
-
-int Phylogeny::meanBranchDistance(double t) const {
   //We start by finding those species which are alive at the given time
   std::vector<int> alive;
-  for(int i=0;i<nodes.size();++i)
-    if(p.emergence<=t && t<=p.lastchild)
+  for(unsigned int i=0;i<nodes.size();++i)
+    if(nodes[i].emergence<=t && t<=nodes[i].lastchild)
       alive.push_back(i);
       
+<<<<<<< HEAD
+=======
+  //Enlarge to match size of alive. Initialize everything to 0.
+  mbd.resize(alive.size(),std::pair<int,double>(0,0));
+>>>>>>> 4a9509f80907dfd847a05fe356f84d11b63af8c3
 
+  //For each species that is alive
+  for(unsigned int a=0;a<alive.size();++a){
+    //Set the appropriate species ID
+    mbd[a].first=alive[a];
 
+    //Walk up the tree finding ancestors of A until we get to Eve
+    std::set<int> parentsOfA;
+    int p=alive[a];
+    do {
+      parentsOfA.insert(p);
+    } while((p=nodes[p].parent)!=-1);
+
+    //For each other node B, find its Lowest Common Ancestor with A
+    for(unsigned int b=a+1;b<alive.size();++b){
+      int p=alive[b];
+      do {
+        if(parentsOfA.count(p)) break;
+      } while((p=nodes[p].parent)!=-1);
+      assert(p!=-1); //No ancestor in common -> impossible!
+      mbd[a].second+=t-nodes[p].emergence;
+      mbd[b].second+=t-nodes[p].emergence;
+    }
+  }
+  
+  for(auto &i: mbd)
+    i.second/=alive.size()-1;
+
+<<<<<<< HEAD
 }
+=======
+  return mbd;
+}
+>>>>>>> 4a9509f80907dfd847a05fe356f84d11b63af8c3

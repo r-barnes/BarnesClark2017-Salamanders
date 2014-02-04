@@ -39,9 +39,7 @@ class Phylogeny {
   ///Counts the number of species which are alive at a given point in time
   int numAlive(double t) const;
   ///Calculate the mean branch distance for the phylogeny
-  int meanBranchDistance(double t) const;
-  ///Calculate the total evolutionary time separating two species
-  double timeBetweenSpecies(double t) const;
+  std::vector< std::pair<unsigned int,double> > meanBranchDistance(double t) const;
 };
 
 #endif
