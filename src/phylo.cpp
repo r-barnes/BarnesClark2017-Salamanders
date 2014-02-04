@@ -66,6 +66,11 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
 }
 
 int Phylogeny::numAlive(double t) const {
+  //One might think this function can be sped up by recognising that phylogenic
+  //nodes are added in monotonically increasing order of time, but that forgets
+  //that old nodes may survive all the way to the present. Thus, an exhaustive
+  //search is necessary
+  
   int sum=0;
   //Loop through the nodes of the phylogeny
   for(const auto &p: nodes){
