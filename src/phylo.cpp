@@ -85,9 +85,9 @@ int Phylogeny::numAlive(double t) const {
   return sum;
 }
 
-std::vector< std::pair<unsigned int,double> > Phylogeny::meanBranchDistance(double t) const {
-  //Mean branch distance structure containing (species, avg branch dist) pairs
-  std::vector< std::pair<unsigned int,double> > mbd;
+std::vector< std::pair<double, unsigned int> > Phylogeny::meanBranchDistance(double t) const {
+  //Mean branch distance structure containing (avg branch dist, species) pairs
+  std::vector< std::pair<double, unsigned int> > mbd;
 
   //We start by finding those species which are alive at the given time
   std::vector<int> alive;
@@ -96,12 +96,12 @@ std::vector< std::pair<unsigned int,double> > Phylogeny::meanBranchDistance(doub
       alive.push_back(i);
       
   //Enlarge to match size of alive. Initialize everything to 0.
-  mbd.resize(alive.size(),std::pair<int,double>(0,0));
+  mbd.resize(alive.size(),std::pair<double,unsigned int>(0,0));
 
   //For each species that is alive
   for(unsigned int a=0;a<alive.size();++a){
     //Set the appropriate species ID
-    mbd[a].first=alive[a];
+    mbd[a].second=alive[a];
 
     //Walk up the tree finding ancestors of A until we get to Eve
     std::set<int> parentsOfA;
@@ -117,13 +117,13 @@ std::vector< std::pair<unsigned int,double> > Phylogeny::meanBranchDistance(doub
         if(parentsOfA.count(p)) break;
       } while((p=nodes[p].parent)!=-1);
       assert(p!=-1); //No ancestor in common -> impossible!
-      mbd[a].second+=t-nodes[p].emergence;
-      mbd[b].second+=t-nodes[p].emergence;
+      mbd[a].first+=t-nodes[p].emergence;
+      mbd[b].first+=t-nodes[p].emergence;
     }
   }
   
   for(auto &i: mbd)
-    i.second/=alive.size()-1;
+    i.first/=alive.size()-1;
 
   return mbd;
 }
