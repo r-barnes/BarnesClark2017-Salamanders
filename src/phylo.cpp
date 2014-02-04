@@ -39,7 +39,7 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
           break;
         }
       }
-      if(!trigger)                       //No salamander in the phylogeny was similar to me!
+      if(!trigger)                           //No salamander in the phylogeny was similar to me!
         nodes.push_back(PhyloNode(s, t));    //Therefore, I add myself to the phylogeny as a new species
     } else {  //I am similar to my parent, so mark my parent (species) as having survived this long
       nodes.at(s.parent).lastchild=t;
