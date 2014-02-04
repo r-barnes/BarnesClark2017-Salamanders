@@ -4,12 +4,12 @@
 #include "salamander.hpp"
 #include "mtbin.hpp"
 #include <vector>
-#include <array>
 
 class PhyloNode {
   public:
     ///Innitialize new salamandar
     PhyloNode(const Salamander &s, double t);
+    void addChild(int childNode);
 
     ///Genome of the strain
     Salamander::genetype genes;
@@ -21,9 +21,14 @@ class PhyloNode {
     int parent;
     ///Which otemp did the first parent inherit?
     double otemp;
+    ///Which nodes store my children?
+    std::vector<int> children;
 };
 
 class Phylogeny {
+ private:
+  ///Adds a new node to the phylogeny
+  void addNode(const Salamander &s, double t);
  public:
   ///Initialize using a single salamander as the parent
   Phylogeny(const Salamander &s, double t);

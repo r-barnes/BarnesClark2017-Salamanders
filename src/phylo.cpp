@@ -10,11 +10,20 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   otemp=s.otemp;
 }
 
+void PhyloNode::addChild(int childNode){
+  children.push_back(childNode);
+}
 
 
 
 Phylogeny::Phylogeny(const Salamander &s, double t){
+  addNode(s,t);
+}
+
+void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
+  if(s.parent>=0)
+    nodes[s.parent].addChild(nodes.size()-1);
 }
 
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
@@ -39,8 +48,8 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
           break;
         }
       }
-      if(!trigger)                           //No salamander in the phylogeny was similar to me!
-        nodes.push_back(PhyloNode(s, t));    //Therefore, I add myself to the phylogeny as a new species
+      if(!trigger)     //No salamander in the phylogeny was similar to me!
+        addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species
     } else {  //I am similar to my parent, so mark my parent (species) as having survived this long
       nodes.at(s.parent).lastchild=t;
     }
