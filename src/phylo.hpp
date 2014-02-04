@@ -2,6 +2,9 @@
 #define _phylo
 
 #include "salamander.hpp"
+#include "mtbin.hpp"
+#include <vector>
+#include <array>
 
 class Phylo {
   public:
@@ -19,5 +22,9 @@ class Phylo {
     ///Which otemp did the first parent inherit?
     double otemp;
 };
+
+typedef std::vector<Phylo> phylolist;
+
+void UpdatePhylogeny(double t, std::vector<MtBin> &mts, phylolist &plist);
 
 #endif
