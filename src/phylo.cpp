@@ -76,3 +76,17 @@ int Phylogeny::numAlive(double t) const {
   }
   return sum;
 }
+
+double Phylogeny::timeBetweenSpecies(double t) const {
+
+}
+
+int Phylogeny::meanBranchDistance(double t) const {
+  //We start by finding those species which are alive at the given time
+  std::vector<int> alive;
+  for(int i=0;i<nodes.size();++i)
+    if(p.emergence<=t && t<=p.lastchild)
+      alive.push_back(i);
+
+
+}

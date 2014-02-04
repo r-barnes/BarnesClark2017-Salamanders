@@ -38,6 +38,10 @@ class Phylogeny {
   void UpdatePhylogeny(double t, std::vector<MtBin> &mts);
   ///Counts the number of species which are alive at a given point in time
   int numAlive(double t) const;
+  ///Calculate the mean branch distance for the phylogeny
+  int meanBranchDistance(double t) const;
+  ///Calculate the total evolutionary time separating two species
+  double timeBetweenSpecies(double t) const;
 };
 
 #endif
