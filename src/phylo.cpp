@@ -1,5 +1,6 @@
 #include "phylo.hpp"
 #include "salamander.hpp"
+#include "mtbin.hpp"
 #include <cstdlib>
 #include <queue>
 #include <set>
@@ -14,10 +15,6 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   otemp=s.otemp;
 }
 
-void PhyloNode::addChild(int childNode){
-  children.push_back(childNode);
-}
-
 
 
 Phylogeny::Phylogeny(const Salamander &s, double t){
@@ -26,10 +23,6 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
-  //If this salamander species has a parent species, add this species as a child
-  //species
-  if(s.parent>=0)
-    nodes[s.parent].addChild(nodes.size()-1);
 }
 
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
@@ -105,19 +98,26 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
     mbd[a].second=alive[a];
 
     //Walk up the tree finding ancestors of A until we get to Eve
+    //Eve is not added to the list of ancestors, but that's okay, as we'll
+    //explain below
     std::set<int> parentsOfA;
     int p=alive[a];
     do {
       parentsOfA.insert(p);
-    } while((p=nodes[p].parent)!=-1);
+      p=nodes[p].parent;
+    } while( p != nodes[p].parent);
 
     //For each other node B, find its Lowest Common Ancestor with A
     for(unsigned int b=a+1;b<alive.size();++b){
       int p=alive[b];
+      //Walk up the list until we get to Eve. If we find a common ancestor
+      //before Eve, then break early. Otherwise, Eve is the last ancestor we
+      //would check and must be a common ancestor, therefore if we don't break
+      //we terminate pointing at Eve, who is the LCA.
       do {
         if(parentsOfA.count(p)) break;
-      } while((p=nodes[p].parent)!=-1);
-      assert(p!=-1); //No ancestor in common -> impossible!
+        p=nodes[p].parent;
+      } while( p != nodes[p].parent);
       mbd[a].first+=t-nodes[p].emergence;
       mbd[b].first+=t-nodes[p].emergence;
     }

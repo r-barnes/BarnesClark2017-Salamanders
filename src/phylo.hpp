@@ -9,8 +9,6 @@ class PhyloNode {
   public:
     ///Innitialize new salamandar
     PhyloNode(const Salamander &s, double t);
-    void addChild(int childNode);
-
     ///Genome of the strain
     Salamander::genetype genes;
     ///When this strain emerged
@@ -21,8 +19,6 @@ class PhyloNode {
     int parent;
     ///Which otemp did the first parent inherit?
     double otemp;
-    ///Which nodes store my children?
-    std::vector<int> children;
 };
 
 class Phylogeny {
