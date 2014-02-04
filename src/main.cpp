@@ -11,7 +11,6 @@ using namespace std;
 //We allocate this in the global namespace to prevent a stack overflow
 
 int main(){
-  phylolist phylos;
   vector<MtBin> mts;
   mts.resize(1000);
 
@@ -34,7 +33,7 @@ int main(){
   for(unsigned int s=0;s<10;++s){
     mts[m].addSalamander(Eve);
   }
-  phylos.push_back(Phylo(Eve, 0));
+  Phylogeny phylos(Eve, 0);
 
 
 
@@ -64,9 +63,9 @@ int main(){
       if(m<mts.size()-1) mts[m].diffuse(t,mts[m+1]);
       population_size+=mts[m].startofdead;
     }
-    UpdatePhylogeny(t, mts, phylos);
+    phylos.UpdatePhylogeny(t, mts);
 
-    cerr<<"#Species count="<<phylos.size()<<endl;
+    cerr<<"#Species count="<<phylos.nodes.size()<<endl;
     cerr<<"#Population size="<<population_size<<endl;
   }
 
@@ -77,16 +76,16 @@ int main(){
   ////////////////////////////////////
   ofstream phylograph("output/phylograph.dot");
   phylograph<<"digraph graphname {"<<endl;
-  for(unsigned int i=0;i<phylos.size();++i)
-    phylograph<<i<<"[label=\""<<phylos[i].emergence<<" "<<phylos[i].otemp<<"\"];"<<endl;
-  for(unsigned int i=0;i<phylos.size();++i)
-    phylograph<<phylos[i].parent<<"->"<<i<<";"<<endl;
+  for(unsigned int i=0;i<phylos.nodes.size();++i)
+    phylograph<<i<<"[label=\""<<phylos.nodes[i].emergence<<" "<<phylos.nodes[i].otemp<<"\"];"<<endl;
+  for(unsigned int i=0;i<phylos.nodes.size();++i)
+    phylograph<<phylos.nodes[i].parent<<"->"<<i<<";"<<endl;
   phylograph<<"}"<<endl;
   phylograph.close();
 
   ofstream persistgraph("output/persistgraph.csv");
-  for(unsigned int i=0;i<phylos.size();++i)
-    persistgraph<<phylos[i].emergence<<","<<i<<","<<phylos[i].lastchild<<","<<i<<endl;
+  for(unsigned int i=0;i<phylos.nodes.size();++i)
+    persistgraph<<phylos.nodes[i].emergence<<","<<i<<","<<phylos.nodes[i].lastchild<<","<<i<<endl;
   persistgraph.close();
 
 }
