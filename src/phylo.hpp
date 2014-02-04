@@ -6,10 +6,10 @@
 #include <vector>
 #include <array>
 
-class Phylo {
+class PhyloNode {
   public:
     ///Innitialize new salamandar
-    Phylo(const Salamander &s, double t);
+    PhyloNode(const Salamander &s, double t);
 
     ///Genome of the strain
     Salamander::genetype genes;
@@ -23,8 +23,10 @@ class Phylo {
     double otemp;
 };
 
-typedef std::vector<Phylo> phylolist;
-
-void UpdatePhylogeny(double t, std::vector<MtBin> &mts, phylolist &plist);
+class Phylogeny {
+ public:
+  std::vector<PhyloNode> nodes;
+  void UpdatePhylogeny(double t, std::vector<MtBin> &mts);
+};
 
 #endif
