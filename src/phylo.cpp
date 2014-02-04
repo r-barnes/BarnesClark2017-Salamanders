@@ -94,6 +94,7 @@ int Phylogeny::meanBranchDistance(double t) const {
   for(int i=0;i<nodes.size();++i)
     if(p.emergence<=t && t<=p.lastchild)
       alive.push_back(i);
+      
 
 
 }
