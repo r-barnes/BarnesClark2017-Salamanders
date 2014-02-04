@@ -34,7 +34,7 @@ int main(){
   for(unsigned int s=0;s<10;++s){
     mts[m].addSalamander(Eve);
   }
-  phylos.nodes.push_back(PhyloNode(Eve, 0));
+  phylos.addNode(Eve, 0);
 
 
 

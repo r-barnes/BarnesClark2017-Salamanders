@@ -10,6 +10,10 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   otemp=s.otemp;
 }
 
+void Phylogeny::addNode(const Salamander &s, double t){
+  nodes.push_back(PhyloNode(s,t));
+}
+
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
   for(auto &m: mts)
   for(auto &s: m.bin){
@@ -38,4 +42,13 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
       nodes.at(s.parent).lastchild=t;
     }
   }
+}
+
+int Phylogeny::numAlive(double t) const {
+  int sum=0;
+  for(const auto &p: nodes){
+    if(p.emergence<=t && t<=p.lastchild)
+      ++sum;
+  }
+  return sum;
 }
