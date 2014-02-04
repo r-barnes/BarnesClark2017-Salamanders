@@ -27,8 +27,8 @@ void Phylogeny::addNode(const Salamander &s, double t){
 }
 
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
-  for(auto &m: mts)
-  for(auto &s: m.bin){
+  for(auto &m: mts)     //Loop through parts of the mountain
+  for(auto &s: m.bin){  //Loop through the salamanders on that part of the mountain
     //If I am dead or have no parent, skip me
     if(s.dead || s.parent==-1) continue;
 
