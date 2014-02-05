@@ -89,23 +89,7 @@ int main(){
   std::vector<struct run> runs;
 
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
-<<<<<<< HEAD
-  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01) {
-    Phylogeny phylos=RunSimulation(mutation_probability, sim_thresh);
-         
-    int n_alive=phylos.numAlive(65);
-    if( !(50<=n_alive && n_alive<=150) ) continue;
-    
-    double ecdf=phylos.compareECDF(65);
-    if(ecdf<run_result.ecdf){    
-      run_result.mutation_probability=mutation_probability;
-      run_result.sim_tresh=sim_thresh;
-      run_result.nalive=n_alive;
-      run_result.ecdf=phylos.compareECDF(65);
-      run_result.phylo=phylos;
-    }
-=======
-  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01){
+  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01){
     struct run temp;
     temp.mutation_probability=mutation_probability;
     temp.sim_thresh=sim_thresh;
@@ -117,7 +101,6 @@ int main(){
     runs[i].nalive=phylos.numAlive(65);
     runs[i].ecdf=phylos.compareECDF(65);
     runs[i].phylo=phylos;
->>>>>>> 86d8c681c5e191e42b9e227fc0df1d58850a0a4b
   }
 
 //run_result.phylo.print("");
