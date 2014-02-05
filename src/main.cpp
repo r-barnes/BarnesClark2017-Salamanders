@@ -12,9 +12,7 @@ using namespace std;
 //Profile of the mountain
 //We allocate this in the global namespace to prevent a stack overflow
 
-int main(){
-  //srand (time(NULL)); //TODO: Uncomment this line before production
-
+Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
   vector<MtBin> mts;
   mts.resize(1000);
 
@@ -34,16 +32,13 @@ int main(){
                                      //Today, the optimal temperature for salamanders is 12.804279 degC
   Eve.genes =(Salamander::genetype)169113934842922489;
   Eve.dead  =false;
+  Eve.mutation_probability=mutation_probability;
 
   for(unsigned int m=0;m<1;++m)
   for(unsigned int s=0;s<10;++s){
     mts[m].addSalamander(Eve);
   }
   Phylogeny phylos(Eve, 0);
-
-
-
-
 
   ////////////////////////////////////
   //MAIN LOOP
@@ -60,38 +55,27 @@ int main(){
   //So (33.5618604122814-12.804279)/9.8=2.1181*1000m=2.11km
 
   for(double t=0;t<65.001;t+=0.5){
-  	cerr<<"#"<<t<<endl;
+          cerr<<"#"<<t<<endl;
     unsigned int population_size=0;
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
-      mts[m].breed(t, 62);
+      mts[m].breed(t, species_sim_thresh);
       if(m>0)            mts[m].diffuse(t,mts[m-1]);
       if(m<mts.size()-1) mts[m].diffuse(t,mts[m+1]);
       population_size+=mts[m].startofdead;
     }
-    phylos.UpdatePhylogeny(t, mts, 95);
+    phylos.UpdatePhylogeny(t, mts, species_sim_thresh);
 
     cerr<<"#Species count="<<phylos.nodes.size()<<endl;
     cerr<<"#Population size="<<population_size<<endl;
   }
+  
+  return phylos;
+}
+
+int main(){
+  //srand (time(NULL)); //TODO: Uncomment this line before production
 
 
-
-  ////////////////////////////////////
-  //OUTPUT
-  ////////////////////////////////////
-  ofstream phylograph("output/phylograph.dot");
-  phylograph<<"digraph graphname {"<<endl;
-  for(unsigned int i=0;i<phylos.nodes.size();++i)
-    phylograph<<i<<"[label=\""<<phylos.nodes[i].emergence<<" "<<phylos.nodes[i].otemp<<"\"];"<<endl;
-  for(unsigned int i=0;i<phylos.nodes.size();++i)
-    phylograph<<phylos.nodes[i].parent<<"->"<<i<<";"<<endl;
-  phylograph<<"}"<<endl;
-  phylograph.close();
-
-  ofstream persistgraph("output/persistgraph.csv");
-  for(unsigned int i=0;i<phylos.nodes.size();++i)
-    persistgraph<<phylos.nodes[i].emergence<<","<<i<<","<<phylos.nodes[i].lastchild<<","<<i<<endl;
-  persistgraph.close();
 
 }

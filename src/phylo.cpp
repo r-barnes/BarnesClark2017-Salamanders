@@ -171,17 +171,17 @@ double Phylogeny::compareECDF(double t) const {
 
 
 void Phylogeny::print(std::string prefix) const {
-  ofstream phylograph((std::string("output/")+prefix+std::string("phylograph.dot")).c_str());
-  phylograph<<"digraph graphname {"<<endl;
+  std::ofstream phylograph((std::string("output/")+prefix+std::string("phylograph.dot")).c_str());
+  phylograph<<"digraph graphname {"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    phylograph<<i<<"[label=\""<<nodes[i].emergence<<" "<<nodes[i].otemp<<"\"];"<<endl;
+    phylograph<<i<<"[label=\""<<nodes[i].emergence<<" "<<nodes[i].otemp<<"\"];"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    phylograph<<nodes[i].parent<<"->"<<i<<";"<<endl;
-  phylograph<<"}"<<endl;
+    phylograph<<nodes[i].parent<<"->"<<i<<";"<<std::endl;
+  phylograph<<"}"<<std::endl;
   phylograph.close();
 
-  ofstream ((std::string("output/")+prefix+std::string("persistgraph.csv")).c_str());
+  std::ofstream persistgraph((std::string("output/")+prefix+std::string("persistgraph.csv")).c_str());
   for(unsigned int i=0;i<nodes.size();++i)
-    persistgraph<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<endl;
+    persistgraph<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<std::endl;
   persistgraph.close();
 }
