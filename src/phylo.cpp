@@ -25,14 +25,14 @@ void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
 }
 
-void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
+void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, int sim_percent){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders on that part of the mountain
     //If I am dead or have no parent, skip me
     if(s.dead || s.parent==-1) continue;
 
     //If I am not similar to my parent
-    if(!s.pSimilarGenome(nodes.at(s.parent).genes)) {
+    if(!s.pSimilarGenome(nodes.at(s.parent).genes, sim_percent)) {
       bool trigger=false;
 
       //See if I am similar to any other salamanders, starting with the most recent
@@ -47,7 +47,7 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts){
         //of the first generation of a new species of salamander. Therefore, I
         //will consider myself this salamander's child, since its genome is
         //already stored in the phylogeny
-        if(s.parent==nodes.at(p).parent && s.pSimilarGenome(nodes.at(p).genes) ) {
+        if(s.parent==nodes.at(p).parent && s.pSimilarGenome(nodes.at(p).genes, sim_percent) ) {
           s.parent=p;
           trigger=true;
           break;

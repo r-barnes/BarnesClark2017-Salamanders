@@ -48,7 +48,7 @@ Salamander Salamander::breed(const Salamander &b) const {
     selector=selector<<1;
   }
 
-  child.mutate(mutation_probability);
+  child.mutate();
 /*
   printGenome();
   cerr<<"Bits on="<<countbits(genes)<<endl;

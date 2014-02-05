@@ -14,7 +14,7 @@ using namespace std;
 
 int main(){
   //srand (time(NULL)); //TODO: Uncomment this line before production
-  
+
   vector<MtBin> mts;
   mts.resize(1000);
 
@@ -64,12 +64,12 @@ int main(){
     unsigned int population_size=0;
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
-      mts[m].breed(t);
+      mts[m].breed(t, 62);
       if(m>0)            mts[m].diffuse(t,mts[m-1]);
       if(m<mts.size()-1) mts[m].diffuse(t,mts[m+1]);
       population_size+=mts[m].startofdead;
     }
-    phylos.UpdatePhylogeny(t, mts);
+    phylos.UpdatePhylogeny(t, mts, 95);
 
     cerr<<"#Species count="<<phylos.nodes.size()<<endl;
     cerr<<"#Population size="<<population_size<<endl;
