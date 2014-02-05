@@ -55,7 +55,7 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
   //So (33.5618604122814-12.804279)/9.8=2.1181*1000m=2.11km
 
   for(double t=0;t<65.001;t+=0.5){
-          cerr<<"#"<<t<<endl;
+    //cerr<<"#"<<t<<endl;
     unsigned int population_size=0;
     for(unsigned int m=0;m<mts.size();++m){
       mts[m].mortaliate(t);
@@ -66,8 +66,8 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
     }
     phylos.UpdatePhylogeny(t, mts, species_sim_thresh);
 
-    cerr<<"#Species count="<<phylos.nodes.size()<<endl;
-    cerr<<"#Population size="<<population_size<<endl;
+    //cerr<<"#Species count="<<phylos.nodes.size()<<endl;
+    //cerr<<"#Population size="<<population_size<<endl;
   }
   
   return phylos;
@@ -97,6 +97,7 @@ int main(){
   }
 
   for(unsigned int i=0;i<runs.size();++i){
+    cout<<"Run #"<<i<<endl;
     Phylogeny phylos=RunSimulation(runs[i].mutation_probability, runs[i].sim_thresh);
     runs[i].nalive=phylos.numAlive(65);
     runs[i].ecdf=phylos.compareECDF(65);
