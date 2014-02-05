@@ -102,6 +102,8 @@ int main(){
   //Run the runs, stash the results
   #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
+    #pragma omp critical
+      cout<<"Run #"<<i<<endl;
     Phylogeny phylos=RunSimulation(runs[i].mutation_probability, runs[i].sim_thresh);
     runs[i].nalive=phylos.numAlive(65);
     runs[i].ecdf=phylos.compareECDF(65);
