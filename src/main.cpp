@@ -86,7 +86,7 @@ int main(){
   run_result.ecdf=9e99;
 
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
-  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01) {
+  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01) {
     Phylogeny phylos=RunSimulation(mutation_probability, sim_thresh);
          
     int n_alive=phylos.numAlive(65);
