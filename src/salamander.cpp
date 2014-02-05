@@ -80,14 +80,14 @@ void Salamander::randomizeGeneome(){
   }
 }
 
-bool Salamander::pSimilarGenome(const Salamander::genetype &b, int sim_percent) const {
+bool Salamander::pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const {
   Salamander::genetype combined=(genes & b) | (~genes & ~b);
   unsigned int shared_genes=countbits(combined);
-  return shared_genes > sim_percent*8*sizeof(Salamander::genetype)/100;
+  return shared_genes > species_sim_thresh*8*sizeof(Salamander::genetype);
 }
 
-bool Salamander::pSimilar(const Salamander &b, int sim_percent) const {
-  return pSimilarGenome(b.genes, sim_percent);
+bool Salamander::pSimilar(const Salamander &b, double species_sim_thresh) const {
+  return pSimilarGenome(b.genes, species_sim_thresh);
 }
 
 //Calculate probability of death give square distance of t, topt

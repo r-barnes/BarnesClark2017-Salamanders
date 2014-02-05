@@ -6,6 +6,8 @@
 #include <set>
 #include <cassert>
 #include <algorithm>
+#include <fstream>
+#include <string>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   genes=s.genes;
@@ -165,4 +167,21 @@ double Phylogeny::compareECDF(double t) const {
     sum_squared_difference+=std::pow(ecdf[i]-observed_ecdf[i],2);
 
   return sum_squared_difference;
+}
+
+
+void Phylogeny::print(std::string prefix) const {
+  ofstream phylograph((std::string("output/")+prefix+std::string("phylograph.dot")).c_str());
+  phylograph<<"digraph graphname {"<<endl;
+  for(unsigned int i=0;i<nodes.size();++i)
+    phylograph<<i<<"[label=\""<<nodes[i].emergence<<" "<<nodes[i].otemp<<"\"];"<<endl;
+  for(unsigned int i=0;i<nodes.size();++i)
+    phylograph<<nodes[i].parent<<"->"<<i<<";"<<endl;
+  phylograph<<"}"<<endl;
+  phylograph.close();
+
+  ofstream ((std::string("output/")+prefix+std::string("persistgraph.csv")).c_str());
+  for(unsigned int i=0;i<nodes.size();++i)
+    persistgraph<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<endl;
+  persistgraph.close();
 }

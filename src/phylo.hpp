@@ -4,6 +4,7 @@
 #include "salamander.hpp"
 #include "mtbin.hpp"
 #include <vector>
+#include <string>
 
 class PhyloNode {
   public:
@@ -39,6 +40,8 @@ class Phylogeny {
   mbdStruct meanBranchDistance(double t) const;
   ///Calculate empirical cumulative distribution function of mean branch distances
   double compareECDF(double t) const;
+  ///Print graphs of relatedness
+  void print(std::string prefix) const;
 };
 
 #endif

@@ -110,7 +110,7 @@ unsigned int MtBin::alive() const {
   return startofdead;
 }
 
-void MtBin::breed(double t, int sim_percent){
+void MtBin::breed(double t, int species_sim_thresh){
   if(startofdead==0) return;       //No one is alive here. There can be no breeding.
 
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
@@ -126,7 +126,7 @@ void MtBin::breed(double t, int sim_percent){
   while(alive()<maxalive && max_babies>=0 && maxtries>=0){ //TODO: Should be maxtries--
     Salamander &parenta=bin[rdist(rgen)];
     Salamander &parentb=bin[rdist(rgen)];
-    if(parenta.pSimilar(parentb, sim_percent)){
+    if(parenta.pSimilar(parentb, species_sim_thresh)){
       addSalamander(parenta.breed(parentb));
       max_babies--;
     }
