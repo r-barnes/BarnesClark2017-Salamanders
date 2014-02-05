@@ -18,7 +18,7 @@ Salamander::Salamander(){
   otemp=0;
   dead=false;
   parent=-1;
-  mutation_probability=0.0001;
+  mutation_probability=1e-4;
 }
 
 void Salamander::printGenome() const {
