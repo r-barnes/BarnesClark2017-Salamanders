@@ -20,6 +20,10 @@ class PhyloNode {
     int parent;
     ///Which otemp did the first parent inherit?
     double otemp;
+    ///Children of this node
+    std::vector<int> children;
+    ///Adds a child to this node
+    void addChild(int n);
 };
 
 class Phylogeny {

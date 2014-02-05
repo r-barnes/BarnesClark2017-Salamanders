@@ -17,12 +17,22 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   otemp=s.otemp;
 }
 
+void PhyloNode::addChild(int n){
+  children.push_back(n);
+}
+
+
+
+
+
 Phylogeny::Phylogeny(const Salamander &s, double t){
   addNode(s,t);
 }
 
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
+  if(s.parent>=0)
+    nodes[s.parent].addChild(nodes.size()-1);
 }
 
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh){
