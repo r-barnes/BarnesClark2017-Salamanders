@@ -76,6 +76,8 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
 int main(){
   //srand (time(NULL)); //TODO: Uncomment this line before production
 
+  //RunSimulation(1e-4, 0.98);
+
   struct run {
     double mutation_probability;
     double sim_thresh;
