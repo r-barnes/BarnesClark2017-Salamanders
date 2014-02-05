@@ -84,7 +84,6 @@ int main(){
     double sim_thresh;
     int nalive;
     double ecdf;
-    Phylogeny phylo;
   };
 
   //Create a vector to hold the runs
@@ -107,7 +106,6 @@ int main(){
     Phylogeny phylos=RunSimulation(runs[i].mutation_probability, runs[i].sim_thresh);
     runs[i].nalive=phylos.numAlive(65);
     runs[i].ecdf=phylos.compareECDF(65);
-    runs[i].phylo=phylos;
   }
 
   int min=0;
@@ -115,7 +113,9 @@ int main(){
     if(runs[i].ecdf<runs[min].ecdf)
       min=i;
 
-  runs[min].phylo.print("");
+  Phylogeny bestphylos=RunSimulation(runs[min].mutation_probability, runs[min].sim_thresh);
+
+  bestphylos.print("");
   cout<< "mutation prob: " << runs[min].mutation_probability
       << ", similarity threshold: " << runs[min].sim_thresh
       << ", number of species: " << runs[min].nalive
