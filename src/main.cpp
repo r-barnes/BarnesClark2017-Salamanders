@@ -110,7 +110,7 @@ int main(){
 
   int min=0;
   for(unsigned int i=1;i<runs.size();++i)
-    if(runs[i].ecdf<runs[min].ecdf)
+    if(runs[i].ecdf<runs[min].ecdf && (80<runs[i].nalive && runs[i].nalive<120) )
       min=i;
 
   Phylogeny bestphylos=RunSimulation(runs[min].mutation_probability, runs[min].sim_thresh);
