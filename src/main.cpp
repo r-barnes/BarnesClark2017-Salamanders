@@ -78,6 +78,7 @@ int main(){
 
   //RunSimulation(1e-4, 0.98);
 
+  //Create a run object
   struct run {
     double mutation_probability;
     double sim_thresh;
@@ -86,24 +87,35 @@ int main(){
     Phylogeny phylo;
   };
 
+  //Create a vector to hold the runs
   std::vector<struct run> runs;
 
+ //Set up some runs
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
-  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01){
+  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01){
     struct run temp;
     temp.mutation_probability=mutation_probability;
     temp.sim_thresh=sim_thresh;
     runs.push_back(temp);
   }
 
+  //Run the runs, stash the results
+  #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
-    cout<<"Run #"<<i<<endl;
     Phylogeny phylos=RunSimulation(runs[i].mutation_probability, runs[i].sim_thresh);
     runs[i].nalive=phylos.numAlive(65);
     runs[i].ecdf=phylos.compareECDF(65);
     runs[i].phylo=phylos;
   }
 
-//run_result.phylo.print("");
-//cout<< "mutation prob: " << run_result.mutation_probability << ", similarity threshold: " << run_result.sim_tresh << ", number of species: " << run_result.nalive<<endl;
+  int min=0;
+  for(unsigned int i=1;i<runs.size();++i)
+    if(runs[i].ecdf<runs[min].ecdf)
+      min=i;
+
+  runs[min].phylo.print("");
+  cout<< "mutation prob: " << runs[min].mutation_probability
+      << ", similarity threshold: " << runs[min].sim_thresh
+      << ", number of species: " << runs[min].nalive
+      <<endl;
 }
