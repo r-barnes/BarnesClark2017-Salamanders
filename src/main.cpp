@@ -5,12 +5,16 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
+#include <time.h>
 using namespace std;
 
 //Profile of the mountain
 //We allocate this in the global namespace to prevent a stack overflow
 
 int main(){
+  //srand (time(NULL)); //TODO: Uncomment this line before production
+  
   vector<MtBin> mts;
   mts.resize(1000);
 
