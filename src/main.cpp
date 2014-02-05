@@ -76,32 +76,31 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
 int main(){
   //srand (time(NULL)); //TODO: Uncomment this line before production
 
-  struct {
+  struct run {
     double mutation_probability;
-    double sim_tresh;
+    double sim_thresh;
     int nalive;
     double ecdf;
     Phylogeny phylo;
-  } run_result;
-  run_result.ecdf=9e99;
+  };
+
+  std::vector<struct run> runs;
 
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
-  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01) {
-    Phylogeny phylos=RunSimulation(mutation_probability, sim_thresh);
-         
-    int n_alive=phylos.numAlive(65);
-    if( !(50<=n_alive && n_alive<=150) ) continue;
-    
-    double ecdf=phylos.compareECDF(65);
-    if(ecdf<run_result.ecdf){    
-      run_result.mutation_probability=mutation_probability;
-      run_result.sim_tresh=sim_thresh;
-      run_result.nalive=n_alive;
-      run_result.ecdf=phylos.compareECDF(65);
-      run_result.phylo=phylos;
-    }
+  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01){
+    struct run temp;
+    temp.mutation_probability=mutation_probability;
+    temp.sim_thresh=sim_thresh;
+    runs.push_back(temp);
   }
 
-run_result.phylo.print("");
-cout<< "mutation prob: " << run_result.mutation_probability << ", similarity threshold: " << run_result.sim_tresh << ", number of species: " << run_result.nalive<<endl;
+  for(unsigned int i=0;i<runs.size();++i){
+    Phylogeny phylos=RunSimulation(runs[i].mutation_probability, runs[i].sim_thresh);
+    runs[i].nalive=phylos.numAlive(65);
+    runs[i].ecdf=phylos.compareECDF(65);
+    runs[i].phylo=phylos;
+  }
+
+//run_result.phylo.print("");
+//cout<< "mutation prob: " << run_result.mutation_probability << ", similarity threshold: " << run_result.sim_tresh << ", number of species: " << run_result.nalive<<endl;
 }
