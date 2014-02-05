@@ -85,16 +85,16 @@ int main(){
 
   std::vector< struct run_result > run_results;
    
-   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
-   for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01) {
-    Phylogeny phylos=RunSimulation(mutation_probability, species_similarity);
+  for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
+  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01) {
+    Phylogeny phylos=RunSimulation(mutation_probability, sim_thresh);
          
     int n_alive=phylos.numAlive(65);
     if( !(50<=n_alive && n_alive<=150) ) continue;
     
     struct run_result temp;
     temp.mutation_probability=mutation_probability;
-    temp.sim_tresh=sim_tresh;
+    temp.sim_tresh=sim_thresh;
     temp.nalive=n_alive;
     temp.ecdf=phylos.compareECDF(65);
     run_results.push_back( temp );
