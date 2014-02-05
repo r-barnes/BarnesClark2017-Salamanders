@@ -46,6 +46,8 @@ class Phylogeny {
   double compareECDF(double t) const;
   ///Print graphs of relatedness
   void print(std::string prefix) const;
+  ///Prints an ACL2 representation of the tree's living members at a given time
+  std::string printACL2(double t, int n=0) const;
 };
 
 #endif

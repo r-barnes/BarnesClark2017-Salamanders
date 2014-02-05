@@ -76,7 +76,9 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
 int main(){
   //srand (time(NULL)); //TODO: Uncomment this line before production
 
-  //RunSimulation(1e-4, 0.98);
+  //Phylogeny phylos=RunSimulation(1e-4, 0.98);
+  //cout<<phylos.printACL2(65)<<endl;
+
 
   //Create a run object
   struct run {
@@ -120,4 +122,5 @@ int main(){
       << ", similarity threshold: " << runs[min].sim_thresh
       << ", number of species: " << runs[min].nalive
       <<endl;
+
 }

@@ -2,12 +2,12 @@
 #include "salamander.hpp"
 #include "mtbin.hpp"
 #include <cstdlib>
-#include <queue>
 #include <set>
 #include <cassert>
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include <iostream> //TODO: USED ONLY FOR DEBGUGING
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   genes=s.genes;
@@ -31,7 +31,7 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
-  if(s.parent>=0)
+  if(s.parent>0)
     nodes[s.parent].addChild(nodes.size()-1);
 }
 
@@ -192,4 +192,23 @@ void Phylogeny::print(std::string prefix) const {
   for(unsigned int i=0;i<nodes.size();++i)
     persistgraph<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<std::endl;
   persistgraph.close();
+}
+
+
+std::string Phylogeny::printACL2(double t, int n) const {
+  std::string temp;
+  if(!nodes[n].children.empty()){
+    for(auto &c: nodes[n].children){
+      if(c==n) continue;
+      std::cerr<<n<<"->"<<c<<std::endl;
+      temp+=printACL2(c)+" ";
+    }
+    if(temp.find_first_of("0123456789")==std::string::npos)
+      return "";
+    else
+      return "("+temp+")";
+  } else if (nodes[n].emergence<=t && t<=nodes[n].lastchild)
+    return std::to_string(n);
+  else
+    return "";
 }
