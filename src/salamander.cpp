@@ -18,6 +18,7 @@ Salamander::Salamander(){
   otemp=0;
   dead=false;
   parent=-1;
+  mutation_probability=0.0001;
 }
 
 void Salamander::printGenome() const {
@@ -47,7 +48,7 @@ Salamander Salamander::breed(const Salamander &b) const {
     selector=selector<<1;
   }
 
-  child.mutate();
+  child.mutate(mutation_probability);
 /*
   printGenome();
   cerr<<"Bits on="<<countbits(genes)<<endl;
@@ -60,10 +61,9 @@ Salamander Salamander::breed(const Salamander &b) const {
 }
 
 void Salamander::mutate(){
-  const unsigned int mutation_probability=10000;
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(rand()%mutation_probability==0){
+    if(rand()/(double)RAND_MAX<=Salamander::mutation_probability){
 //      std::cerr<<"GAAAH! MUTATION"<<std::endl;
       genes^=mutator;
     }

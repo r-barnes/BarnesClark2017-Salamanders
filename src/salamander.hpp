@@ -37,6 +37,8 @@ class Salamander {
     double otemp;
 
     bool dead;
+    
+    double mutation_probability;
 
     ///The phylogeny this is part of
     int parent;
