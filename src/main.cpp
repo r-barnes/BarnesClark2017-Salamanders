@@ -80,9 +80,9 @@ int main(){
     double mutation_probability;
     double sim_tresh;
     int nalive;
-    double ecdf;    
+    double ecdf;
+    Phylogeny phylo;
   } run_result;
-  
   run_result.ecdf=9e99;
 
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-5)
@@ -94,13 +94,13 @@ int main(){
     
     double ecdf=phylos.compareECDF(65);
     if(ecdf<run_result.ecdf){    
-        run_result.mutation_probability=mutation_probability;
-        run_result.sim_tresh=sim_thresh;
-        run_result.nalive=n_alive;
-        run_result.ecdf=phylos.compareECDF(65);
+      run_result.mutation_probability=mutation_probability;
+      run_result.sim_tresh=sim_thresh;
+      run_result.nalive=n_alive;
+      run_result.ecdf=phylos.compareECDF(65);
+      run_result.phylo=phylos;
     }
   }
 
-  
 
 }
