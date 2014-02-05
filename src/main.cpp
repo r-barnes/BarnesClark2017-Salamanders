@@ -92,7 +92,7 @@ int main(){
 
  //Set up some runs
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-4)
-  for(double sim_thresh=0.5; sim_thresh<1; sim_thresh+=0.01){
+  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01){
     struct run temp;
     temp.mutation_probability=mutation_probability;
     temp.sim_thresh=sim_thresh;
