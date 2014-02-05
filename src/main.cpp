@@ -102,5 +102,5 @@ int main(){
     }
   }
 
-
+  run_result.phylo.print();
 }
