@@ -16,10 +16,10 @@ class Salamander {
     void printGenome() const;
 
     ///Number of bits shared between two salamanders
-    bool pSimilar(const Salamander &b) const;
+    bool pSimilar(const Salamander &b, int sim_percent) const;
     
     ///Number of bits shared between two genomes
-    bool pSimilarGenome(const Salamander::genetype &b) const;
+    bool pSimilarGenome(const Salamander::genetype &b, int sim_percent) const;
 
     ///Mutate this salamander's genome
     void mutate();
