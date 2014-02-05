@@ -100,4 +100,6 @@ int main(){
     run_results.push_back( temp );
   }
 
+
+cout<< "mutation prob: " << run_result.mutation_probability << ", similarity threshold: " << run_result.sim_tresh << ", number of species: " << run_result.nalive<<endl;
 }
