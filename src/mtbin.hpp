@@ -44,7 +44,7 @@ class MtBin {
     unsigned int alive() const;
 
     ///Breed salamanders within this bin if there is carrying capacity available
-    void breed(double t, int sim_percent);
+    void breed(double t, double species_sim_thresh);
 
     ///Swap some salamanders with those in another bin
     void diffuse(double t, MtBin &a);
