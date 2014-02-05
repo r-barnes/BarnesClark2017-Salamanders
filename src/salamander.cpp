@@ -63,7 +63,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(unifdice()<=Salamander::mutation_probability){
+    if(unifdice()<=mutation_probability){
 //      std::cerr<<"GAAAH! MUTATION"<<std::endl;
       genes^=mutator;
     }
