@@ -17,6 +17,8 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   otemp=s.otemp;
 }
 
+Phylogeny::Phylogeny() {}
+
 
 
 Phylogeny::Phylogeny(const Salamander &s, double t){
