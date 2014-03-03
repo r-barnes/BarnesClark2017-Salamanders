@@ -1,7 +1,9 @@
 #ifndef _mtbin
+//Spatial bins in which salamanders reside
+//Each bin represents a particular elevational band
 #define _mtbin
 
-#define binmax 1000
+#define binmax 1000 //Maximum salamander populations per mountain bin
 
 #include <array>
 #include "salamander.hpp"
@@ -16,9 +18,10 @@ class MtBin {
     ///Height of this bin above sealevel
     double height;
 
-    ///Location of the first dead salamander on the list
-    ///if startofdead==bin.size() then there are no more
-    ///openings in the population
+    ///Salamanders fill the bin vector from 0 to startofdead. Bins beyond this
+    ///are empty pre-allocations. startofdead therefore represents the location
+    ///of the first dead salamander on the list.
+    ///if startofdead==bin.size() then there are no more openings in the population
     unsigned int startofdead;
 
     ///Kill random salamanders with probability prob
