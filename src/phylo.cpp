@@ -58,8 +58,8 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double specie
         //will consider myself this salamander's child, since its genome is
         //already stored in the phylogeny
         if(s.parent==nodes.at(p).parent && s.pSimilarGenome(nodes.at(p).genes, species_sim_thresh) ) {
-          s.parent=p;
-          trigger=true;
+          s.parent = p;
+          trigger  = true;
           break;
         }
       }
@@ -126,10 +126,10 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
       //we terminate pointing at Eve, who is the LCA.
       do {
         if(parentsOfA.count(p)) break;
-        p=nodes[p].parent;
-      } while( p != nodes[p].parent);
-      mbd[a].first+=t-nodes[p].emergence;
-      mbd[b].first+=t-nodes[p].emergence;
+        p = nodes[p].parent;
+      } while( p  != nodes[p].parent);
+      mbd[a].first += t-nodes[p].emergence;
+      mbd[b].first += t-nodes[p].emergence;
     }
   }
   
