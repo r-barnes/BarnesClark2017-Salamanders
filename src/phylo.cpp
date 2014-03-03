@@ -10,11 +10,11 @@
 #include <iostream> //TODO: USED ONLY FOR DEBGUGING
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
-  genes=s.genes;
-  emergence=t;
-  parent=s.parent;
-  lastchild=t;
-  otemp=s.otemp;
+  genes     = s.genes;
+  emergence = t;
+  parent    = s.parent;
+  lastchild = t;
+  otemp     = s.otemp;
 }
 
 void PhyloNode::addChild(int n){
