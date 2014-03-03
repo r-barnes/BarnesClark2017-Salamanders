@@ -23,6 +23,7 @@ void PhyloNode::addChild(int n){
 
 
 
+Phylogeny::Phylogeny(){}
 
 
 Phylogeny::Phylogeny(const Salamander &s, double t){

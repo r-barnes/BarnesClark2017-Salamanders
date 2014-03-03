@@ -31,6 +31,8 @@ class Phylogeny {
   ///Adds a new node to the phylogeny
   void addNode(const Salamander &s, double t);
  public:
+  //Empty constructor. Avoid using this whenever possible.
+  Phylogeny();
   ///Initialize using a single salamander as the parent
   Phylogeny(const Salamander &s, double t);
   ///The collection of phylogenic nodes compromising the tree
