@@ -48,8 +48,9 @@ class Phylogeny {
   double compareECDF(double t) const;
   ///Print graphs of relatedness
   void print(std::string prefix) const;
-  ///Prints an ACL2 representation of the tree's living members at a given time
-  std::string printACL2(double t, int n=0) const;
+  ///Prints a Newick representation of the tree's living members at a given time
+  ///See: https://en.wikipedia.org/wiki/Newick_format
+  std::string printNewick(int n=0, int depth=0) const;
 };
 
 #endif

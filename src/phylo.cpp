@@ -23,8 +23,10 @@ void PhyloNode::addChild(int n){
 
 
 
-Phylogeny::Phylogeny(){}
 
+
+
+Phylogeny::Phylogeny(){}
 
 Phylogeny::Phylogeny(const Salamander &s, double t){
   addNode(s,t);
@@ -32,8 +34,9 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
-  if(s.parent>0)
-    nodes[s.parent].addChild(nodes.size()-1);
+//  if(s.parent>0)
+  std::cerr<<"Inserting new node: "<<(nodes.size()-1)<<" with parent "<<s.parent<<std::endl;
+  nodes[s.parent].addChild(nodes.size()-1);
 }
 
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh){
@@ -196,20 +199,71 @@ void Phylogeny::print(std::string prefix) const {
 }
 
 
-std::string Phylogeny::printACL2(double t, int n) const {
-  std::string temp;
-  if(!nodes[n].children.empty()){
-    for(auto &c: nodes[n].children){
-      if(c==n) continue;
-      std::cerr<<n<<"->"<<c<<std::endl;
-      temp+=printACL2(c)+" ";
+std::string Phylogeny::printNewick(int n, int depth) const {
+  if(nodes[n].children.empty()){
+    double length=nodes[n].lastchild-nodes[n].emergence;
+    return "S"+std::to_string(n) + ":" + std::to_string(length);
+  }
+
+  //Copy this node's list of children so that we can guarantee that this method
+  //does not alter the phylogeny data
+  std::vector<int> my_children(nodes[n].children.begin(), nodes[n].children.end());
+
+  //Reverse the order of the children so that the list of children is order from
+  //most to least recent
+  std::reverse(my_children.begin(),my_children.end());
+
+  //Prove that the list is sorted in this way by printing it out
+  for(auto &e: my_children){
+    std::cerr<<nodes[e].emergence<<", ";
+  }
+  std::cerr<<std::endl;
+
+  //This string holds the phylogeny of the node as we build it. Since the node
+  //may have several children which emerged at different times we assume that
+  //the parent also becomes a new species at that time and inject "virtual nodes"
+  //into the output of the phylogeny
+  std::string my_phylo="";
+
+  for(unsigned int c=0;c<nodes[n].children.size();c++){
+    //Alias for the current child
+    int child=nodes[n].children[c];
+
+    //Avoid an infinite loop with Eve
+    if(n==child) continue;
+
+    //Print out for debugging purposes
+    std::cerr<<n<<"->"<<child<<std::endl;
+
+    //Holds the returned Newick representation of the phylogeny rooted at the
+    //current child
+    std::string childphylo=printNewick(child,depth+1);
+
+    //If this is the most recent child the parent has had, then the parent's
+    //lineage ends when the parent has its last child. Thus, the phylogeny is of
+    //the form: (ParentName:TimeToParentsLastChild,ChildName:TimeToChildsLastChild)
+    if(c==0){
+      my_phylo="(S";
+      my_phylo+=std::to_string(n)+"_"+std::to_string(c)+":";
+      my_phylo+=std::to_string(nodes[n].lastchild-nodes[child].emergence);
+      my_phylo+=",";
+      my_phylo+=childphylo;
+      my_phylo+=")";
+      return my_phylo;
+    } else {
+      std::string temp="(";
+      temp+=my_phylo+":";
+      int prevchild=nodes[n].children[c-1];
+      temp+=std::to_string(nodes[prevchild].emergence-nodes[child].emergence);
+      temp+=",";
+      temp+=childphylo;
+      temp+=")";
+      my_phylo=temp;
     }
-    if(temp.find_first_of("0123456789")==std::string::npos)
-      return "";
-    else
-      return "("+temp+")";
-  } else if (nodes[n].emergence<=t && t<=nodes[n].lastchild)
-    return std::to_string(n);
-  else
-    return "";
+  }
+
+  if(depth==0)
+    my_phylo+=";";
+
+  return my_phylo;
 }
