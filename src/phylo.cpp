@@ -213,18 +213,6 @@ std::string Phylogeny::printNewick(int n, int depth) const {
   //most to least recent
   std::reverse(my_children.begin(),my_children.end());
 
-  //Print children
-  std::cerr<<"Children of "<<n<<": ";
-  for(auto &c: my_children)
-    std::cerr<<c<<", ";
-  std::cerr<<std::endl;
-
-  //Prove that the list is sorted in this way by printing it out
-  for(auto &e: my_children){
-    std::cerr<<nodes[e].emergence<<", ";
-  }
-  std::cerr<<std::endl;
-
   //This string holds the phylogeny of the node as we build it. Since the node
   //may have several children which emerged at different times we assume that
   //the parent also becomes a new species at that time and inject "virtual nodes"
@@ -238,9 +226,6 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 
     //Avoid an infinite loop with Eve
     if(n==child) continue;
-
-    //Print out for debugging purposes
-    std::cerr<<n<<"->"<<child<<std::endl;
 
     //Holds the returned Newick representation of the phylogeny rooted at the
     //current child
