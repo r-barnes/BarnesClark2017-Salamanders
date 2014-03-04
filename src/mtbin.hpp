@@ -24,16 +24,16 @@ class MtBin {
     ///if startofdead==bin.size() then there are no more openings in the population
     unsigned int startofdead;
 
-    ///Kill random salamanders with probability prob
+    ///Kill random salamanders with probability prob, based on conditions at time t
     void mortaliate(double t);
 
-    ///Return the temperature of the bin at a given time
+    ///Return the temperature of the bin at a given time, based on conditions at time t
     double temp(double t) const;
 
-    ///Return the area of the bin at a given time
+    ///Return the area of the bin at a given time t
     double area(double t) const;
     
-    ///Karrying Kapacity of the bin given its area at a given time
+    ///Karrying Kapacity of the bin given its area at a given time t
     ///Returns a number [0, binsize].
     unsigned int kkap(double t) const;    
 
@@ -41,12 +41,18 @@ class MtBin {
     void killAll();
 
     ///Add a salamander to the bin. Fail silently if there's no room.
+    ///Salamander is an object type that contains information about the
+    ///genetics, lineage, etc. of a salamander.
     void addSalamander(const Salamander &s);
 
     ///Return number of living salamanders in this bin
     unsigned int alive() const;
 
-    ///Breed salamanders within this bin if there is carrying capacity available
+    ///Breed salamanders within this bin if there is carrying capacity available.
+    ///Carrying capacity depends on area that exists at the elevation band
+    ///described by a particular mountain bin.
+    ///Child is a new species if it differs from its parents by more than
+    ///species_sim_thresh.
     void breed(double t, double species_sim_thresh);
 
     ///Swap some salamanders with those in another bin
