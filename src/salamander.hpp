@@ -41,11 +41,6 @@ class Salamander {
     ///probability mutation_probability.
     void mutate();
 
-    ///Randomize this salamander's genome. Changes each element of the bit field
-    ///with a 50% probability.
-    ///TODO - remove this function.
-    void randomizeGenome();
-
     ///Determines whether a salamander dies given an input temperature and its
     ///optimum temperature. Based on a logit curve, parameterized such that a
     ///salamander dies with ~50% probability if it is more than 8 degrees C from

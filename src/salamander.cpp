@@ -43,6 +43,8 @@ void Salamander::printGenome() const {
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
 
+  child.parent = parent;
+
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
   child.otemp = (otemp+b.otemp)/2+normal_rand(0,0.001);
@@ -72,7 +74,6 @@ Salamander Salamander::breed(const Salamander &b) const {
   b.printGenome();
   temp.printGenome();
 */
-  child.parent=parent;
 
   return child;
 }
@@ -80,20 +81,9 @@ Salamander Salamander::breed(const Salamander &b) const {
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(uniform_rand_real(0,1)<=mutation_probability){
-//      std::cerr<<"GAAAH! MUTATION"<<std::endl;
+    if(uniform_rand_real(0,1)<=mutation_probability)
       genes^=mutator;
-    }
     mutator=mutator<<1;
-  }
-}
-
-void Salamander::randomizeGenome(){
-  Salamander::genetype selector=1;
-  for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(rand()%2==0)
-      genes|=selector;
-    selector=selector<<1;
   }
 }
 
@@ -107,33 +97,32 @@ bool Salamander::pSimilar(const Salamander &b, double species_sim_thresh) const 
   return pSimilarGenome(b.genes, species_sim_thresh);
 }
 
+
 //Calculate probability of death given square distance between temperature at time
-//t, and topt for this salamander
-bool Salamander::pDie(double temp) const {
-  //start with a living salamader
-  bool dead=false;
-  //parameters for a logit curve, that kills a salamander with ~50% probability
+//t, and topt for this salamander. Return TRUE if salamander dies.
+bool Salamander::pDie(double tempdegC) const {
+  //Parameters for a logit curve, that kills a salamander with ~50% probability
   //if it is more than 8 degrees C from its optimum temperature, and with ~90%
   //probability if it is more than 12 degrees from its optimum temperature.
   const double logitslope =  0.03051701;
   const double logitint   = -2.197225;
-  //cerr<<"temp = "<<temp<<endl;
-  if(!(0<=temp && temp<=50)) { //Temperature bounds
-    //for temperatures outside of these limits (<0C and >50C), salamaders always die
-    dead=true;
-        //cerr<<"we have killed with 100-percent prob.!"<<endl;
-  } else {                     //Find probability of death if bounds are not exceeded
-    double dtemp = pow(otemp-temp, 2); //Squared distance between temp and otemp
+
+  //For temperatures outside of these limits, the salamander always dies
+  if(!(0<=tempdegC && tempdegC<=50)) {
+    return true; //Dies
+  } else {      
+  //Find probability of death if bounds are not exceeded
+    //Squared difference between salamander's optimal temp and input temp
+    double dtemp = pow(otemp-tempdegC, 2);
 
     //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
-    //cerr<<"pdeath = "<<pdeath<<endl;
-    //cerr<<"otemp = "<<otemp<<endl;
-    //cerr<<"temp = "<<temp<<endl;
-    if(uniform_rand_real(0,1)<pdeath)      //Kill individual with probability pdeath
-      dead = true;
+
+    //Kill individual with probability pdeath
+    if(uniform_rand_real(0,1)<pdeath)
+      return true; //Dies
   }
   
-  return dead;
+  return false; //Lives
 }
 
