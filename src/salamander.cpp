@@ -19,6 +19,8 @@ T countbits(T a){
   return c;
 }
 
+
+
 Salamander::Salamander(){
   genes                = 0;
   otemp                = 0;
@@ -37,25 +39,27 @@ void Salamander::printGenome() const {
 }
 
 //TODO: Rethink what the normal dice are which I should be using here.
+//TODO: Think about this one more time.
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
-  child.genes = genes & b.genes;
+
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
-  child.otemp= (otemp+b.otemp)/2+normal_rand(0,0.001);
+  child.otemp = (otemp+b.otemp)/2+normal_rand(0,0.001);
 
-  //Combine genomes of parents. This results in a child with bitfield that matches
-  //its parents wherever their bitfields match, and is chosen randomly from one
-  //of its parents where they do not match.
-  Salamander::genetype selector     = 1;
-  Salamander::genetype shared_genes = genes ^ b.genes;
-  //Taking an XOR of the parent genomes will return a bitfield where all the
-  //active bits represent places where one or the other of the parent genomes
-  //was active, but not both. We push the selector along one bit at a time and
-  //if that bit is one of the places were the genomes differed, we choose with
-  //50% probability whether to turn it on or off.
+  //Find those genes the parents do not have in common.
+  Salamander::genetype not_common_genes = ~((genes & b.genes) | (~genes & ~b.genes));
+
+  //Child gets genes from one parent, but we'll choose some genes from the other
+  //parent below.
+  child.genes = genes;
+
+  //We push the selector along one bit at a time and if that bit is one of the
+  //places were the genomes differed, we choose with 50% probability whether to
+  //turn it on or off.
+  Salamander::genetype selector = 1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(shared_genes&selector && rand()%2==0)
+    if(not_common_genes&selector && rand()%2==0)
       child.genes|=selector;
     selector=selector<<1;
   }
