@@ -1,6 +1,5 @@
 #include "mtbin.hpp"
 #include "data.hpp"
-#include "utility.hpp"
 #include "random.hpp"
 #include <algorithm>
 #include <cassert>

@@ -1,5 +1,4 @@
 #include "salamander.hpp"
-#include "utility.hpp"
 #include <cstdlib>
 #include <random>
 #include <functional>
@@ -12,6 +11,15 @@ std::normal_distribution<double> normdistribution(0,0.001);
 std::uniform_real_distribution<double> unifdistribution(0.0,1.0);
 auto normaldice=std::bind(normdistribution,generator);
 auto unifdice=std::bind(unifdistribution,generator);
+
+//Counts the number of bits that are "on"
+template<class T>
+T countbits(T a){
+  unsigned int c; // c accumulates the total bits set in combined
+  for (c = 0; a; ++c)
+    a &= a - 1; // clear the least significant bit set
+  return c;
+}
 
 Salamander::Salamander(){
   genes                = 0;
