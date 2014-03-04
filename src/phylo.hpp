@@ -7,34 +7,43 @@
 #include <string>
 
 ///PhyloNode is used to store information about distinct species, the time that
-///the node came into being, the time that it does extict, its genetic attributes
-///the parent species from which the node arose, and any child species
-///that arise from the node. This is used to figure out which species
-///and lineage each salamander belongs to. 
+///the node came into being, the time that it went extict, the genetic
+///attributes of the parent species from which the node arose, and any child
+///species that arose from the node. This is used to figure out which species
+///and lineage each salamander belongs to.
 class PhyloNode {
   public:
-    ///Innitialize new salamandar in the phylogeny.
+    ///Copy relevant properties from the indicated salamander into this
+    ///phylogenic record.
     PhyloNode(const Salamander &s, double t);
-    ///Genome of the strain. Inherited from salamandar::Salamander().
+
+    ///Genome of the strain.
     Salamander::genetype genes;
-    ///When this strain emerged. emergence describes the time that
-    ///the species arises, and is taken as the current t.
+
+    ///When this strain emerged. Emergence describes the time that the species
+    ///arose. Copied from Salamander on initialization.
     double emergence;
+
     ///Last time this strain had a child. lastchild is used to identify species
-    ///that have gone extinct, and is updated with the current time t every
-    ///time that a living salamader is identified a member of the
-    ///species recorded by PhyloNode.
+    ///that have gone extinct, and is updated with the current time whenever a
+    ///living salamader is identified as a member of the species.
     double lastchild;
-    ///Which strain this one emerged from? Inherited from salamandar::Salamander().
+
+    ///Which strain this one emerged from. Copied from Salamander on
+    ///initialization.
     int parent;
-    ///Which otemp did the first parent inherit? Inherited from salamandar::Salamander().
+
+    ///Which optimal temperature did the first member of this strain have?
+    ///Copied from Salamander on initialization.
     double otempdegC;
-    ///Children of this node. Lists all species that have branched off of the
-    ///species described by PhyloNode.
+
+    ///Children of this node. Lists all species that have branched off of this
+    ///species.
     std::vector<int> children;
-    ///Adds a child to this node. Child is represented by an integer, which lists
-    ///all species as sequential integers starting at 0, based on their time of
-    ///emergence.
+
+    ///Adds a child to this node. Child is represented by an integer, which
+    ///corresponds to the child's placement in the Phylogeny class's list of
+    ///Phylonodes.
     void addChild(int n);
 };
 
@@ -68,8 +77,8 @@ class Phylogeny {
   ///Creates evenly-spaced bins along the range of branch lenghts that result
   ///from the simulation, and finds the cumulative number of species pair for
   ///which branch length falls at or below the value represented by the bin.
-  ///Compares this distribution to the observed distribution from the
-  ///phylogeny in Kozak and Wiens 2010 to assess phylogeny similarity.
+  ///Compares this distribution to the observed distribution from the phylogeny
+  ///in Kozak and Wiens 2010 to assess phylogeny similarity.
   double compareECDF(double t) const;
   ///Print graphs of relatedness
   void print(std::string prefix) const;
