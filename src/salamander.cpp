@@ -1,16 +1,10 @@
 #include "salamander.hpp"
-#include <cstdlib>
-#include <random>
-#include <functional>
+#include "random.hpp"
 #include "data.hpp"
+#include <cstdlib>
+#include <functional>
 #include <iostream>
 using namespace std;
-
-std::default_random_engine generator;
-std::normal_distribution<double> normdistribution(0,0.001);
-std::uniform_real_distribution<double> unifdistribution(0.0,1.0);
-auto normaldice=std::bind(normdistribution,generator);
-auto unifdice=std::bind(unifdistribution,generator);
 
 //Counts the number of bits that are "on"
 template<class T>
@@ -44,7 +38,7 @@ Salamander Salamander::breed(const Salamander &b) const {
   child.genes = genes & b.genes;
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
-  child.otemp= (otemp+b.otemp)/2+normaldice();
+  child.otemp= (otemp+b.otemp)/2+normal_rand(0,0.001);
 
   //Combine genomes of parents. This results in a child with bitfield that matches
   //its parents wherever their bitfields match, and is chosen randomly from one
@@ -78,7 +72,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(unifdice()<=mutation_probability){
+    if(uniform_rand_real(0,1)<=mutation_probability){
 //      std::cerr<<"GAAAH! MUTATION"<<std::endl;
       genes^=mutator;
     }
@@ -128,7 +122,7 @@ bool Salamander::pDie(double temp) const {
     //cerr<<"pdeath = "<<pdeath<<endl;
     //cerr<<"otemp = "<<otemp<<endl;
     //cerr<<"temp = "<<temp<<endl;
-    if(unifdice()<pdeath)      //Kill individual with probability pdeath
+    if(uniform_rand_real(0,1)<pdeath)      //Kill individual with probability pdeath
       dead = true;
   }
   
