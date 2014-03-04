@@ -5,6 +5,7 @@
 #include "mtbin.hpp"
 #include <vector>
 #include <string>
+#include <fstream>
 
 ///PhyloNode is used to store information about distinct species, the time that
 ///the node came into being, the time that it went extict, the genetic
@@ -92,8 +93,8 @@ class Phylogeny {
   ///in Kozak and Wiens 2010 to assess phylogeny similarity.
   double compareECDF(double t) const;
 
-  ///Print graphs of relatedness using the GraphViz dot format.
-  void print(std::string prefix) const;
+  ///Print species labels and their persistance to the specified output stream
+  void persistGraph(std::ofstream &out) const;
 
   ///Returns a Newick representation of the tree's living members at a given
   ///time. See: https://en.wikipedia.org/wiki/Newick_format

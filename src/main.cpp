@@ -15,15 +15,18 @@ using namespace std;
   species similarity threshold. It returns the resulting phylogeny. The function
   is thread-safe.
 
-  @param[in] mutation_probability  Mutation probability in TODO
-  @param[in] temperature_drift_sd  Std.Dev. of change in temperature tolerance
-                                   that occurs between parents and children.
-  @param[in] species_sim_thresh    Threshold for two individuals to be considered
-                                   members of the same species. Has value [0,1].
+  @param[in]  mutation_probability  Mutation probability in TODO
+  @param[in]  temperature_drift_sd  Std.Dev. of change in temperature tolerance
+                                    that occurs between parents and children.
+  @param[in]  species_sim_thresh    Threshold for two individuals to be considered
+                                    members of the same species. Has value [0,1].
+  @param[out] avg_otempdegC         Average optimal temperature of all surviving
+                                    species at the end of the run
+
 
   @returns   A phylogeny object
 */
-Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd, double species_sim_thresh){
+Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd, double species_sim_thresh, double &avg_otempdegC){
   vector<MtBin> mts;
 
   //65Mya the Appalachian Mountains were 2.8km tall. We decide, arbitrarily to
@@ -91,18 +94,37 @@ Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd
     //species similarity threshold
     phylos.UpdatePhylogeny(tMyrs, mts, species_sim_thresh);
   }
+
+  int alive_count=0;
+  for(const auto &m: mts)
+  for(const auto &s: m.bin){
+    avg_otempdegC+=s.otempdegC;
+    alive_count++;
+  }
+
+  avg_otempdegC/=alive_count;
   
   return phylos;
 }
 
-int main(){
+int main(int argc, char **argv){
+  if(argc<3 || argc>4){
+    cout<<"Syntax: "<<argv[0]<<" <Persistance Graph Output> <Phylogeny Output> [once]"<<endl;
+    cout<<"'once' indicates the program should be run once, for testing."<<endl;
+    return -1;
+  }
+
   //srand (time(NULL)); //TODO: Uncomment this line before production
 
-  Phylogeny phylos=RunSimulation(0.001, 0.01, 0.96);
-  phylos.print("");
-  cout<<phylos.printNewick()<<endl;
-
-  return 0;
+  if(argc==4 && std::string(argv[3])==std::string("once")){
+    std::ofstream out_persistgraph(argv[1]);
+    std::ofstream out_phylogeny   (argv[2]);
+    double avg_otempdegC;
+    Phylogeny phylos=RunSimulation(0.001, 0.01, 0.96,avg_otempdegC);
+    phylos.persistGraph(out_persistgraph);
+    out_phylogeny   <<phylos.printNewick() <<endl;
+    return 0;
+  }
 
   //Create a run struct. This struct will store the mutation and species
   //similarity thresholds used to run each of the simulations, along with the
@@ -120,6 +142,8 @@ int main(){
     int nalive;
     //Empirical cumulative distribution (ECDF) of average branch lengths between extant taxa
     double ecdf;
+    //Average optimal temperature of all the salamanders alive at the end of the run
+    double avg_otempdegC;
     //Phylogeny resulting from running the simulation
     Phylogeny phylos;
   };
@@ -143,7 +167,7 @@ int main(){
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical
       cout<<"Run #"<<i<<endl;
-    Phylogeny phylos = RunSimulation(runs[i].mutation_probability, runs[i].temperature_drift_sd, runs[i].sim_thresh);
+    Phylogeny phylos = RunSimulation(runs[i].mutation_probability, runs[i].temperature_drift_sd, runs[i].sim_thresh, runs[i].avg_otempdegC);
     runs[i].nalive   = phylos.numAlive(65);    //Record number alive at present day
     runs[i].ecdf     = phylos.compareECDF(65); //Record ECDF of those species alive at present day
     runs[i].phylos   = phylos;
@@ -160,12 +184,18 @@ int main(){
   //Extract the best phylogeny for further display 'n' such.
   Phylogeny bestphylos=runs[min].phylos;
 
-  bestphylos.print("");
+
+
   cout<< "mutation prob: "          << runs[min].mutation_probability
       << ", temerature sd: "        << runs[min].temperature_drift_sd
       << ", similarity threshold: " << runs[min].sim_thresh
       << ", number of species: "    << runs[min].nalive
       <<endl;
 
-  cout<<bestphylos.printNewick()<<endl;
+  std::ofstream out_persistgraph(argv[1]);
+  std::ofstream out_phylogeny   (argv[2]);
+  bestphylos.persistGraph(out_persistgraph);
+  out_phylogeny   <<bestphylos.printNewick() <<endl;
+
+  return 0;
 }
