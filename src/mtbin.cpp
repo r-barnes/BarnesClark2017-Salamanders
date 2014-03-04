@@ -1,116 +1,108 @@
 #include "mtbin.hpp"
 #include "data.hpp"
 #include "utility.hpp"
+#include "random.hpp"
 #include <algorithm>
 #include <cassert>
-#include <random>
 #include <cmath>
 
 
-///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
-double MountainArea(double elevation, double timeMyrs) {
-  ///Constants defining a normal distribution that describes area available at
-  ///different height bands in the Appalachian mountains. Paramteres are fit to
-  ///contemporary height distributions presented in Kozak and Wiens 2010.
-  ///deltasd describes change in sd per year, which  
-  const double elek     = 12.029753;
-  const double elesigma = 0.211410;
-  const double elemu    = 0.245547;
-  const double pi       = 3.141593;
-  const double deltasd  = 2.881572e-09;
-  //Input "t" is in millions of years - transform this into thousands of years
-  double timeKyrs = timeMyrs*1000;
-
-  double area = elek
-                * ( 1/sqrt( 2*pi*pow(elesigma+timeKyrs*deltasd*1000, 2) ))
-                * exp(
-                        ( -pow(elevation-elemu, 2) )
-                      / (2 * pow(elesigma+timeKyrs*deltasd*1000, 2))
-                  );
-  area *= 100000; //Convert area to units of km2
-  return area;
+///Generic Gaussian distribution function
+double Gaussian(double x, double mean, double sigma){
+  const double PI=3.14159265359;
+  return 1/sigma/std::sqrt(2*PI)*std::exp(-std::pow(x-mean,2)/2/std::pow(sigma,2));
 }
 
 
-
-std::default_random_engine rgen;
-
-MtBin::MtBin(){
+MtBin::MtBin(double heightkm0){
   //Create bin with no living salamanders
-  startofdead=0;
+  startofdead = 0;
+  heightkm    = heightkm0;
 }
 
-MtBin::MtBin(double binx) : MtBin(binx) {}
 
-void MtBin::killSalamander(int i) {
+double MtBin::height() const {
+  return heightkm;
+}
+
+
+void MtBin::killSalamander(int s) {
   assert(startofdead>0);
-  bin[i].dead=true;
-  std::swap(bin[i],bin[startofdead-1]);
+  bin[s].dead=true;
+  std::swap(bin[s],bin[startofdead-1]);
   --startofdead;
 }
 
-void MtBin::mortaliate(double t) {
+
+void MtBin::mortaliate(double tMyrs) {
   ///If there are no living salamanders, then don't do anything
   if(startofdead==0) return;
 
-  double       mytemp  =temp(t);  //Current temperature of bin
-  unsigned int maxalive=kkap(t);  //Current carrying capacity of the bin
+  double       mytemp   = temp(tMyrs);  //Current temperature of bin
+  unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
 
   //For each salamander, check to see if it dies
-  for(unsigned int s=0;s<startofdead && s<maxalive;++s){
+  for(unsigned int s=0;s<startofdead && s<maxalive;++s)
     if(bin[s].pDie(mytemp))
       killSalamander(s);
-  }
 
   //Since the carrying capacity of the bin may have been reduced since we last
-  //mortaliated, kill at random individuals until we are within carrying capacity
+  //mortaliated, kill individuals at random until we are within carrying capacity
 
   //Make a random number generator which points uniformly at all living individuals
   std::uniform_int_distribution<int> rdist(0, alive()-1);
   while(alive()>maxalive){
-    int i=rdist(rgen);          //Get an individual
-    if(bin[i].dead) continue;   //If the individual is already dead, ignore it
-    killSalamander(i);
+    int s=rdist(rand_engine()); //Get an individual
+    //If the individual is already dead, ignore it. This check is needed because
+    //we don't change the range of the rdist PRNG as we kill individuals.
+    if(bin[s].dead) continue;   
+    killSalamander(s);
   }
 }
 
-double MtBin::temp(double timeMyrs) const {
+
+double MtBin::temp(double tMyrs) const {
   //Input "t" is in millions of years - transform this into thousands of years
-  double timeKyrs = timeMyrs*1000;
+  double timeKyrs = tMyrs*1000;
 
-  assert(timeKyrs>=0);
-  assert(timeKyrs<=65000);
+  assert(timeKyrs >= 0);
+  assert(timeKyrs <= 65000);
 
-  //Find out the temperature adjustment for that height
-  //assuming a dry air adiabatic lapse rate of 9.8 degC per vertical kilometer
-  double altitude_temp_adjust=-9.8*height;
+  //Find out the temperature adjustment for that height assuming a dry air
+  //adiabatic lapse rate of 9.8 degC per vertical kilometer
+  double altitude_temp_adjust = -9.8*heightkm;
 
-  //Interpolate temperature for this time
-  int    t0   = (int)timeKyrs;
-  double ta   = temps[t0];
-  double tb   = temps[t0+1];
-  return ta+(tb-ta)*(timeKyrs-t0)+altitude_temp_adjust;
+  //Interpolate temperature for this time. Temperature is binned into 1kyr bins.
+  int    t0    = (int)timeKyrs;  //Time of the start of the 1kyr bin
+  double ta    = temps[t0];      //Temperature of this 1kyr bin
+  double tb    = temps[t0+1];    //Temperature of the next 1kyr bin
+  double tdiff = tb-ta;          //Temperature difference between the two bins
+  double sea_level_temp = ta + tdiff*(timeKyrs-t0);
+  return sea_level_temp + altitude_temp_adjust;
 }
 
-double MtBin::area(double timeMyrs) const {
-  return MountainArea(height, timeMyrs);
-}
 
-unsigned int MtBin::kkap(double timeMyrs) const {
+unsigned int MtBin::kkap(double tMyrs) const {
   //Input "t" is in millions of years - transform this into thousands of years
-  double timeKyrs = timeMyrs*1000;
+  double timeKyrs = tMyrs*1000;
 
   //Maximum elevation of the mountain range over time
-  //Based on linear shrinking of mountain hight from 2.8k meters from USGS estimate
-  //to current elevation from Kozak and Wiens 2010.
-  double maxelevation = 2.8-1.846154e-05*timeKyrs;
-  double minarea = MountainArea(maxelevation, timeMyrs);
+  //Based on linear shrinking of mountain hight from 2.8km at 65Mya (according
+  //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
+  //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
+  double const height_65mya = 2.8; //km
+  double const height_0mya  = 1.6; //km
+  double const erosion_rate = (height_65mya-height_0mya)/65000; //Erosion rate per 1kyr
+  double maxelevation       = 2.8-erosion-rate*timeKyrs;
+  double minarea_today      = MountainArea(maxelevation, tMyrs);
   
   //Returns a number [1, binmax], with 1 being the size of the smallest bin
-  //at time timeMyrs. This ensures that the smallest area (at the top of the
+  //at time tMyrs. This ensures that the smallest area (at the top of the
   //mountain) will always have a carrying capacity of at least 1 salamander.
-  return std::min(area(timeMyrs)/minarea, (double) binmax);
+  //TODO: Think about this more later.
+  return std::min( area(tMyrs)/minarea_today, (double) binmax);
 }
+
 
 void MtBin::killAll() {
   for(auto &s: bin)
@@ -118,15 +110,18 @@ void MtBin::killAll() {
   startofdead=0;
 }
 
+
 void MtBin::addSalamander(const Salamander &s) {
   if(startofdead==bin.size()) return;
   bin[startofdead]=s;
   ++startofdead;
 }
 
+
 unsigned int MtBin::alive() const {
   return startofdead;
 }
+
 
 void MtBin::breed(double t, double species_sim_thresh){
   if(startofdead==0) return;       //No one is alive here. There can be no breeding.
@@ -142,9 +137,12 @@ void MtBin::breed(double t, double species_sim_thresh){
 
   ///Make a random number generator that considers only the parents
   std::uniform_int_distribution<int> rdist(0, alive()-1);
+
+  //As long as there's room in the bin, and we still have to make babies, and we
+  //are not caught in an infinite loop, then try to make more babies.
   while(alive()<maxalive && max_babies>=0 && maxtries-->0){
-    Salamander &parenta=bin[rdist(rgen)];
-    Salamander &parentb=bin[rdist(rgen)];
+    Salamander &parenta=bin[rdist(rand_engine())];
+    Salamander &parentb=bin[rdist(rand_engine())];
     //If parents are genetically similar enough to be classed as the same species
     //based on species_sim_thresh, then they can breed.
     if(parenta.pSimilar(parentb, species_sim_thresh)){
@@ -154,8 +152,9 @@ void MtBin::breed(double t, double species_sim_thresh){
   }
 }
 
+
 void MtBin::diffuse(double t, MtBin &b) {
-  //Setting up random number generator that can draw living indivudals from the
+  //Setting up random number generator that can draw living individuals from the
   //bin with uniform probability.
   std::uniform_int_distribution<int> myguys   (0,   alive()-1);
   std::uniform_int_distribution<int> otherguys(0, b.alive()-1);
@@ -168,33 +167,67 @@ void MtBin::diffuse(double t, MtBin &b) {
   int swapc=std::min(aswapn,bswapn);
   for(int i=0;i<swapc;++i)
     //Up to the shared number of swaps (swapc), swap individuals between bins
-    std::swap(bin[myguys(rgen)], b.bin[otherguys(rgen)]);
+    std::swap(bin[myguys(rand_engine())], b.bin[otherguys(rand_engine())]);
 
   //Find carrying capacity in each bin
-  unsigned int ka=  kkap(t);
-  unsigned int kb=b.kkap(t);
+  unsigned int ka = kkap(t);
+  unsigned int kb = b.kkap(t);
 
-  //If more individuals are leaving a than are leaving b, take the extra individuals
-  //from a and move them to b.
-  //Else, if more individuals are leaving b than are leaving a, take the extra individuals
-  //from b and move them to a.
+  //If more individuals are leaving A than are leaving B, take the extra individuals
+  //from A and move them to B.
+  //Else, if more individuals are leaving B than are leaving A, take the extra individuals
+  //from B and move them to A.
   if(aswapn>bswapn){
-    aswapn-=swapc;
-    //Make sure that the swap doesn't exceed carrying capacity in b.
+    aswapn-=swapc; //These are the excess salamanders left in A after swapping
+    //Make sure that we don't exceed the carrying capacity in B.
     aswapn=std::min(bswapn,b.alive()-kb);
     for(unsigned int i=0;i<aswapn;++i){
-      int temp=myguys(rgen);
+      int temp=myguys(rand_engine()); //Choose a random salamander to push into B
       b.addSalamander(bin[temp]);
       killSalamander(temp);
     }
   } else if(aswapn<bswapn) {
-    bswapn-=swapc;
-    //Make sure that the swap doesn't exceed carrying capacity in b.
+    bswapn-=swapc; //These are the excess salamanders left in B after swapping
+    //Make sure that we don't exceed the carrying capacity in A.
     bswapn=std::min(aswapn,alive()-ka);
     for(unsigned int i=0;i<bswapn;++i){
-      int temp=otherguys(rgen);
+      int temp=otherguys(rand_engine()); //Choose a random salamander to push into A
       addSalamander(b.bin[temp]);
       b.killSalamander(temp);
     }
   }
+}
+
+
+
+///Given a time tMyrs in millions of years ago returns area at that elevation
+///IN SQUARE KILOMETERS
+double MtBin::area(double tMyrs) const {
+  ///Constants defining a normal distribution that describes area available at
+  ///different height bands in the Appalachian mountains. Paramteres are fit to
+  ///contemporary height distributions presented in Kozak and Wiens 2010.
+  ///deltasd describes change in sd per year, which  
+
+  //Scaling parameter transforming standard normal dist to total area of the
+  //Appalachians at present (0Mya) IN SQUARE KILOMETERS, as described by the
+  //calculate_area_parameters.R script
+  const double elek     = 1202975;
+
+  //Standard deviation of an analogous normal distribution to above, but 65Mya, IN KILOMETERS  
+  const double elesigma = 0.3858345;
+
+  //Mean of the above normal distribution IN KILOMETERS
+  const double elemu    = 0.1455467;
+
+  //Change per thousand years in standard deviation of between today's standard
+  //deviation and the standard deviation of 65Mya
+  const double deltasd  = 2.683452e-9 * 1000;
+
+  //Input "t" is in millions of years - transform this into thousands of years
+  double timeKyrs = tMyrs*1000;
+
+  //Area of of mountain at elevation in SQUARE KILOMETERS
+  double area = elek * Gaussian(heightkm, elemu, elesigma-timeKyrs*deltasd);
+
+  return area;
 }

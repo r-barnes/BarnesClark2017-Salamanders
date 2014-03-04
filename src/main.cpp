@@ -24,8 +24,12 @@ using namespace std;
 Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
   vector<MtBin> mts;
 
-  //We do this because TODO
-  mts.resize(1000);
+  //65Mya the Appalachian Mountains were 2.8km tall. We decide, arbitrarily to
+  //use 1000 bins to represent the mountain.
+  mts.reserve(1000);
+  for(int i=0;i<1000;i++)
+    mts.push_back(setHeight(m*2.8/1000.0));
+
 
   ////////////////////////////////////
   //INITIALIZE
