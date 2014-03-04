@@ -1,16 +1,10 @@
 #include "salamander.hpp"
-#include <cstdlib>
-#include <random>
-#include <functional>
+#include "random.hpp"
 #include "data.hpp"
+#include <cstdlib>
+#include <functional>
 #include <iostream>
 using namespace std;
-
-std::default_random_engine generator;
-std::normal_distribution<double> normdistribution(0,0.001);
-std::uniform_real_distribution<double> unifdistribution(0.0,1.0);
-auto normaldice=std::bind(normdistribution,generator);
-auto unifdice=std::bind(unifdistribution,generator);
 
 //Counts the number of bits that are "on"
 template<class T>
@@ -22,11 +16,11 @@ T countbits(T a){
 }
 
 Salamander::Salamander(){
-  genes=0;
-  otemp=0;
-  dead=false;
-  parent=-1;
-  mutation_probability=1e-4;
+  genes                = 0;
+  otemp                = 0;
+  dead                 = false;
+  parent               = -1;
+  mutation_probability = 1e-4;
 }
 
 void Salamander::printGenome() const {
@@ -38,18 +32,19 @@ void Salamander::printGenome() const {
   std::cerr<<std::endl;
 }
 
+//TODO: Rethink what the normal dice are which I should be using here.
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
-  child.genes=genes & b.genes;
+  child.genes = genes & b.genes;
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
-  child.otemp= (otemp+b.otemp)/2+normaldice();
+  child.otemp= (otemp+b.otemp)/2+normal_rand(0,0.001);
 
   //Combine genomes of parents. This results in a child with bitfield that matches
   //its parents wherever their bitfields match, and is chosen randomly from one
   //of its parents where they do not match.
-  Salamander::genetype selector=1;
-  Salamander::genetype shared_genes=genes ^ b.genes;
+  Salamander::genetype selector     = 1;
+  Salamander::genetype shared_genes = genes ^ b.genes;
   //Taking an XOR of the parent genomes will return a bitfield where all the
   //active bits represent places where one or the other of the parent genomes
   //was active, but not both. We push the selector along one bit at a time and
@@ -77,7 +72,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(unifdice()<=mutation_probability){
+    if(uniform_rand_real(0,1)<=mutation_probability){
 //      std::cerr<<"GAAAH! MUTATION"<<std::endl;
       genes^=mutator;
     }
@@ -120,15 +115,15 @@ bool Salamander::pDie(double temp) const {
     dead=true;
         //cerr<<"we have killed with 100-percent prob.!"<<endl;
   } else {                     //Find probability of death if bounds are not exceeded
-    double dtemp  = pow(otemp-temp, 2); //Squared distance between temp and otemp
+    double dtemp = pow(otemp-temp, 2); //Squared distance between temp and otemp
 
     //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
     //cerr<<"pdeath = "<<pdeath<<endl;
     //cerr<<"otemp = "<<otemp<<endl;
     //cerr<<"temp = "<<temp<<endl;
-    if(unifdice()<pdeath)      //Kill individual with probability pdeath
-      dead=true;
+    if(uniform_rand_real(0,1)<pdeath)      //Kill individual with probability pdeath
+      dead = true;
   }
   
   return dead;

@@ -8,25 +8,22 @@ class Salamander {
     ///of the binary expression of this number.
     typedef unsigned long long genetype;
 
-    ///Initialize a new salamander. Is innitialized as "alive", but with no
+    ///Initialize a new salamander. Is initialized as "alive", but with no
     ///parent (=-1), genome = 0, optimum temperature = 0, and
     ///probability of mutation = 1e-4.
     Salamander();
 
-    ///Breed this salamander with another to make a baby. Must take place between
-    ///salamanders that are in the same bin. Returns a child salamander in the
-    ///parents' bin. Child temperature optimum temperature is the average of its
-    ///parents, plus a mutation, drawn from a standard normal distribution with
-    ///mean = 0 and sd = 0.001. Child genome is based on a merge of the bit
-    ///fields of the parents' genomes.
+    ///Breed this salamander with another to make a baby! Returns a child
+    ///salamander. Child's optimum temperature is the average of its parents,
+    ///plus a mutation, drawn from a standard normal distribution. Child genome
+    ///is based on a merge of the bit fields of the parents' genomes.
     Salamander breed(const Salamander &b) const;
 
-    ///Print the salamanders genome as a bit field
+    ///Print the salamanders genome as a bit field. TODO: Consider eliminating.
     void printGenome() const;
 
-    ///Comparison of the similarity between two salamander genomes. Used to compare
-    ///genetic similarity and determine whether individuals are members of the
-    ///same species.
+    ///Determine whether two salamander genomes are similar. If the genomes are
+    ///considered similary, then the individuals are members of the same species.
     ///species_sim_thresh is a number in [0,1] describing how similar two
     ///genomes must be before salamanders are deemed to be of the same species.
     ///Returns TRUE if salamanders are of the same species.
@@ -41,8 +38,7 @@ class Salamander {
     bool pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const;
 
     ///Mutate this salamander's genome. Flips each element of the bit field with
-    ///probability mutation_probability, which describes the probability of a
-    ///change per million years.
+    ///probability mutation_probability.
     void mutate();
 
     ///Randomize this salamander's genome. Changes each element of the bit field
@@ -54,11 +50,11 @@ class Salamander {
     ///optimum temperature. Based on a logit curve, parameterized such that a
     ///salamander dies with ~50% probability if it is more than 8 degrees C from
     ///its optimum temperature, and with ~90% probability if it is more than
-    ///12 degrees from its optimum temperature. Returns YES if the salamander dies.
+    ///12 degrees from its optimum temperature. Returns TRUE if the salamander dies.
     bool pDie(double temp) const;
 
-    ///Neutral genes. Initialized at 0, and usually determined by the parents
-    ///of the salamander.
+    ///Neutral genes. Determined by the parents of the salamander and used to
+    ///determine if the salamander is of the same species as another salamander.
     genetype genes;
 
     ///Optimal temperature for this salamander. For the first salamander, this is
@@ -68,20 +64,20 @@ class Salamander {
     ///changes between generations based on a mutation rate described in mutate().
     double otemp;
 
-    ///Is this salamander dead? (yes == dead)
+    ///Is this salamander dead? (TRUE == dead)
     bool dead;
     
     ///Mutation probability - used by mutate() to determine the probability of
     ///mutation in the genome. Note - this changes the genome that determines
     ///relatedness, speciation, and ability to breed. It does not directly alter
-    ///optimum temperature.
+    ///optimum temperature. TODO: Is this mutations per million years?
     double mutation_probability;
 
     ///The phylogeny this salamander is part of (i.e., from what lineage did this
     ///salamander arise?) Is set to -1 for initialized salamanders, but should
-    ///always be set to a positive number based on the parents of salamander species
-    ///that are actually part of the simulation. The only exception to this is
-    ///the first salamander ("Eve"), which is its own parent, set at 0.
+    ///always be set to a positive number indicating the salamander's parent 
+    ///species. The only exception to this is the first salamander ("Eve"),
+    ///which is its own parent, set at 0. TODO: This is more of a "speciesid"
     int parent;
 };
 

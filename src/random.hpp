@@ -10,10 +10,16 @@ std::default_random_engine& rand_engine();
 
 void seed_rand();
 
-int uniform_rand(int from, int thru);
+//Returns an integer value on the closed interval [from,thru]
+//Thread-safe
+int uniform_rand_int(int from, int thru);
 
-double uniform_rand(double from, double thru);
+//Returns an floating-point value on the interval [from,thru)
+//Thread-safe
+double uniform_rand_real(double from, double thru);
 
+//Returns a Gaussian-distributed value with specified mean and standard deviation
+//Thread-safe
 double normal_rand(double mean, double stddev);
 
 #endif
