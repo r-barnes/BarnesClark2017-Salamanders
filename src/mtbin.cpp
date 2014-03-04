@@ -8,18 +8,24 @@
 
 
 ///Give elevation as altitude in kilometers, and t in kiloyears ago (i.e. 0.001MYA)
-double MountainArea(double elevation, double time) {
+double MountainArea(double elevation, double timeMyrs) {
+  ///Constants defining a normal distribution that describes area available at
+  ///different height bands in the Appalachian mountains. Paramteres are fit to
+  ///contemporary height distributions presented in Kozak and Weins 2010.
+  ///deltasd describes change in sd per year, which  
   const double elek     = 12.029753;
   const double elesigma = 0.211410;
   const double elemu    = 0.245547;
   const double pi       = 3.141593;
   const double deltasd  = 2.881572e-09;
+  //Input "t" is in millions of years - transform this into thousands of years
+  double timeKyrs = timeMyrs*1000;
 
   double area = elek
-                * ( 1/sqrt( 2*pi*pow(elesigma+time*deltasd*1000, 2) ))
+                * ( 1/sqrt( 2*pi*pow(elesigma+timeKyrs*deltasd*1000, 2) ))
                 * exp(
                         ( -pow(elevation-elemu, 2) )
-                      / (2 * pow(elesigma+time*deltasd*1000, 2))
+                      / (2 * pow(elesigma+timeKyrs*deltasd*1000, 2))
                   );
   area *= 100000; //Convert area to units of km2
   return area;
