@@ -213,6 +213,12 @@ std::string Phylogeny::printNewick(int n, int depth) const {
   //most to least recent
   std::reverse(my_children.begin(),my_children.end());
 
+  //Print children
+  std::cerr<<"Children of "<<n<<": ";
+  for(auto &c: my_children)
+    std::cerr<<c<<", ";
+  std::cerr<<std::endl;
+
   //Prove that the list is sorted in this way by printing it out
   for(auto &e: my_children){
     std::cerr<<nodes[e].emergence<<", ";
@@ -222,12 +228,13 @@ std::string Phylogeny::printNewick(int n, int depth) const {
   //This string holds the phylogeny of the node as we build it. Since the node
   //may have several children which emerged at different times we assume that
   //the parent also becomes a new species at that time and inject "virtual nodes"
-  //into the output of the phylogeny
+  //into the output of the phylogeny. This string holds the virtual nodes as we
+  //build them.
   std::string my_phylo="";
 
-  for(unsigned int c=0;c<nodes[n].children.size();c++){
+  for(unsigned int c=0;c<my_children.size();c++){
     //Alias for the current child
-    int child=nodes[n].children[c];
+    int child=my_children[c];
 
     //Avoid an infinite loop with Eve
     if(n==child) continue;
@@ -244,19 +251,30 @@ std::string Phylogeny::printNewick(int n, int depth) const {
     //the form: (ParentName:TimeToParentsLastChild,ChildName:TimeToChildsLastChild)
     if(c==0){
       my_phylo="(S";
-      my_phylo+=std::to_string(n)+"_"+std::to_string(c)+":";
+      my_phylo+=std::to_string(n)+":";
       my_phylo+=std::to_string(nodes[n].lastchild-nodes[child].emergence);
       my_phylo+=",";
       my_phylo+=childphylo;
       my_phylo+=")";
-      return my_phylo;
     } else {
+    //This isn't the most recent child the parent has had. The current child has
+    //a phylogeny and the more recent child has a phylogeny as well. Thus, we
+    //need to weld these two phylogenies together
       std::string temp="(";
       temp+=my_phylo+":";
-      int prevchild=nodes[n].children[c-1];
+      //The previous child returned a phylogeny including a virtual node. This
+      //virtual node indicates a branching that took place when the previous
+      //child split from the parent line. This branching took place at the point
+      //in time at which the previous child emerged. So the length to that node
+      //is from the emergence time of this child (the time of this splitting) to
+      //the emergence time of the previous child. (TODO: What happens if the
+      //previous child split at the same time this child did?)
+      int prevchild=my_children[c-1];
       temp+=std::to_string(nodes[prevchild].emergence-nodes[child].emergence);
       temp+=",";
       temp+=childphylo;
+      //This phylogeny splits off right here so I don't specify a branch length.
+      //TODO: Should we add a :0 to this?
       temp+=")";
       my_phylo=temp;
     }
