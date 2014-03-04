@@ -28,7 +28,7 @@ class PhyloNode {
     ///Which strain this one emerged from? Inherited from salamandar::Salamander().
     int parent;
     ///Which otemp did the first parent inherit? Inherited from salamandar::Salamander().
-    double otemp;
+    double otempdegC;
     ///Children of this node. Lists all species that have branched off of the
     ///species described by PhyloNode.
     std::vector<int> children;

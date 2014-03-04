@@ -52,12 +52,13 @@ class Salamander {
     ///determine if the salamander is of the same species as another salamander.
     genetype genes;
 
-    ///Optimal temperature for this salamander. For the first salamander, this is
-    ///initialized as 33.5618604122814, which is the temperature (in degrees C)
-    ///that we have projected for sea level in the Appalachians 65MYA. This value
-    ///is determined for children by the average of their parents' otemp, and
-    ///changes between generations based on a mutation rate described in mutate().
-    double otemp;
+    ///Optimal temperature in degC for this salamander. For the first
+    ///salamander, this is initialized as 33.5618604122814, which is the
+    ///temperature (in degrees C) that we have projected for sea level in the
+    ///Appalachians 65MYA. This value is determined for children by the average
+    ///of their parents' otemp, and changes between generations based on a
+    ///mutation rate described in mutate().
+    double otempdegC;
 
     ///Is this salamander dead? (TRUE == dead)
     bool dead;

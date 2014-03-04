@@ -50,7 +50,7 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
   //Today, the optimal temperature for salamanders is 12.804279 degC.
   //We assume that Eve is well-adapted for her time by setting her optimal
   //temperature to be this global average sea level temperature.
-  Eve.otemp = 33.5618604122814; //degC
+  Eve.otempdegC = 33.5618604122814; //degC
 
   //We set Eve initially to have a genome in which all of the bits are off.
   //Since the genomes are used solely to determine speciation and speciation is

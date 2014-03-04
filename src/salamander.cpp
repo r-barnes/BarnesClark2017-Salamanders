@@ -23,7 +23,7 @@ T countbits(T a){
 
 Salamander::Salamander(){
   genes                = 0;
-  otemp                = 0;
+  otempdegC            = 0;
   dead                 = false;
   parent               = -1;
   mutation_probability = 1e-4;
@@ -47,7 +47,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
-  child.otemp = (otemp+b.otemp)/2+normal_rand(0,0.001);
+  child.otempdegC = (otempdegC+b.otempdegC)/2+normal_rand(0,0.001);
 
   //Find those genes the parents do not have in common.
   Salamander::genetype not_common_genes = ~((genes & b.genes) | (~genes & ~b.genes));
@@ -113,7 +113,7 @@ bool Salamander::pDie(double tempdegC) const {
   } else {      
   //Find probability of death if bounds are not exceeded
     //Squared difference between salamander's optimal temp and input temp
-    double dtemp = pow(otemp-tempdegC, 2);
+    double dtemp = pow(otempdegC-tempdegC, 2);
 
     //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));

@@ -14,7 +14,7 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   emergence = t;
   parent    = s.parent;
   lastchild = t;
-  otemp     = s.otemp;
+  otempdegC = s.otempdegC;
 }
 
 void PhyloNode::addChild(int n){
@@ -184,7 +184,7 @@ void Phylogeny::print(std::string prefix) const {
   std::ofstream phylograph((std::string("output/")+prefix+std::string("phylograph.dot")).c_str());
   phylograph<<"digraph graphname {"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    phylograph<<i<<"[label=\""<<nodes[i].emergence<<" "<<nodes[i].otemp<<"\"];"<<std::endl;
+    phylograph<<i<<"[label=\""<<nodes[i].emergence<<" "<<nodes[i].otempdegC<<"\"];"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
     phylograph<<nodes[i].parent<<"->"<<i<<";"<<std::endl;
   phylograph<<"}"<<std::endl;
