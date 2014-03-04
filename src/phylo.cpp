@@ -23,7 +23,7 @@ void PhyloNode::addChild(int n){
   children.push_back(n);
 }
 
-bool aliveAt(double t) const {
+bool PhyloNode::aliveAt(double t) const {
   //If the phylogenic node came into being before the time in question and
   //persists past or up to the given time, then this species is alive at the
   //given time
