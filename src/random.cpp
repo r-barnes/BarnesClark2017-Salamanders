@@ -24,13 +24,13 @@ void seed_rand(){
   }
 }
 
-int uniform_rand(int from, int thru){
+int uniform_rand_int(int from, int thru){
   static std::uniform_int_distribution<> d[PRNG_THREAD_MAX];
   using parm_t = std::uniform_int_distribution<>::param_type;
   return d[omp_get_thread_num()]( rand_engine(), parm_t{from, thru} );
 }
 
-double uniform_rand(double from, double thru){
+double uniform_rand_real(double from, double thru){
   static std::uniform_real_distribution<> d[PRNG_THREAD_MAX];
   using parm_t = std::uniform_real_distribution<>::param_type;
   return d[omp_get_thread_num()]( rand_engine(), parm_t{from, thru} );
