@@ -34,8 +34,6 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
-//  if(s.parent>0)
-  std::cerr<<"Inserting new node: "<<(nodes.size()-1)<<" with parent "<<s.parent<<std::endl;
   nodes[s.parent].addChild(nodes.size()-1);
 }
 
