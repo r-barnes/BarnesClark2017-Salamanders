@@ -10,15 +10,24 @@
 #include <iostream> //TODO: USED ONLY FOR DEBGUGING
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
+  //Copy relevant parameters from the Salamander that originates this strain
   genes     = s.genes;
-  emergence = t;
   parent    = s.parent;
-  lastchild = t;
   otempdegC = s.otempdegC;
+  //Set emergence and last known child to the current time
+  emergence = t;
+  lastchild = t;
 }
 
 void PhyloNode::addChild(int n){
   children.push_back(n);
+}
+
+bool aliveAt(double t) const {
+  //If the phylogenic node came into being before the time in question and
+  //persists past or up to the given time, then this species is alive at the
+  //given time
+  return emergence<=t && t<=lastchild;
 }
 
 
@@ -28,50 +37,71 @@ void PhyloNode::addChild(int n){
 
 Phylogeny::Phylogeny(){}
 
+
 Phylogeny::Phylogeny(const Salamander &s, double t){
   addNode(s,t);
 }
+
 
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
   nodes[s.parent].addChild(nodes.size()-1);
 }
 
+
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh){
   for(auto &m: mts)     //Loop through parts of the mountain
-  for(auto &s: m.bin){  //Loop through the salamanders on that part of the mountain
-    //If I am dead or have no parent, skip me
-    if(s.dead || s.parent==-1) continue;
+  for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
+    //Since we always keep dead salamanders at the end of a mountain bin, once
+    //we see the first dead salamander we know we don't need to look at the
+    //rest.
+    if(s.dead)
+      break;
 
-    //If I am not similar to my parent
-    if(!s.pSimilarGenome(nodes.at(s.parent).genes, species_sim_thresh)) {
-      bool trigger=false;
-
-      //See if I am similar to any other salamanders, starting with the most recent
-      //TODO: Don't search past my parent
-      for(int p=nodes.size()-1;p>=0;--p) {
-        //TODO: This needs to be adjusted based on the length of timesteps. This is crappy.
-        //TODO: What is the below line even for?
-        if( (t-nodes.at(s.parent).lastchild)>=1 ) continue;
-        
-        //If my parent is the same as this salamander's parent and my genes are
-        //similar to this salamander's then this salamander and I are both part
-        //of the first generation of a new species of salamander. Therefore, I
-        //will consider myself this salamander's child, since its genome is
-        //already stored in the phylogeny
-        if(s.parent==nodes.at(p).parent && s.pSimilarGenome(nodes.at(p).genes, species_sim_thresh) ) {
-          s.parent = p;
-          trigger  = true;
-          break;
-        }
-      }
-      if(!trigger)     //No salamander in the phylogeny was similar to me!
-        addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species
-    } else {  //I am similar to my parent, so mark my parent (species) as having survived this long
-      nodes.at(s.parent).lastchild=t;
+    //If I have no parent, skip me
+    if(s.parent==-1){
+      std::cerr<<"Salamander with bad parent discovered!"<<std::endl;
+      continue;
     }
+
+    //I am similar to my parent, so mark my parent (species) as having survived
+    //this long
+    if(s.pSimilarGenome(nodes.at(s.parent).genes, species_sim_thresh)) {
+      nodes.at(s.parent).lastchild=t;
+      continue;
+    }
+
+    //If I am not similar to my parent then I may still be similar to one of my
+    //parent's other children, which may already have an entry in the phylogeny.
+    //Therefore, I'll search through recent entries in the phylogeny to see if
+    //this was the case.
+    bool has_parent=false;
+
+    //See if I am similar to any other salamanders, starting with the most recent
+    //TODO: Don't search past my parent
+    for(int p=nodes.size()-1;p>=s.parent;--p) {
+      //If the last child of this potential parent was born more than one time
+      //step ago, then this parent's lineage is dead and I cannot be a part of
+      //it. This works because we are stepping by 0.5Myr, so 1Myr is two time
+      //steps. (TODO: Make sure this stays up to date if we change timesteps.)
+      if( (t-nodes.at(p).lastchild)>=1 ) continue;
+      
+      //If my parent is the same as this salamander's parent and my genes are
+      //similar to this salamander's then this salamander and I are both part
+      //of the first generation of a new species of salamander. Therefore, I
+      //will consider myself this salamander's child, since its genome is
+      //already stored in the phylogeny
+      if(s.parent==nodes.at(p).parent && s.pSimilarGenome(nodes.at(p).genes, species_sim_thresh) ) {
+        s.parent   = p;
+        has_parent = true;
+        break;
+      }
+    }
+    if(!has_parent)  //No salamander in the phylogeny was similar to me!
+      addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species
   }
 }
+
 
 int Phylogeny::numAlive(double t) const {
   //One might think this function can be sped up by recognising that phylogenic
@@ -81,15 +111,11 @@ int Phylogeny::numAlive(double t) const {
 
   int sum=0;
   //Loop through the nodes of the phylogeny
-  for(const auto &p: nodes){
-    //If the phylogenic node came into being before the time in question and
-    //persists past or up to the given time, then make a note that this species
-    //is alive at the given time
-    if(p.emergence<=t && t<=p.lastchild)
-      ++sum;
-  }
+  for(const auto &p: nodes)
+    sum+=p.aliveAt(t);
   return sum;
 }
+
 
 Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
   //Mean branch distance structure containing (avg branch dist, species) pairs
@@ -98,20 +124,19 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
   //We start by finding those species which are alive at the given time
   std::vector<int> alive;
   for(unsigned int i=0;i<nodes.size();++i)
-    if(nodes[i].emergence<=t && t<=nodes[i].lastchild)
+    if(nodes[i].aliveAt(t))
       alive.push_back(i);
       
   //Enlarge to match size of alive. Initialize everything to 0.
-  mbd.resize(alive.size(),std::pair<double,unsigned int>(0,0));
+  mbd.resize(alive.size(),std::pair<double,int>(0,0));
 
   //For each species that is alive
   for(unsigned int a=0;a<alive.size();++a){
     //Set the appropriate species ID
     mbd[a].second=alive[a];
 
-    //Walk up the tree finding ancestors of A until we get to Eve
-    //Eve is not added to the list of ancestors, but that's okay, as we'll
-    //explain below
+    //Walk up the tree finding ancestors of A until we get to Eve. Eve is not
+    //added to the list of ancestors, but that's okay, as we'll explain below.
     std::set<int> parentsOfA;
     int p=alive[a];
     do {
@@ -145,6 +170,7 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
 
 double Phylogeny::compareECDF(double t) const {
   mbdStruct mbd=meanBranchDistance(t);
+
   //Build a cumulative distribution function from the existing phylogeny
   const unsigned int number_of_species = mbd.size();
   const unsigned int number_of_bins    = 100;
@@ -156,16 +182,16 @@ double Phylogeny::compareECDF(double t) const {
   double observed_ecdf[number_of_bins]={0.0208333333333333, 0.15625, 0.208333333333333, 0.208333333333333, 0.239583333333333, 0.260416666666667, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.302083333333333, 0.333333333333333, 0.427083333333333, 0.427083333333333, 0.427083333333333, 0.489583333333333, 0.604166666666667, 0.625, 0.645833333333333, 0.65625, 0.65625, 0.6875, 0.6875, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.729166666666667, 0.729166666666667, 0.729166666666667, 0.739583333333333, 0.739583333333333, 0.760416666666667, 0.760416666666667, 0.760416666666667, 0.770833333333333, 0.770833333333333, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.833333333333333, 0.875, 0.90625, 0.90625, 0.927083333333333, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333, 1};
   
   //The following values are taken from data/Kozak_Plethodontid_Data/phylodist_cdf_bins.csv
-  const double min_mbd = 73.5209701979;
-  const double max_mbd = 118.6240912604;
-  const double mbd_interval  = (max_mbd-min_mbd)/(number_of_bins-1);
+  const double min_mbd      = 73.5209701979;
+  const double max_mbd      = 118.6240912604;
+  const double mbd_interval = (max_mbd-min_mbd)/(number_of_bins-1);
 
-  int nbin = 0; // What ecdf bin are we in?
+  int nbin = 0; // What ECDF bin are we in?
   for(unsigned int i=0;i<number_of_species; i++) {
     if(mbd[i].first<=min_mbd+i*mbd_interval) {
       ecdf[nbin]++;
     } else {
-      ecdf[nbin]/=number_of_species; //standardize ecdf to 1;
+      ecdf[nbin]/=number_of_species; //standardize ECDf to 1;
       nbin++;
       ecdf[nbin]++;
     }
@@ -214,9 +240,9 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 
   //This string holds the phylogeny of the node as we build it. Since the node
   //may have several children which emerged at different times we assume that
-  //the parent also becomes a new species at that time and inject "virtual nodes"
-  //into the output of the phylogeny. This string holds the virtual nodes as we
-  //build them.
+  //the parent also becomes a new species at that time and inject "virtual
+  //nodes" into the output of the phylogeny. This string holds the virtual nodes
+  //as we build them.
   std::string my_phylo="";
 
   for(unsigned int c=0;c<my_children.size();c++){

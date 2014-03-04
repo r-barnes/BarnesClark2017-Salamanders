@@ -45,6 +45,10 @@ class PhyloNode {
     ///corresponds to the child's placement in the Phylogeny class's list of
     ///Phylonodes.
     void addChild(int n);
+
+    ///Returns true if the strain is alive at the indicated time, based on the
+    ///emergence and lastchild data.
+    bool aliveAt(double t) const;
 };
 
 ///Phylogeny stores all of the nodes corresponding to living and extinct species.
@@ -54,36 +58,45 @@ class Phylogeny {
  private:
   ///Adds a new node to the phylogeny
   void addNode(const Salamander &s, double t);
+
+  ///Calculate the mean branch distance for the phylogeny. Finds the number of
+  ///years separating them from their last common ancestor (e.g., if 2MY
+  ///separates each from the ancestor, distance = 4MY), and then takes the
+  ///average of this number across all unique species pairs. Is used as a
+  ///summary statistic for comparing to the Kozak and Wiens phylogeny.
+  typedef std::vector< std::pair<double, int> > mbdStruct;
+  mbdStruct meanBranchDistance(double t) const;
+
  public:
   ///Empty constructor -- creates a phylogeny without any attributes.
   ///Avoid using this whenever possible!!
   Phylogeny();
+
   ///Initialize using a single salamander as the parent
   Phylogeny(const Salamander &s, double t);
+
   ///The collection of phylogenic nodes compromising the tree
   std::vector<PhyloNode> nodes;
+
   ///Updates the phylogeny based on the current state of the salamanders
   void UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh);
+
   ///Counts the number of species which are alive at a given point in time
   int numAlive(double t) const;
-  ///Calculate the mean branch distance for the phylogeny. Finds the number of
-  ///years separating them from their last common ancestor (e.g., if 2MY
-  ///separates each from the ancestor, distance = 4MY), and then takes the
-  ///average of this number across all unique species pairs. Is used as a summary
-  ///statistic for comparing to the Kozak and Wiens phylogeny.
-  typedef std::vector< std::pair<double, int> > mbdStruct;
-  mbdStruct meanBranchDistance(double t) const;
+
   ///Calculate empirical cumulative distribution function of branch distances.
-  ///Creates evenly-spaced bins along the range of branch lenghts that result
+  ///Creates evenly-spaced bins along the range of branch lengths that result
   ///from the simulation, and finds the cumulative number of species pair for
   ///which branch length falls at or below the value represented by the bin.
   ///Compares this distribution to the observed distribution from the phylogeny
   ///in Kozak and Wiens 2010 to assess phylogeny similarity.
   double compareECDF(double t) const;
-  ///Print graphs of relatedness
+
+  ///Print graphs of relatedness using the GraphViz dot format.
   void print(std::string prefix) const;
-  ///Prints a Newick representation of the tree's living members at a given time
-  ///See: https://en.wikipedia.org/wiki/Newick_format
+
+  ///Returns a Newick representation of the tree's living members at a given
+  ///time. See: https://en.wikipedia.org/wiki/Newick_format
   std::string printNewick(int n=0, int depth=0) const;
 };
 
