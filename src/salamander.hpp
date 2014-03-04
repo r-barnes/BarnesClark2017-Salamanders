@@ -77,7 +77,7 @@ class Salamander {
     ///salamander arise?) Is set to -1 for initialized salamanders, but should
     ///always be set to a positive number indicating the salamander's parent 
     ///species. The only exception to this is the first salamander ("Eve"),
-    ///which is its own parent, set at 0.
+    ///which is its own parent, set at 0. TODO: This is more of a "speciesid"
     int parent;
 };
 
