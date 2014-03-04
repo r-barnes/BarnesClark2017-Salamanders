@@ -27,6 +27,7 @@ Salamander::Salamander(){
   dead                 = false;
   parent               = -1;
   mutation_probability = 1e-4;
+  temperature_drift_sd = 1e-3;
 }
 
 void Salamander::printGenome() const {
@@ -47,7 +48,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
-  child.otempdegC = (otempdegC+b.otempdegC)/2+normal_rand(0,0.001);
+  child.otempdegC = (otempdegC+b.otempdegC)/2+normal_rand(0,temperature_drift_sd);
 
   //Find those genes the parents do not have in common.
   Salamander::genetype not_common_genes = ~((genes & b.genes) | (~genes & ~b.genes));

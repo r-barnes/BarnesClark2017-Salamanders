@@ -3,9 +3,9 @@
 
 class Salamander {
   public:
-    ///Gene Type - used for storing genetic information that is used to determine
-    ///whether individuals are of the same species, based on a bitwise comparison
-    ///of the binary expression of this number.
+    ///Gene Type - used for storing genetic information that is used to
+    ///determine whether individuals are of the same species, based on a bitwise
+    ///comparison of the binary expression of this number.
     typedef unsigned long long genetype;
 
     ///Initialize a new salamander. Is initialized as "alive", but with no
@@ -68,6 +68,13 @@ class Salamander {
     ///relatedness, speciation, and ability to breed. It does not directly alter
     ///optimum temperature. TODO: Is this mutations per million years?
     double mutation_probability;
+
+    ///Drift rate for temperature optimum - used by breed() to determine the
+    ///change in optimum temperature between children and parents. Note - this
+    ///changes the temperature optimum, but does not directly influence
+    ///relatedness, speciation, and ability to breed.
+    ///TODO: Is this mutations per million years?
+    double temperature_drift_sd;
 
     ///The phylogeny this salamander is part of (i.e., from what lineage did this
     ///salamander arise?) Is set to -1 for initialized salamanders, but should
