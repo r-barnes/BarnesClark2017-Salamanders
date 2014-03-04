@@ -13,11 +13,11 @@ double MountainArea(double elevation, double timeMyrs) {
   ///different height bands in the Appalachian mountains. Paramteres are fit to
   ///contemporary height distributions presented in Kozak and Weins 2010.
   ///deltasd describes change in sd per year, which  
-  const double elek=12.029753;
-  const double elesigma=0.211410;
-  const double elemu=0.245547;
-  const double pi=3.141593;
-  const double deltasd=2.881572e-09;
+  const double elek     = 12.029753;
+  const double elesigma = 0.211410;
+  const double elemu    = 0.245547;
+  const double pi       = 3.141593;
+  const double deltasd  = 2.881572e-09;
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = timeMyrs*1000;
 
@@ -84,9 +84,9 @@ double MtBin::temp(double timeMyrs) const {
   double altitude_temp_adjust=-9.8*height;
 
   //Interpolate temperature for this time
-  int t0=(int)timeKyrs;
-  double ta=temps[t0];
-  double tb=temps[t0+1];
+  int    t0   = (int)timeKyrs;
+  double ta   = temps[t0];
+  double tb   = temps[t0+1];
   return ta+(tb-ta)*(timeKyrs-t0)+altitude_temp_adjust;
 }
 
