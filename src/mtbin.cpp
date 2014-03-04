@@ -11,7 +11,7 @@
 double MountainArea(double elevation, double timeMyrs) {
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Paramteres are fit to
-  ///contemporary height distributions presented in Kozak and Weins 2010.
+  ///contemporary height distributions presented in Kozak and Wiens 2010.
   ///deltasd describes change in sd per year, which  
   const double elek     = 12.029753;
   const double elesigma = 0.211410;
@@ -36,6 +36,7 @@ double MountainArea(double elevation, double timeMyrs) {
 std::default_random_engine rgen;
 
 MtBin::MtBin(){
+  //Create bin with no living salamanders
   startofdead=0;
 }
 
@@ -74,6 +75,7 @@ void MtBin::mortaliate(double t) {
 }
 
 double MtBin::temp(double timeMyrs) const {
+  //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = timeMyrs*1000;
 
   assert(timeKyrs>=0);
@@ -95,15 +97,18 @@ double MtBin::area(double timeMyrs) const {
 }
 
 unsigned int MtBin::kkap(double timeMyrs) const {
+  //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = timeMyrs*1000;
+
   //Maximum elevation of the mountain range over time
-
-
+  //Based on linear shrinking of mountain hight from 2.8k meters from USGS estimate
+  //to current elevation from Kozak and Wiens 2010.
   double maxelevation = 2.8-1.846154e-05*timeKyrs;
   double minarea = MountainArea(maxelevation, timeMyrs);
   
   //Returns a number [1, binmax], with 1 being the size of the smallest bin
-  //at time timeMyrs
+  //at time timeMyrs. This ensures that the smallest area (at the top of the
+  //mountain) will always have a carrying capacity of at least 1 salamander.
   return std::min(area(timeMyrs)/minarea, (double) binmax);
 }
 
@@ -129,17 +134,19 @@ void MtBin::breed(double t, double species_sim_thresh){
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
   if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
-  //Maximum number of tries to find a pair to mate
-  int maxtries=4*(maxalive-alive());
+  //Maximum number of tries to find a pair to mate - prevents infinite loop
+  int maxtries=40*(maxalive-alive());
 
   //Maximum number of new offspring per bin per unit time
   int max_babies=10;
 
   ///Make a random number generator that considers only the parents
   std::uniform_int_distribution<int> rdist(0, alive()-1);
-  while(alive()<maxalive && max_babies>=0 && maxtries>=0){ //TODO: Should be maxtries--
+  while(alive()<maxalive && max_babies>=0 && maxtries-->0){
     Salamander &parenta=bin[rdist(rgen)];
     Salamander &parentb=bin[rdist(rgen)];
+    //If parents are genetically similar enough to be classed as the same species
+    //based on species_sim_thresh, then they can breed.
     if(parenta.pSimilar(parentb, species_sim_thresh)){
       addSalamander(parenta.breed(parentb));
       max_babies--;
@@ -148,21 +155,33 @@ void MtBin::breed(double t, double species_sim_thresh){
 }
 
 void MtBin::diffuse(double t, MtBin &b) {
+  //Setting up random number generator that can draw living indivudals from the
+  //bin with uniform probability.
   std::uniform_int_distribution<int> myguys   (0,   alive()-1);
   std::uniform_int_distribution<int> otherguys(0, b.alive()-1);
+
+  //We are now swapping 1/10 of the population in each bin.
   unsigned int aswapn=  alive()/10;
   unsigned int bswapn=b.alive()/10;
 
+  //Find minimum of the two swap sizes.
   int swapc=std::min(aswapn,bswapn);
   for(int i=0;i<swapc;++i)
+    //Up to the shared number of swaps (swapc), swap individuals between bins
     std::swap(bin[myguys(rgen)], b.bin[otherguys(rgen)]);
 
+  //Find carrying capacity in each bin
   unsigned int ka=  kkap(t);
   unsigned int kb=b.kkap(t);
 
+  //If more individuals are leaving a than are leaving b, take the extra individuals
+  //from a and move them to b.
+  //Else, if more individuals are leaving b than are leaving a, take the extra individuals
+  //from b and move them to a.
   if(aswapn>bswapn){
     aswapn-=swapc;
-    aswapn=std::min(aswapn,alive()-ka);
+    //Make sure that the swap doesn't exceed carrying capacity in b.
+    aswapn=std::min(bswapn,b.alive()-kb);
     for(unsigned int i=0;i<aswapn;++i){
       int temp=myguys(rgen);
       b.addSalamander(bin[temp]);
@@ -170,7 +189,8 @@ void MtBin::diffuse(double t, MtBin &b) {
     }
   } else if(aswapn<bswapn) {
     bswapn-=swapc;
-    bswapn=std::min(bswapn,b.alive()-kb);
+    //Make sure that the swap doesn't exceed carrying capacity in b.
+    bswapn=std::min(aswapn,alive()-ka);
     for(unsigned int i=0;i<bswapn;++i){
       int temp=otherguys(rgen);
       addSalamander(b.bin[temp]);

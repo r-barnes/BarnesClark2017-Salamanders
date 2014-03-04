@@ -24,7 +24,6 @@ class MtBin {
     ///if startofdead==bin.size() then there are no more openings in the population
     unsigned int startofdead;
 
-    ///Kill random salamanders with probability prob, based on conditions at time t
     void mortaliate(double t);
 
     ///Return the temperature of the bin at a given time, based on conditions at
