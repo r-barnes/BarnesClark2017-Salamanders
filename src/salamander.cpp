@@ -33,8 +33,13 @@ void Salamander::printGenome() const {
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
   child.genes=genes & b.genes;
+  //Child optimum temperature is the average of its parents, plus a mutation,
+  //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
   child.otemp= (otemp+b.otemp)/2+normaldice();
 
+  //Combine genomes of parents. This results in a child with bitfield that matches
+  //its parents wherever their bitfields match, and is chosen randomly from one
+  //of its parents where they do not match.
   Salamander::genetype selector=1;
   Salamander::genetype shared_genes=genes ^ b.genes;
   //Taking an XOR of the parent genomes will return a bitfield where all the
@@ -48,6 +53,7 @@ Salamander Salamander::breed(const Salamander &b) const {
     selector=selector<<1;
   }
 
+  //Mutate child genome
   child.mutate();
 /*
   printGenome();
@@ -71,7 +77,7 @@ void Salamander::mutate(){
   }
 }
 
-void Salamander::randomizeGeneome(){
+void Salamander::randomizeGenome(){
   Salamander::genetype selector=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
     if(rand()%2==0)
@@ -90,17 +96,23 @@ bool Salamander::pSimilar(const Salamander &b, double species_sim_thresh) const 
   return pSimilarGenome(b.genes, species_sim_thresh);
 }
 
-//Calculate probability of death give square distance of t, topt
+//Calculate probability of death given square distance between temperature at time
+//t, and topt for this salamander
 bool Salamander::pDie(double temp) const {
+  //start with a living salamader
   bool dead=false;
+  //parameters for a logit curve, that kills a salamander with ~50% probability
+  //if it is more than 8 degrees C from its optimum temperature, and with ~90%
+  //probability if it is more than 12 degrees from its optimum temperature.
   const double logitslope =  0.03051701;
   const double logitint   = -2.197225;
   //cerr<<"temp = "<<temp<<endl;
   if(!(0<=temp && temp<=50)) { //Temperature bounds
+    //for temperatures outside of these limits (<0C and >50C), salamaders always die
     dead=true;
         //cerr<<"we have killed with 100-percent prob.!"<<endl;
   } else {                     //Find probability of death if bounds are not exceeded
-    double dtemp  = pow(otemp-temp, 2);
+    double dtemp  = pow(otemp-temp, 2); //Squared distance between temp and otemp
 
     //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
