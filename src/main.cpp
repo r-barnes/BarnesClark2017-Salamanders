@@ -51,10 +51,10 @@ Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd
   //relationship
   Eve.parent = 0; 
 
-  //This is the global average temperature at sea level 65 million years ago.
-  //Today, the optimal temperature for salamanders is 12.804279 degC.
-  //We assume that Eve is well-adapted for her time by setting her optimal
-  //temperature to be this global average sea level temperature.
+  //This is the mean summer diurnal temperature at sea level 65 million years
+  //ago in Greensboro, NC. Today, the optimal temperature for salamanders is
+  //12.804279 degC. We assume that Eve is well-adapted for her time by setting
+  //her optimal temperature to be this global average sea level temperature.
   Eve.otempdegC = 33.5618604122814; //degC
 
   //We set Eve initially to have a genome in which all of the bits are off.
