@@ -14,11 +14,11 @@ auto normaldice=std::bind(normdistribution,generator);
 auto unifdice=std::bind(unifdistribution,generator);
 
 Salamander::Salamander(){
-  genes=0;
-  otemp=0;
-  dead=false;
-  parent=-1;
-  mutation_probability=1e-4;
+  genes                = 0;
+  otemp                = 0;
+  dead                 = false;
+  parent               = -1;
+  mutation_probability = 1e-4;
 }
 
 void Salamander::printGenome() const {
@@ -32,7 +32,7 @@ void Salamander::printGenome() const {
 
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
-  child.genes=genes & b.genes;
+  child.genes = genes & b.genes;
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
   child.otemp= (otemp+b.otemp)/2+normaldice();
@@ -40,8 +40,8 @@ Salamander Salamander::breed(const Salamander &b) const {
   //Combine genomes of parents. This results in a child with bitfield that matches
   //its parents wherever their bitfields match, and is chosen randomly from one
   //of its parents where they do not match.
-  Salamander::genetype selector=1;
-  Salamander::genetype shared_genes=genes ^ b.genes;
+  Salamander::genetype selector     = 1;
+  Salamander::genetype shared_genes = genes ^ b.genes;
   //Taking an XOR of the parent genomes will return a bitfield where all the
   //active bits represent places where one or the other of the parent genomes
   //was active, but not both. We push the selector along one bit at a time and
@@ -112,7 +112,7 @@ bool Salamander::pDie(double temp) const {
     dead=true;
         //cerr<<"we have killed with 100-percent prob.!"<<endl;
   } else {                     //Find probability of death if bounds are not exceeded
-    double dtemp  = pow(otemp-temp, 2); //Squared distance between temp and otemp
+    double dtemp = pow(otemp-temp, 2); //Squared distance between temp and otemp
 
     //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
     double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
@@ -120,7 +120,7 @@ bool Salamander::pDie(double temp) const {
     //cerr<<"otemp = "<<otemp<<endl;
     //cerr<<"temp = "<<temp<<endl;
     if(unifdice()<pdeath)      //Kill individual with probability pdeath
-      dead=true;
+      dead = true;
   }
   
   return dead;
