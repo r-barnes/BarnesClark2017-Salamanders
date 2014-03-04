@@ -7,6 +7,10 @@
 using namespace std;
 
 //Counts the number of bits that are "on"
+//This might use a method developed By Peter Wegner (TODO: This could be verified, but who wants to?)
+//See: Communications of the ACM, Vol. 3 No. 5, Page 322
+//doi: 10.1145/367236.367286
+//URL: http://cacm.acm.org/magazines/1960/5/14709-a-technique-for-counting-ones-in-a-binary-computer/abstract
 template<class T>
 T countbits(T a){
   unsigned int c; // c accumulates the total bits set in combined
