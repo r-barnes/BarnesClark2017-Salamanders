@@ -27,11 +27,12 @@ class MtBin {
     ///Kill random salamanders with probability prob, based on conditions at time t
     void mortaliate(double t);
 
-    ///Return the temperature of the bin at a given time, based on conditions at time t
-    double temp(double t) const;
+    ///Return the temperature of the bin at a given time, based on conditions at
+    //time timeMyrs in millions of year
+    double temp(double timeMyrs) const;
 
-    ///Return the area of the bin at a given time t
-    double area(double t) const;
+    ///Return the area of the bin at a given time timeMyrs, in millions of years.
+    double area(double timeMyrs) const;
     
     ///Karrying Kapacity of the bin given its area at a given time t
     ///Returns a number [0, binsize].

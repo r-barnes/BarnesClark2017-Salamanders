@@ -73,31 +73,38 @@ void MtBin::mortaliate(double t) {
   }
 }
 
-double MtBin::temp(double t) const {
-  assert(t>=0);
-  assert(t<=65000);
+double MtBin::temp(double timeMyrs) const {
+  double timeKyrs = timeMyrs*1000;
+
+  assert(timeKyrs>=0);
+  assert(timeKyrs<=65000);
 
   //Find out the temperature adjustment for that height
   //assuming a dry air adiabatic lapse rate of 9.8 degC per vertical kilometer
   double altitude_temp_adjust=-9.8*height;
 
   //Interpolate temperature for this time
-  int t0    = (int)t;
-  double ta = temps[t0];
-  double tb = temps[t0+1];
-  return ta+(tb-ta)*(t-t0)+altitude_temp_adjust;
+  int    t0   = (int)timeKyrs;
+  double ta   = temps[t0];
+  double tb   = temps[t0+1];
+  return ta+(tb-ta)*(timeKyrs-t0)+altitude_temp_adjust;
 }
 
-double MtBin::area(double t) const {
-  return MountainArea(height, t);
+double MtBin::area(double timeMyrs) const {
+  return MountainArea(height, timeMyrs);
 }
 
-unsigned int MtBin::kkap(double t) const {
+unsigned int MtBin::kkap(double timeMyrs) const {
+  double timeKyrs = timeMyrs*1000;
   //Maximum elevation of the mountain range over time
-  double maxelevation = 2.8-1.846154e-05*t;
-  double minarea = MountainArea(maxelevation, t);
+
+
+  double maxelevation = 2.8-1.846154e-05*timeKyrs;
+  double minarea = MountainArea(maxelevation, timeMyrs);
   
-  return std::min(area(t)/minarea, (double) binmax); //Returns a number [1, binmax], with 1 being the size of the smallest bin at time t
+  //Returns a number [1, binmax], with 1 being the size of the smallest bin
+  //at time timeMyrs
+  return std::min(area(timeMyrs)/minarea, (double) binmax);
 }
 
 void MtBin::killAll() {
@@ -125,6 +132,7 @@ void MtBin::breed(double t, double species_sim_thresh){
   //Maximum number of tries to find a pair to mate
   int maxtries=4*(maxalive-alive());
 
+  //Maximum number of new offspring per bin per unit time
   int max_babies=10;
 
   ///Make a random number generator that considers only the parents
