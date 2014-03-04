@@ -82,9 +82,9 @@ double MtBin::temp(double t) const {
   double altitude_temp_adjust=-9.8*height;
 
   //Interpolate temperature for this time
-  int t0=(int)t;
-  double ta=temps[t0];
-  double tb=temps[t0+1];
+  int t0    = (int)t;
+  double ta = temps[t0];
+  double tb = temps[t0+1];
   return ta+(tb-ta)*(t-t0)+altitude_temp_adjust;
 }
 
