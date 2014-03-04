@@ -206,21 +206,10 @@ double Phylogeny::compareECDF(double t) const {
 }
 
 
-void Phylogeny::print(std::string prefix) const {
-  std::ofstream phylograph((std::string("output/")+prefix+std::string("phylograph.dot")).c_str());
-  phylograph<<"digraph graphname {"<<std::endl;
+void Phylogeny::persistGraph(std::ofstream &out) const {
+  out<<"#Emergence, Species, Last Child, Species"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    phylograph<<i<<"[label=\""<<nodes[i].emergence<<" "<<nodes[i].otempdegC<<"\"];"<<std::endl;
-  for(unsigned int i=0;i<nodes.size();++i)
-    phylograph<<nodes[i].parent<<"->"<<i<<";"<<std::endl;
-  phylograph<<"}"<<std::endl;
-  phylograph.close();
-
-  std::ofstream persistgraph((std::string("output/")+prefix+std::string("persistgraph.csv")).c_str());
-  persistgraph<<"#Emergence, Species, Last Child, Species"<<std::endl;
-  for(unsigned int i=0;i<nodes.size();++i)
-    persistgraph<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<std::endl;
-  persistgraph.close();
+    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<std::endl;
 }
 
 

@@ -95,14 +95,23 @@ Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd
   return phylos;
 }
 
-int main(){
+int main(int argc, char **argv){
+  if(argc<3 || argc>4){
+    cout<<"Syntax: "<<argv[0]<<" <Persistance Graph Output> <Phylogeny Output> [once]"<<endl;
+    cout<<"'once' indicates the program should be run once, for testing."<<endl;
+    return -1;
+  }
+
   //srand (time(NULL)); //TODO: Uncomment this line before production
 
-  Phylogeny phylos=RunSimulation(0.001, 0.01, 0.96);
-  phylos.print("");
-  cout<<phylos.printNewick()<<endl;
-
-  return 0;
+  if(argc==4 && std::string(argv[3])==std::string("once")){
+    std::ofstream out_persistgraph(argv[1]);
+    std::ofstream out_phylogeny   (argv[2]);
+    Phylogeny phylos=RunSimulation(0.001, 0.01, 0.96);
+    phylos.persistGraph(out_persistgraph);
+    out_phylogeny   <<phylos.printNewick() <<endl;
+    return 0;
+  }
 
   //Create a run struct. This struct will store the mutation and species
   //similarity thresholds used to run each of the simulations, along with the
@@ -160,12 +169,18 @@ int main(){
   //Extract the best phylogeny for further display 'n' such.
   Phylogeny bestphylos=runs[min].phylos;
 
-  bestphylos.print("");
+
+
   cout<< "mutation prob: "          << runs[min].mutation_probability
       << ", temerature sd: "        << runs[min].temperature_drift_sd
       << ", similarity threshold: " << runs[min].sim_thresh
       << ", number of species: "    << runs[min].nalive
       <<endl;
 
-  cout<<bestphylos.printNewick()<<endl;
+  std::ofstream out_persistgraph(argv[1]);
+  std::ofstream out_phylogeny   (argv[2]);
+  bestphylos.persistGraph(out_persistgraph);
+  out_phylogeny   <<bestphylos.printNewick() <<endl;
+
+  return 0;
 }
