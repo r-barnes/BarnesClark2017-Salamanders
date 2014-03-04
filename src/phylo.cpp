@@ -191,6 +191,7 @@ void Phylogeny::print(std::string prefix) const {
   phylograph.close();
 
   std::ofstream persistgraph((std::string("output/")+prefix+std::string("persistgraph.csv")).c_str());
+  persistgraph<<"#Emergence, Species, Last Child, Species"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
     persistgraph<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<std::endl;
   persistgraph.close();
