@@ -3,7 +3,9 @@
 
 class Salamander {
   public:
-    ///Gene Type
+    ///Gene Type - used for storing genetic information that is used to determine
+    ///whether individuals are of the same species, based on a bitwise comparison
+    ///of the binary expression of this number.
     typedef unsigned long long genetype;
 
     ///Initialize a new salamander
