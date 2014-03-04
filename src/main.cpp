@@ -16,12 +16,14 @@ using namespace std;
   is thread-safe.
 
   @param[in] mutation_probability  Mutation probability in TODO
+  @param[in] temperature_drift_sd  Std.Dev. of change in temperature tolerance
+                                   that occurs between parents and children.
   @param[in] species_sim_thresh    Threshold for two individuals to be considered
                                    members of the same species. Has value [0,1].
 
   @returns   A phylogeny object
 */
-Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
+Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd, double species_sim_thresh){
   vector<MtBin> mts;
 
   //65Mya the Appalachian Mountains were 2.8km tall. We decide, arbitrarily to
@@ -59,6 +61,7 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
   Eve.genes = (Salamander::genetype)0;
 
   Eve.mutation_probability = mutation_probability;
+  Eve.temperature_drift_sd = temperature_drift_sd;
 
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a
@@ -95,7 +98,7 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
 int main(){
   //srand (time(NULL)); //TODO: Uncomment this line before production
 
-  Phylogeny phylos=RunSimulation(0.001, 0.96);
+  Phylogeny phylos=RunSimulation(0.001, 0.01, 0.96);
   phylos.print("");
   cout<<phylos.printNewick()<<endl;
 
@@ -108,6 +111,9 @@ int main(){
   struct run {
     //A value [0,1] indicating the probability TODO
     double mutation_probability;
+    //A value [0, Inf] dictating the standard deviation of the random, normal
+    //change in temperature tolerance that occurs between parents and offspring.
+    double temperature_drift_sd;
     //A value [0,1] indicating how similar to salamanders must be to be the same species
     double sim_thresh;
     //Number of living species at the end of the simulation
@@ -123,9 +129,11 @@ int main(){
 
   //Set up the runs
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=1e-4)
+  for(double temperature_drift_sd=1e-3; temperature_drift_sd<1e-1; temperature_drift_sd+=1e-2)
   for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01){
     struct run temp;
     temp.mutation_probability = mutation_probability;
+    temp.temperature_drift_sd = temperature_drift_sd;
     temp.sim_thresh = sim_thresh;
     runs.push_back(temp);
   }
@@ -135,7 +143,7 @@ int main(){
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical
       cout<<"Run #"<<i<<endl;
-    Phylogeny phylos = RunSimulation(runs[i].mutation_probability, runs[i].sim_thresh);
+    Phylogeny phylos = RunSimulation(runs[i].mutation_probability, runs[i].temperature_drift_sd, runs[i].sim_thresh);
     runs[i].nalive   = phylos.numAlive(65);    //Record number alive at present day
     runs[i].ecdf     = phylos.compareECDF(65); //Record ECDF of those species alive at present day
     runs[i].phylos   = phylos;
@@ -154,6 +162,7 @@ int main(){
 
   bestphylos.print("");
   cout<< "mutation prob: "          << runs[min].mutation_probability
+      << ", temerature sd: "        << runs[min].temperature_drift_sd
       << ", similarity threshold: " << runs[min].sim_thresh
       << ", number of species: "    << runs[min].nalive
       <<endl;
