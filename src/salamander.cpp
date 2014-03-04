@@ -30,6 +30,7 @@ void Salamander::printGenome() const {
   std::cerr<<std::endl;
 }
 
+//TODO: Rethink what the normal dice are which I should be using here.
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
   child.genes = genes & b.genes;
