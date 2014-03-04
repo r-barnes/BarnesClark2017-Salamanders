@@ -93,14 +93,14 @@ unsigned int MtBin::kkap(double tMyrs) const {
   double const height_65mya = 2.8; //km
   double const height_0mya  = 1.6; //km
   double const erosion_rate = (height_65mya-height_0mya)/65000; //Erosion rate per 1kyr
-  double maxelevation       = 2.8-erosion-rate*timeKyrs;
-  double minarea_today      = MountainArea(maxelevation, tMyrs);
+  double maxelevation       = 2.8-erosion_rate*timeKyrs; //km
+  double minarea_today      = area(maxelevation, tMyrs);
   
   //Returns a number [1, binmax], with 1 being the size of the smallest bin
   //at time tMyrs. This ensures that the smallest area (at the top of the
   //mountain) will always have a carrying capacity of at least 1 salamander.
   //TODO: Think about this more later.
-  return std::min( area(tMyrs)/minarea_today, (double) binmax);
+  return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
 }
 
 
@@ -202,7 +202,7 @@ void MtBin::diffuse(double t, MtBin &b) {
 
 ///Given a time tMyrs in millions of years ago returns area at that elevation
 ///IN SQUARE KILOMETERS
-double MtBin::area(double tMyrs) const {
+double MtBin::area(double elevationkm, double tMyrs) const {
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Paramteres are fit to
   ///contemporary height distributions presented in Kozak and Wiens 2010.
@@ -227,7 +227,7 @@ double MtBin::area(double tMyrs) const {
   double timeKyrs = tMyrs*1000;
 
   //Area of of mountain at elevation in SQUARE KILOMETERS
-  double area = elek * Gaussian(heightkm, elemu, elesigma-timeKyrs*deltasd);
+  double area = elek * Gaussian(elevationkm, elemu, elesigma-timeKyrs*deltasd);
 
   return area;
 }

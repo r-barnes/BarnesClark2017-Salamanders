@@ -34,8 +34,8 @@ class MtBin {
     ///time tMyrs, in millions of year
     double temp(double tMyrs) const;
 
-    ///Return the area of the bin at a given time tMyrs, in millions of years.
-    double area(double tMyrs) const;
+    ///Return the area of the bin at a elevationkm kilometers at time tMyrs, in millions of years.
+    double area(double elevationkm, double tMyrs) const;
     
     ///Karrying Kapacity of the bin given its area at a given time tMyrs
     ///Returns a number [1, binmax]. //TODO: Is this range okay? Maybe not!
