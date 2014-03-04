@@ -27,8 +27,8 @@ Phylogeny RunSimulation(double mutation_probability, double species_sim_thresh){
   //65Mya the Appalachian Mountains were 2.8km tall. We decide, arbitrarily to
   //use 1000 bins to represent the mountain.
   mts.reserve(1000);
-  for(int i=0;i<1000;i++)
-    mts.push_back(setHeight(m*2.8/1000.0));
+  for(int m=0;m<1000;m++)
+    mts.push_back(MtBin(m*2.8/1000.0));
 
 
   ////////////////////////////////////
