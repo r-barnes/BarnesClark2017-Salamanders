@@ -7,7 +7,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include <time.h>
 using namespace std;
 
 int main(int argc, char **argv){
@@ -17,7 +16,7 @@ int main(int argc, char **argv){
     return -1;
   }
 
-  //srand (time(NULL)); //TODO: Uncomment this line before production
+  //seed_rand(); //TODO: Uncomment this line before production
 
   if(argc==4 && std::string(argv[3])==std::string("once")){
     std::ofstream out_persistgraph(argv[1]);
@@ -42,7 +41,7 @@ int main(int argc, char **argv){
     runs.push_back(temp);
   }
 
-  //Run the runs and stash the results.
+  //Run the runs
   #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical

@@ -23,18 +23,17 @@ class Salamander {
     void printGenome() const;
 
     ///Determine whether two salamander genomes are similar. If the genomes are
-    ///considered similary, then the individuals are members of the same species.
-    ///species_sim_thresh is a number in [0,1] describing how similar two
-    ///genomes must be before salamanders are deemed to be of the same species.
-    ///Returns TRUE if salamanders are of the same species.
+    ///considered similary, then the individuals are members of the same
+    ///species. species_sim_thresh is a number in [0,1] describing how similar
+    ///two genomes must be before salamanders are deemed to be of the same
+    ///species. Returns TRUE if salamanders are of the same species.
     bool pSimilar(const Salamander &b, double species_sim_thresh) const;
     
-    ///Comparison of the similarity between two genomes. Used to compare
-    ///genetic similarity and determine whether genes come from members of the
-    ///same species.
-    ///species_sim_thresh is a number in [0,1] describing how similar two
-    ///genomes must be before salamanders are deemed to be of the same species.
-    ///Returns TRUE if genes are of the same species.
+    ///Comparison of the similarity between two genomes. Used to compare genetic
+    ///similarity and determine whether genes come from members of the same
+    ///species. species_sim_thresh is a number in [0,1] describing how similar
+    ///two genomes must be before salamanders are deemed to be of the same
+    ///species. Returns TRUE if genes are of the same species.
     bool pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const;
 
     ///Mutate this salamander's genome. Flips each element of the bit field with
@@ -44,8 +43,9 @@ class Salamander {
     ///Determines whether a salamander dies given an input temperature and its
     ///optimum temperature. Based on a logit curve, parameterized such that a
     ///salamander dies with ~50% probability if it is more than 8 degrees C from
-    ///its optimum temperature, and with ~90% probability if it is more than
-    ///12 degrees from its optimum temperature. Returns TRUE if the salamander dies.
+    ///its optimum temperature, and with ~90% probability if it is more than 12
+    ///degrees from its optimum temperature. Returns TRUE if the salamander
+    ///dies.
     bool pDie(double temp) const;
 
     ///Neutral genes. Determined by the parents of the salamander and used to
@@ -73,11 +73,12 @@ class Salamander {
     ///TODO: Is this mutations per million years?
     double temperature_drift_sd;
 
-    ///The phylogeny this salamander is part of (i.e., from what lineage did this
-    ///salamander arise?) Is set to -1 for initialized salamanders, but should
-    ///always be set to a positive number indicating the salamander's parent 
-    ///species. The only exception to this is the first salamander ("Eve"),
-    ///which is its own parent, set at 0. TODO: This is more of a "speciesid"
+    ///The phylogeny this salamander is part of (i.e., from what lineage did
+    ///this salamander arise?) Is set to -1 for initialized salamanders, but
+    ///should always be set to a positive number indicating the salamander's
+    ///parent  species. The only exception to this is the first salamander
+    ///("Eve"), which is its own parent, set at 0. TODO: This is more of a
+    ///"speciesid"
     int parent;
 };
 

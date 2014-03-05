@@ -11,20 +11,16 @@ Simulation::Simulation(double mutation_probability0, double temperature_drift_sd
 }
 
 void Simulation::runSimulation(){
-  //65Mya the Appalachian Mountains were 2.8km tall. We decide, arbitrarily to
-  //use 1000 bins to represent the mountain.
-  mts.reserve(1000);
-  for(int m=0;m<1000;m++)
-    mts.push_back(MtBin(m*2.8/1000.0));
+  //65Mya the Appalachian Mountains were 2.8km tall. Initialize each bin to
+  //point to its given elevation band.
+  mts.reserve(numbins);
+  for(int m=0;m<numbins;m++)
+    mts.push_back(MtBin(m*2.8/numbins));
 
 
   ////////////////////////////////////
   //INITIALIZE
   ////////////////////////////////////
-
-  //Kill everything since new salamanders are, by default, constructed alive.
-  for(auto &m: mts)
-    m.killAll();
 
   //Eve is the first salamander species from which all others will emerge
   Salamander Eve;
@@ -45,6 +41,10 @@ void Simulation::runSimulation(){
   //any starting value could be used with equal validity.
   Eve.genes = (Salamander::genetype)0;
 
+  //Eve inherits the mutation probability and optimal temperature drift standard
+  //deviation specified by the run. All of Eve's children inherit these
+  //properties without modification. This is an easy way to control the rate of
+  //evolution of the salamanders.
   Eve.mutation_probability = mutation_probability;
   Eve.temperature_drift_sd = temperature_drift_sd;
 
@@ -64,17 +64,29 @@ void Simulation::runSimulation(){
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
   for(double tMyrs=0;tMyrs<65.001;tMyrs+=0.5){
-    if(alive()==0) break; //TODO: Not sure if this is worth it, given the cost.
-    //Increment up the mountain
+    //This requires a linear walk of all the bins on the mountain. Hence, it's a
+    //little expensive. But it prevents many walks below if all the salamanders
+    //go extinct early on. Therefore, in a parameter space where many
+    //populations won't make it, this is a worthwhile thing to do.
+    if(alive()==0) break;
+    
+    //Visit death upon each bin
     for(auto &m: mts)
-      m.mortaliate(tMyrs);                               //Kill individuals in the bin
+      m.mortaliate(tMyrs);
 
+    //Let the salamanders in each bin be fruitful, and multiply
     for(auto &m: mts)
-      m.breed(tMyrs, species_sim_thresh);                //Breed individuals in the bin
+      m.breed(tMyrs, species_sim_thresh);
 
+    //For each bin, offer some salamanders therein the opportunity to migrate
+    //up or down the mountain
+    //TODO: Perhaps this should visit bins in a random order? It is easier for
+    //salamanders to move up the mountain than down right now.
     for(unsigned int m=0;m<mts.size();++m){
-      if(m>0)            mts[m].diffuse(tMyrs,mts[m-1]); //Diffuse salamanders "down" the mountain
-      if(m<mts.size()-1) mts[m].diffuse(tMyrs,mts[m+1]); //Diffuse salamanders "up" the mountain
+      //Migrate salamanders "down" the mountain
+      if(m>0)            mts[m].diffuse(tMyrs,mts[m-1]);
+      //Migrate salamanders "up" the mountain
+      if(m<mts.size()-1) mts[m].diffuse(tMyrs,mts[m+1]);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and
@@ -82,28 +94,39 @@ void Simulation::runSimulation(){
     phylos.UpdatePhylogeny(tMyrs, mts, species_sim_thresh);
   }
 
+  //Records the average optimal temperature of the salamanders alive at present
+  //day
   avg_otempdegC = AvgOtempdegC();
-  salive        = alive();
-  nspecies      = phylos.numAlive(65);    //Record number of species alive at present day
-  ecdf          = phylos.compareECDF(65); //Record ECDF of those species alive at present day
 
+  //Records number of salamanders alive at present day
+  salive        = alive();
+  
+  //Record number of species alive at present day
+  nspecies      = phylos.numAlive(65);
+  
+  //Record mean branch distance ECDF of those species alive at present day
+  ecdf          = phylos.compareECDF(65);
+
+  //Destroy all of the salamanders and mountain bins so that the simulation is
+  //not using excessive memory when it is not being run. We don't need this
+  //information anyway because we capture it in the summary statistics above.
   mts.clear();
   mts.shrink_to_fit();
 }
 
 int Simulation::alive() const {
-  int sum=0;
+  int sum = 0;
   for(const auto &m: mts)
-    sum+=m.alive();
+    sum += m.alive();
   return sum;
 }
 
 double Simulation::AvgOtempdegC() const {
-  int alive=0;
-  double avg=0;
+  int alive  = 0;
+  double avg = 0;
   for(const auto &m: mts)
   for(const auto &s: m.bin){
-    avg+=s.otempdegC;
+    avg += s.otempdegC;
     alive++;
   }
 

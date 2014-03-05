@@ -15,7 +15,7 @@ template<class T>
 T countbits(T a){
   unsigned int c; // c accumulates the total bits set in combined
   for (c = 0; a; ++c)
-    a &= a - 1; // clear the least significant bit set
+    a &= a - 1;   // clear the least significant bit set
   return c;
 }
 
@@ -38,7 +38,6 @@ void Salamander::printGenome() const {
   std::cerr<<std::endl;
 }
 
-//TODO: Rethink what the normal dice are which I should be using here.
 //TODO: Think about this one more time.
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child;
@@ -58,7 +57,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 
   //We push the selector along one bit at a time and if that bit is one of the
   //places were the genomes differed, we choose with 50% probability whether to
-  //turn it on or off.
+  //turn it on or off (that is, which parent it should be inherited from).
   Salamander::genetype selector = 1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
     if(not_common_genes&selector && rand()%2==0)
@@ -68,16 +67,14 @@ Salamander Salamander::breed(const Salamander &b) const {
 
   //Mutate child genome
   child.mutate();
-/*
-  printGenome();
-  cerr<<"Bits on="<<countbits(genes)<<endl;
-  b.printGenome();
-  temp.printGenome();
-*/
 
   return child;
 }
 
+//TODO: A quicker, but perhaps less clear, way to do this is to choose a number
+//in the range [0,1/mutation_probability]. If this falls in the range
+//[0,LENGTH_GENOME] then mutate the indicated gene and repeat up to
+//LENGTH_GENOME times.
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
@@ -98,8 +95,8 @@ bool Salamander::pSimilar(const Salamander &b, double species_sim_thresh) const 
 }
 
 
-//Calculate probability of death given square distance between temperature at time
-//t, and topt for this salamander. Return TRUE if salamander dies.
+//Calculate probability of death given square distance between temperature at
+//time t, and topt for this salamander. Return TRUE if salamander dies.
 bool Salamander::pDie(double tempdegC) const {
   //Parameters for a logit curve, that kills a salamander with ~50% probability
   //if it is more than 8 degrees C from its optimum temperature, and with ~90%
@@ -125,4 +122,3 @@ bool Salamander::pDie(double tempdegC) const {
   
   return false; //Lives
 }
-

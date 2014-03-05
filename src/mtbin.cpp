@@ -16,7 +16,7 @@ double Gaussian(double x, double mean, double sigma){
 
 MtBin::MtBin(double heightkm0){
   heightkm    = heightkm0;
-  bin.reserve(1000); //Maximum salamander populations per mountain bin
+  bin.reserve(binmax); //Maximum salamander populations per mountain bin
 }
 
 
@@ -27,7 +27,15 @@ double MtBin::height() const {
 
 void MtBin::killSalamander(MtBin::container::iterator s) {
   assert(!bin.empty());
+
+  //We swap the indicated salamander, which is now dead, with the salamander at
+  //the  back of the bin, which is still alive. If this method is called by an
+  //iterator the iterator must decrement and then advance so that the swapped
+  //salamander is still considered
   std::swap(*s,bin.back());
+
+  //Pop the dead salamander out of the container, so that it can never be
+  //accessed.
   bin.pop_back();
 }
 
@@ -40,9 +48,8 @@ void MtBin::mortaliate(double tMyrs) {
   unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
 
   //Since the carrying capacity of the bin may have been reduced since we last
-  //mortaliated, kill individuals at random until we are within carrying capacity
-
-  //Make a random number generator which points uniformly at all living individuals
+  //mortaliated, kill individuals at random until we are within carrying
+  //capacity.
   while(alive()>maxalive)
     killSalamander(randomSalamander());
 
@@ -51,9 +58,9 @@ void MtBin::mortaliate(double tMyrs) {
     if(s->pDie(mytemp)){
       killSalamander(s);
       //If we kill a salamander, we swap the last living salamander in the list
-      //with the salamander we just killed. Therefore, we need to make sure
-      //that we still run the mortaliate function for the living salamander that
-      //now inhabits the spot that we just filled.
+      //with the salamander we just killed. Therefore, we need to make sure that
+      //we still run the mortaliate function for the living salamander that now
+      //inhabits the spot that we just filled.
       s--;
     }
 }
@@ -96,10 +103,9 @@ unsigned int MtBin::kkap(double tMyrs) const {
   double maxelevation       = 2.8-erosion_rate*timeKyrs; //km
   double minarea_today      = area(maxelevation, tMyrs);
   
-  //Returns a number [1, binmax], with 1 being the size of the smallest bin
-  //at time tMyrs. This ensures that the smallest area (at the top of the
-  //mountain) will always have a carrying capacity of at least 1 salamander.
-  //TODO: Think about this more later.
+  //Returns a number [0, binmax].The smallest area (at the top of the mountain)
+  //will always have a carrying capacity of at least 1 salamander and all other
+  //bins are scaled to this bin's size. TODO: Think about this more later.
   return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
 }
 
@@ -120,29 +126,26 @@ unsigned int MtBin::alive() const {
 
 
 void MtBin::breed(double t, double species_sim_thresh){
-  if(bin.empty()) return;          //No one is alive here. There can be no breeding.
+  if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
   if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
-  //Maximum number of tries to find a pair to mate - prevents infinite loop
+  //Maximum number of tries to find a pair to mate; prevents infinite loops.
   int maxtries=40*(maxalive-alive());
 
   //Maximum number of new offspring per bin per unit time
   int max_babies=10;
 
-  ///Make a random number generator that considers only the parents
-  std::uniform_int_distribution<int> rdist(0, alive()-1);
-
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
   while(alive()<maxalive && max_babies>=0 && maxtries-->0){
-    Salamander &parenta=bin.at(rdist(rand_engine()));
-    Salamander &parentb=bin.at(rdist(rand_engine()));
-    //If parents are genetically similar enough to be classed as the same species
-    //based on species_sim_thresh, then they can breed.
-    if(parenta.pSimilar(parentb, species_sim_thresh)){
-      addSalamander(parenta.breed(parentb));
+    auto parenta=randomSalamander();
+    auto parentb=randomSalamander();
+    //If parents are genetically similar enough to be classed as the same
+    //species based on species_sim_thresh, then they can breed.
+    if(parenta->pSimilar(*parentb, species_sim_thresh)){
+      addSalamander(parenta->breed(*parentb));
       max_babies--;
     }
   }
@@ -166,10 +169,9 @@ void MtBin::diffuse(double t, MtBin &b) {
   unsigned int ka = kkap(t);
   unsigned int kb = b.kkap(t);
 
-  //If more individuals are leaving A than are leaving B, take the extra individuals
-  //from A and move them to B.
-  //Else, if more individuals are leaving B than are leaving A, take the extra individuals
-  //from B and move them to A.
+  //If more individuals are leaving A than are leaving B, take the extra
+  //individuals from A and move them to B. Else, if more individuals are leaving
+  //B than are leaving A, take the extra individuals from B and move them to A.
   if(aswapn>bswapn){
     aswapn-=swapc; //These are the excess salamanders left in A after swapping
     //Make sure that we don't exceed the carrying capacity in B.
@@ -232,12 +234,3 @@ MtBin::container::iterator MtBin::randomSalamander(){
   std::advance(temp,pos);
   return temp;
 }
-
-/*
-container::const_iterator MtBin::randomSalamander(){
-  assert(!bin.empty());
-  std::vector<Salamander>::const_iterator temp=bin.begin();
-  int pos=uniform_rand_int(0, bin.size()-1);
-  std::advance(temp,pos);
-  return temp;
-}*/

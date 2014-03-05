@@ -5,15 +5,18 @@
 #include "mtbin.hpp"
 #include "phylo.hpp"
 
-//Create a run struct. This struct will store the mutation and species
-//similarity thresholds used to run each of the simulations, along with the
-//outputs of those simulations. This allows us to easily multi-thread the
-//program.
+//This class will hold the parameters used to control a simulation. Running the
+//simulation will cause certain summary variables to begin values. This allows
+//us to easily multi-thread the program.
 class Simulation {
  private:
    std::vector<MtBin> mts;
+
  public:
   Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0);
+
+  //We use this many elevation bins to represent the mountain
+  const int numbins = 1000;
 
   /**
     This function runs a simulation with the specified mutation probability and
