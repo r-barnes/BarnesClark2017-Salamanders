@@ -144,6 +144,7 @@ void MtBin::breed(double t, double species_sim_thresh){
   while(alive()<maxalive && max_babies>=0 && maxtries-->0){
     Salamander &parenta=bin[rdist(rand_engine())];
     Salamander &parentb=bin[rdist(rand_engine())];
+    assert(!parenta.dead && !parentb.dead); //Make sure dead parents don't mate
     //If parents are genetically similar enough to be classed as the same species
     //based on species_sim_thresh, then they can breed.
     if(parenta.pSimilar(parentb, species_sim_thresh)){
