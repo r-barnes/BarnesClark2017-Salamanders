@@ -42,8 +42,14 @@ void MtBin::mortaliate(double tMyrs) {
 
   //For each salamander, check to see if it dies
   for(unsigned int s=0;s<startofdead && s<maxalive;++s)
-    if(bin[s].pDie(mytemp))
+    if(bin[s].pDie(mytemp)) {
       killSalamander(s);
+      //If we kill a salamander, we swap the last living salamander in the list
+      //with the salamander we just killed. Therefore, we need to make sure
+      //that we still run the mortaliate function for the living salamander that
+      //now inhabits the spot that we just filled.
+      s--;
+    }
 
   //Since the carrying capacity of the bin may have been reduced since we last
   //mortaliated, kill individuals at random until we are within carrying capacity
