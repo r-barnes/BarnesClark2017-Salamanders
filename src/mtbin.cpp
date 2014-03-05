@@ -26,7 +26,7 @@ double MtBin::height() const {
 
 
 void MtBin::killSalamander(MtBin::container::iterator s) {
-  assert(bin.size()>0);
+  assert(!bin.empty());
   std::swap(*s,bin.back());
   bin.pop_back();
 }
