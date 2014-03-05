@@ -26,7 +26,7 @@ using namespace std;
 
   @returns   A phylogeny object
 */
-Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd, double species_sim_thresh, double &avg_otempdegC){
+Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd, double species_sim_thresh, double &avg_otempdegC, int &salive){
   vector<MtBin> mts;
 
   //65Mya the Appalachian Mountains were 2.8km tall. We decide, arbitrarily to
@@ -121,10 +121,13 @@ int main(int argc, char **argv){
   if(argc==4 && std::string(argv[3])==std::string("once")){
     std::ofstream out_persistgraph(argv[1]);
     std::ofstream out_phylogeny   (argv[2]);
-    double avg_otempdegC;
-    Phylogeny phylos=RunSimulation(0.001, 0.01, 0.96,avg_otempdegC);
+    double avg_otempdegC = 0;
+    int salive           = 0;
+    Phylogeny phylos     = RunSimulation(0.001, 0.01, 0.96,avg_otempdegC,salive);
     phylos.persistGraph(out_persistgraph);
     out_phylogeny   <<phylos.printNewick() <<endl;
+    cout<<"Avg temp: "<<avg_otempdegC<<endl;
+    cout<<"Alive salamanders at end: "<<salive<<endl;
     return 0;
   }
 
@@ -148,6 +151,8 @@ int main(int argc, char **argv){
     double avg_otempdegC;
     //Phylogeny resulting from running the simulation
     Phylogeny phylos;
+    //Number of salamanders alive at the end of the simulation
+    int salive;
   };
 
   //Create a vector to hold the runs
@@ -169,11 +174,12 @@ int main(int argc, char **argv){
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical
       cout<<"Run #"<<i<<endl;
-    runs[i].avg_otempdegC=0;
-    Phylogeny phylos = RunSimulation(runs[i].mutation_probability, runs[i].temperature_drift_sd, runs[i].sim_thresh, runs[i].avg_otempdegC);
-    runs[i].nalive   = phylos.numAlive(65);    //Record number alive at present day
-    runs[i].ecdf     = phylos.compareECDF(65); //Record ECDF of those species alive at present day
-    runs[i].phylos   = phylos;
+    runs[i].avg_otempdegC = 0;
+    runs[i].salive        = 0;
+    Phylogeny phylos      = RunSimulation(runs[i].mutation_probability, runs[i].temperature_drift_sd, runs[i].sim_thresh, runs[i].avg_otempdegC, runs[i].salive);
+    runs[i].nalive        = phylos.numAlive(65);    //Record number alive at present day
+    runs[i].ecdf          = phylos.compareECDF(65); //Record ECDF of those species alive at present day
+    runs[i].phylos        = phylos;
   }
 
   //Print out the final parameters of the runs
@@ -186,6 +192,7 @@ int main(int argc, char **argv){
     cout<<", " << runs[r].nalive;
     cout<<", " << runs[r].ecdf;
     cout<<", " << runs[r].avg_otempdegC;
+    cout<<", " << runs[r].salive;
     cout<<endl;
   }
 
