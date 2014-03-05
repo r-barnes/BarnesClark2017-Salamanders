@@ -14,9 +14,8 @@ double Gaussian(double x, double mean, double sigma){
 
 
 MtBin::MtBin(double heightkm0){
-  //Create bin with no living salamanders
-  startofdead = 0;
   heightkm    = heightkm0;
+  bin.reserve(1000); //Maximum salamander populations per mountain bin
 }
 
 
@@ -26,23 +25,23 @@ double MtBin::height() const {
 
 
 void MtBin::killSalamander(int s) {
-  assert(startofdead>0);
-  bin[s].dead=true;
-  std::swap(bin[s],bin[startofdead-1]);
-  --startofdead;
+  assert(bin.size()>0);
+  bin.at(s).dead=true;
+  std::swap(bin.at(s),bin.back());
+  bin.pop_back();
 }
 
 
 void MtBin::mortaliate(double tMyrs) {
   ///If there are no living salamanders, then don't do anything
-  if(startofdead==0) return;
+  if(bin.empty()) return;
 
   double       mytemp   = temp(tMyrs);  //Current temperature of bin
   unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
 
   //For each salamander, check to see if it dies
-  for(unsigned int s=0;s<startofdead && s<maxalive;++s)
-    if(bin[s].pDie(mytemp)) {
+  for(unsigned int s=0;s<bin.size() && s<maxalive;++s)
+    if(bin.at(s).pDie(mytemp)) {
       killSalamander(s);
       //If we kill a salamander, we swap the last living salamander in the list
       //with the salamander we just killed. Therefore, we need to make sure
@@ -60,7 +59,7 @@ void MtBin::mortaliate(double tMyrs) {
     int s=rdist(rand_engine()); //Get an individual
     //If the individual is already dead, ignore it. This check is needed because
     //we don't change the range of the rdist PRNG as we kill individuals.
-    if(bin[s].dead) continue;   
+    if(bin.at(s).dead) continue;   
     killSalamander(s);
   }
 }
@@ -112,26 +111,22 @@ unsigned int MtBin::kkap(double tMyrs) const {
 
 
 void MtBin::killAll() {
-  for(auto &s: bin)
-    s.dead=true;
-  startofdead=0;
+  bin.clear();
 }
 
 
 void MtBin::addSalamander(const Salamander &s) {
-  if(startofdead==bin.size()) return;
-  bin[startofdead]=s;
-  ++startofdead;
+  bin.push_back(s);
 }
 
 
 unsigned int MtBin::alive() const {
-  return startofdead;
+  return bin.size();
 }
 
 
 void MtBin::breed(double t, double species_sim_thresh){
-  if(startofdead==0) return;       //No one is alive here. There can be no breeding.
+  if(bin.empty()) return;          //No one is alive here. There can be no breeding.
 
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
   if(alive()>=maxalive) return;    //The bin is too full for us to breed
@@ -148,8 +143,8 @@ void MtBin::breed(double t, double species_sim_thresh){
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
   while(alive()<maxalive && max_babies>=0 && maxtries-->0){
-    Salamander &parenta=bin[rdist(rand_engine())];
-    Salamander &parentb=bin[rdist(rand_engine())];
+    Salamander &parenta=bin.at(rdist(rand_engine()));
+    Salamander &parentb=bin.at(rdist(rand_engine()));
     assert(!parenta.dead && !parentb.dead); //Make sure dead parents don't mate
     //If parents are genetically similar enough to be classed as the same species
     //based on species_sim_thresh, then they can breed.
@@ -175,7 +170,7 @@ void MtBin::diffuse(double t, MtBin &b) {
   int swapc=std::min(aswapn,bswapn);
   for(int i=0;i<swapc;++i)
     //Up to the shared number of swaps (swapc), swap individuals between bins
-    std::swap(bin[myguys(rand_engine())], b.bin[otherguys(rand_engine())]);
+    std::swap(bin.at(myguys(rand_engine())), b.bin.at(otherguys(rand_engine())));
 
   //Find carrying capacity in each bin
   unsigned int ka = kkap(t);
@@ -191,7 +186,7 @@ void MtBin::diffuse(double t, MtBin &b) {
     aswapn=std::min(aswapn,kb-b.alive());
     for(unsigned int i=0;i<aswapn;++i){
       int temp=myguys(rand_engine()); //Choose a random salamander to push into B
-      b.addSalamander(bin[temp]);
+      b.addSalamander(bin.at(temp));
       killSalamander(temp);
     }
   } else if(aswapn<bswapn) {
@@ -200,7 +195,7 @@ void MtBin::diffuse(double t, MtBin &b) {
     bswapn=std::min(bswapn,ka-alive());
     for(unsigned int i=0;i<bswapn;++i){
       int temp=otherguys(rand_engine()); //Choose a random salamander to push into A
-      addSalamander(b.bin[temp]);
+      addSalamander(b.bin.at(temp));
       b.killSalamander(temp);
     }
   }

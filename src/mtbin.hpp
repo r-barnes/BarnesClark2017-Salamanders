@@ -6,19 +6,18 @@ elevational band of the mountain.
 #ifndef _mtbin
 #define _mtbin
 
-#define binmax 1000 //Maximum salamander populations per mountain bin
-
-#include <array>
+#include <vector>
 #include "salamander.hpp"
 
 class MtBin {
   public:
+    double const binmax = 1000; //Maximum salamander populations per mountain bin
     MtBin(double heightkm0);
 
     ///Returns the height of this bin IN KILOMETERS
     double height() const;
 
-    std::array<Salamander, binmax> bin;
+    std::vector<Salamander> bin;
 
     ///Salamanders fill the bin vector from 0 to startofdead-1. Bins beyond this
     ///are empty pre-allocations. startofdead therefore represents the location
