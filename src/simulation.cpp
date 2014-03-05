@@ -90,7 +90,7 @@ void Simulation::runSimulation(){
   nspecies      = phylos.numAlive(65);    //Record number of species alive at present day
   ecdf          = phylos.compareECDF(65); //Record ECDF of those species alive at present day
 
-  mts.clear();
+  mts=std::vector<MtBin>();
 }
 
 int Simulation::alive() const {
