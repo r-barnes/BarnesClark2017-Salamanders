@@ -177,13 +177,13 @@ int main(int argc, char **argv){
   //Print out the final parameters of the runs
   cout<<"Run #, MutationProb, TempDriftSD, SimThresh, Nalive, ECDF, AvgOtempdegC"<<endl;
   for(unsigned int r=0;r<runs.size();++r){
-    cout<<i<<","
-    cout<<", " << mutation_probability;
-    cout<<", " << temperature_drift_sd;
-    cout<<", " << sim_thresh;
-    cout<<", " << nalive;
-    cout<<", " << ecdf;
-    cout<<", " << avg_otempdegC;
+    cout<<r<<",";
+    cout<<", " << runs[r].mutation_probability;
+    cout<<", " << runs[r].temperature_drift_sd;
+    cout<<", " << runs[r].sim_thresh;
+    cout<<", " << runs[r].nalive;
+    cout<<", " << runs[r].ecdf;
+    cout<<", " << runs[r].avg_otempdegC;
     cout<<endl;
   }
 
