@@ -182,7 +182,7 @@ void MtBin::diffuse(double t, MtBin &b) {
   if(aswapn>bswapn){
     aswapn-=swapc; //These are the excess salamanders left in A after swapping
     //Make sure that we don't exceed the carrying capacity in B.
-    aswapn=std::min(aswapn,b.alive()-kb);
+    aswapn=std::min(aswapn,kb-b.alive());
     for(unsigned int i=0;i<aswapn;++i){
       int temp=myguys(rand_engine()); //Choose a random salamander to push into B
       b.addSalamander(bin[temp]);
@@ -191,7 +191,7 @@ void MtBin::diffuse(double t, MtBin &b) {
   } else if(aswapn<bswapn) {
     bswapn-=swapc; //These are the excess salamanders left in B after swapping
     //Make sure that we don't exceed the carrying capacity in A.
-    bswapn=std::min(bswapn,alive()-ka);
+    bswapn=std::min(bswapn,ka-alive());
     for(unsigned int i=0;i<bswapn;++i){
       int temp=otherguys(rand_engine()); //Choose a random salamander to push into A
       addSalamander(b.bin[temp]);
