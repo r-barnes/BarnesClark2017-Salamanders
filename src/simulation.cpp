@@ -64,6 +64,7 @@ void Simulation::runSimulation(){
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
   for(double tMyrs=0;tMyrs<65.001;tMyrs+=0.5){
+    if(alive()==0) break; //TODO: Not sure if this is worth it, given the cost.
     //Increment up the mountain
     for(auto &m: mts)
       m.mortaliate(tMyrs);                               //Kill individuals in the bin
