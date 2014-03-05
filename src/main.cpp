@@ -95,15 +95,15 @@ Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd
     phylos.UpdatePhylogeny(tMyrs, mts, species_sim_thresh);
   }
 
-  int alive_count=0;
+  salive=0;
   for(const auto &m: mts)
   for(const auto &s: m.bin){
     if(s.dead) continue;
     avg_otempdegC+=s.otempdegC;
-    alive_count++;
+    salive++;
   }
 
-  avg_otempdegC/=alive_count;
+  avg_otempdegC/=salive;
   
   return phylos;
 }
