@@ -70,7 +70,6 @@ class MtBin {
   private:
     ///Kills the indicated salamander and performs maintenance to keep living
     ///salamanders at the start of the list
-    void killSalamander(int s);
     void killSalamander(container::iterator s);
 
     ///Height of this bin above sealevel across all times IN KILOMETERS

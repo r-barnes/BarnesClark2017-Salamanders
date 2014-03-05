@@ -25,13 +25,6 @@ double MtBin::height() const {
 }
 
 
-void MtBin::killSalamander(int s) {
-  assert(bin.size()>0);
-  std::swap(bin.at(s),bin.back());
-  bin.pop_back();
-}
-
-
 void MtBin::killSalamander(MtBin::container::iterator s) {
   assert(bin.size()>0);
   std::swap(*s,bin.back());
@@ -46,23 +39,17 @@ void MtBin::mortaliate(double tMyrs) {
   double       mytemp   = temp(tMyrs);  //Current temperature of bin
   unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
 
-  //For each salamander, check to see if it dies
-  for(unsigned int s=0;s<bin.size() && s<maxalive;++s)
-    if(bin.at(s).pDie(mytemp)) {
-      killSalamander(s);
-      //If we kill a salamander, we swap the last living salamander in the list
-      //with the salamander we just killed. Therefore, we need to make sure
-      //that we still run the mortaliate function for the living salamander that
-      //now inhabits the spot that we just filled.
-      s--;
-    }
-
   //Since the carrying capacity of the bin may have been reduced since we last
   //mortaliated, kill individuals at random until we are within carrying capacity
 
   //Make a random number generator which points uniformly at all living individuals
   while(alive()>maxalive)
     killSalamander(randomSalamander());
+
+  //For each salamander, check to see if it dies
+  for(container::iterator s=bin.begin();s!=bin.end();s++) //TODO: Use auto notation
+    if(s->pDie(mytemp))
+      killSalamander(s);
 }
 
 
@@ -157,11 +144,6 @@ void MtBin::breed(double t, double species_sim_thresh){
 
 
 void MtBin::diffuse(double t, MtBin &b) {
-  //Setting up random number generator that can draw living individuals from the
-  //bin with uniform probability.
-  std::uniform_int_distribution<int> myguys   (0,   alive()-1);
-  std::uniform_int_distribution<int> otherguys(0, b.alive()-1);
-
   //We are now swapping 1/10 of the population in each bin.
   unsigned int aswapn=  alive()/10;
   unsigned int bswapn=b.alive()/10;
@@ -170,7 +152,7 @@ void MtBin::diffuse(double t, MtBin &b) {
   int swapc=std::min(aswapn,bswapn);
   for(int i=0;i<swapc;++i)
     //Up to the shared number of swaps (swapc), swap individuals between bins
-    std::swap(bin.at(myguys(rand_engine())), b.bin.at(otherguys(rand_engine())));
+    std::swap(*randomSalamander(), *b.randomSalamander());
 
   //Find carrying capacity in each bin
   unsigned int ka = kkap(t);
@@ -185,8 +167,8 @@ void MtBin::diffuse(double t, MtBin &b) {
     //Make sure that we don't exceed the carrying capacity in B.
     aswapn=std::min(aswapn,kb-b.alive());
     for(unsigned int i=0;i<aswapn;++i){
-      int temp=myguys(rand_engine()); //Choose a random salamander to push into B
-      b.addSalamander(bin.at(temp));
+      auto temp=randomSalamander(); //Choose a random salamander to push into B
+      b.addSalamander(*temp);
       killSalamander(temp);
     }
   } else if(aswapn<bswapn) {
@@ -194,8 +176,8 @@ void MtBin::diffuse(double t, MtBin &b) {
     //Make sure that we don't exceed the carrying capacity in A.
     bswapn=std::min(bswapn,ka-alive());
     for(unsigned int i=0;i<bswapn;++i){
-      int temp=otherguys(rand_engine()); //Choose a random salamander to push into A
-      addSalamander(b.bin.at(temp));
+      auto temp=b.randomSalamander();  //Choose a random salamander to push into A
+      addSalamander(*temp);
       b.killSalamander(temp);
     }
   }
