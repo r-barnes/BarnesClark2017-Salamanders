@@ -173,6 +173,7 @@ int main(int argc, char **argv){
     runs[i].phylos   = phylos;
   }
 
+
   int min=0;
   for(unsigned int i=1;i<runs.size();++i)
     //Mark as best match if there are 80-120 species alive at the end of the
@@ -180,6 +181,11 @@ int main(int argc, char **argv){
     //based on ECDF of mean branch distances than previous results.
     if(runs[i].ecdf<runs[min].ecdf && (80<runs[i].nalive && runs[i].nalive<120))
       min=i;
+
+
+  //Adam, play with this (up above)
+  //string outputname=std::string(argv[1])+"_run_"+std::to_string(i)
+  //std::ofstream out_persistgraph(outputname); //See below
 
   //Extract the best phylogeny for further display 'n' such.
   Phylogeny bestphylos=runs[min].phylos;
