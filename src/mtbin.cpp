@@ -85,6 +85,8 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
 
+  //TODO: The area isn't integrated over the height of the band. Is this bad?
+
   //Maximum elevation of the mountain range over time
   //Based on linear shrinking of mountain hight from 2.8km at 65Mya (according
   //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
