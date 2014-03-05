@@ -98,6 +98,7 @@ Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd
   int alive_count=0;
   for(const auto &m: mts)
   for(const auto &s: m.bin){
+    if(s.dead) continue;
     avg_otempdegC+=s.otempdegC;
     alive_count++;
   }
@@ -168,6 +169,7 @@ int main(int argc, char **argv){
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical
       cout<<"Run #"<<i<<endl;
+    runs[i].avg_otempdegC=0;
     Phylogeny phylos = RunSimulation(runs[i].mutation_probability, runs[i].temperature_drift_sd, runs[i].sim_thresh, runs[i].avg_otempdegC);
     runs[i].nalive   = phylos.numAlive(65);    //Record number alive at present day
     runs[i].ecdf     = phylos.compareECDF(65); //Record ECDF of those species alive at present day
