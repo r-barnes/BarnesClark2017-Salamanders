@@ -107,6 +107,7 @@ Phylogeny RunSimulation(double mutation_probability, double temperature_drift_sd
   return phylos;
 }
 
+//TODO What is the "argc" argumnet?
 int main(int argc, char **argv){
   if(argc<3 || argc>4){
     cout<<"Syntax: "<<argv[0]<<" <Persistance Graph Output> <Phylogeny Output> [once]"<<endl;
@@ -179,13 +180,24 @@ int main(int argc, char **argv){
     //Mark as best match if there are 80-120 species alive at the end of the
     //simulation, and if the ECDF is more similar to the Kozak and Wiens data
     //based on ECDF of mean branch distances than previous results.
-    if(runs[i].ecdf<runs[min].ecdf && (80<runs[i].nalive && runs[i].nalive<120))
+    //otemp limits are from Gifford (&Martin) 1970: Mean +/- 2SD for salamander
+    //feeding optimum
+    if(runs[i].ecdf<runs[min].ecdf && (80<runs[i].nalive && runs[i].nalive<120) &&
+         (4.629879<runs[i].avg_otempdegC && runs[i].avg_otempdegC<20.97868)) {
       min=i;
 
+      Phylogeny currentphylos=runs[i].phylos;
 
-  //Adam, play with this (up above)
-  //string outputname=std::string(argv[1])+"_run_"+std::to_string(i)
-  //std::ofstream out_persistgraph(outputname); //See below
+      //Output persistance table for each run within the boundries
+      string outputname_persist=std::string(argv[1])+"_run_"+std::to_string(i);
+      std::ofstream out_persistgraph(outputname_persist);
+      currentphylos.persistGraph(out_persistgraph);
+
+      //Output phylogeny for each run within the boundries
+      string outputname_phylo=std::string(argv[2])+"_run_"+std::to_string(i);
+      std::ofstream out_phylogeny(outputname_phylo);
+      out_phylogeny   <<currentphylos.printNewick() <<endl;
+    }
 
   //Extract the best phylogeny for further display 'n' such.
   Phylogeny bestphylos=runs[min].phylos;
