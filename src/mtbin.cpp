@@ -48,8 +48,14 @@ void MtBin::mortaliate(double tMyrs) {
 
   //For each salamander, check to see if it dies
   for(container::iterator s=bin.begin();s!=bin.end();s++) //TODO: Use auto notation
-    if(s->pDie(mytemp))
+    if(s->pDie(mytemp)){
       killSalamander(s);
+      //If we kill a salamander, we swap the last living salamander in the list
+      //with the salamander we just killed. Therefore, we need to make sure
+      //that we still run the mortaliate function for the living salamander that
+      //now inhabits the spot that we just filled.
+      s--;
+    }
 }
 
 
