@@ -26,7 +26,6 @@ double MtBin::height() const {
 
 void MtBin::killSalamander(int s) {
   assert(bin.size()>0);
-  bin.at(s).dead=true;
   std::swap(bin.at(s),bin.back());
   bin.pop_back();
 }
@@ -57,9 +56,6 @@ void MtBin::mortaliate(double tMyrs) {
   std::uniform_int_distribution<int> rdist(0, alive()-1);
   while(alive()>maxalive){
     int s=rdist(rand_engine()); //Get an individual
-    //If the individual is already dead, ignore it. This check is needed because
-    //we don't change the range of the rdist PRNG as we kill individuals.
-    if(bin.at(s).dead) continue;   
     killSalamander(s);
   }
 }
@@ -145,7 +141,6 @@ void MtBin::breed(double t, double species_sim_thresh){
   while(alive()<maxalive && max_babies>=0 && maxtries-->0){
     Salamander &parenta=bin.at(rdist(rand_engine()));
     Salamander &parentb=bin.at(rdist(rand_engine()));
-    assert(!parenta.dead && !parentb.dead); //Make sure dead parents don't mate
     //If parents are genetically similar enough to be classed as the same species
     //based on species_sim_thresh, then they can breed.
     if(parenta.pSimilar(parentb, species_sim_thresh)){

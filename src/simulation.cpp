@@ -96,10 +96,7 @@ void Simulation::runSimulation(){
 int Simulation::alive() const {
   int sum=0;
   for(const auto &m: mts)
-  for(const auto &s: m.bin){
-    if(s.dead) break;
-    sum++;
-  }
+    sum+=m.alive();
   return sum;
 }
 
@@ -108,7 +105,6 @@ double Simulation::AvgOtempdegC() const {
   double avg=0;
   for(const auto &m: mts)
   for(const auto &s: m.bin){
-    if(s.dead) break;
     avg+=s.otempdegC;
     alive++;
   }

@@ -52,12 +52,6 @@ void Phylogeny::addNode(const Salamander &s, double t){
 void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
-    //Since we always keep dead salamanders at the end of a mountain bin, once
-    //we see the first dead salamander we know we don't need to look at the
-    //rest.
-    if(s.dead)
-      break;
-
     //If I have no parent, skip me
     if(s.parent==-1){
       std::cerr<<"Salamander with bad parent discovered!"<<std::endl;

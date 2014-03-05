@@ -60,9 +60,6 @@ class Salamander {
     ///mutation rate described in mutate().
     double otempdegC;
 
-    ///Is this salamander dead? (TRUE == dead)
-    bool dead;
-    
     ///Mutation probability - used by mutate() to determine the probability of
     ///mutation in the genome. Note - this changes the genome that determines
     ///relatedness, speciation, and ability to breed. It does not directly alter
