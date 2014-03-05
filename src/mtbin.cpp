@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <iterator>
 
 
 ///Generic Gaussian distribution function
@@ -31,6 +32,13 @@ void MtBin::killSalamander(int s) {
 }
 
 
+void MtBin::killSalamander(MtBin::container::iterator s) {
+  assert(bin.size()>0);
+  std::swap(*s,bin.back());
+  bin.pop_back();
+}
+
+
 void MtBin::mortaliate(double tMyrs) {
   ///If there are no living salamanders, then don't do anything
   if(bin.empty()) return;
@@ -53,11 +61,8 @@ void MtBin::mortaliate(double tMyrs) {
   //mortaliated, kill individuals at random until we are within carrying capacity
 
   //Make a random number generator which points uniformly at all living individuals
-  std::uniform_int_distribution<int> rdist(0, alive()-1);
-  while(alive()>maxalive){
-    int s=rdist(rand_engine()); //Get an individual
-    killSalamander(s);
-  }
+  while(alive()>maxalive)
+    killSalamander(randomSalamander());
 }
 
 
@@ -229,3 +234,20 @@ double MtBin::area(double elevationkm, double tMyrs) const {
 
   return area;
 }
+
+MtBin::container::iterator MtBin::randomSalamander(){
+  assert(!bin.empty());
+  std::vector<Salamander>::iterator temp=bin.begin();
+  int pos=uniform_rand_int(0, bin.size()-1);
+  std::advance(temp,pos);
+  return temp;
+}
+
+/*
+container::const_iterator MtBin::randomSalamander(){
+  assert(!bin.empty());
+  std::vector<Salamander>::const_iterator temp=bin.begin();
+  int pos=uniform_rand_int(0, bin.size()-1);
+  std::advance(temp,pos);
+  return temp;
+}*/

@@ -12,12 +12,15 @@ elevational band of the mountain.
 class MtBin {
   public:
     double const binmax = 1000; //Maximum salamander populations per mountain bin
+
     MtBin(double heightkm0);
 
     ///Returns the height of this bin IN KILOMETERS
     double height() const;
 
-    std::vector<Salamander> bin;
+    typedef std::vector<Salamander> container;
+
+    container bin;
 
     ///Salamanders fill the bin vector from 0 to startofdead-1. Bins beyond this
     ///are empty pre-allocations. startofdead therefore represents the location
@@ -61,10 +64,14 @@ class MtBin {
     ///Swap some salamanders with those in another bin
     void diffuse(double tMyrs, MtBin &a);
 
+    container::iterator randomSalamander();
+    //container::const_iterator randomSalamander();
+
   private:
     ///Kills the indicated salamander and performs maintenance to keep living
     ///salamanders at the start of the list
     void killSalamander(int s);
+    void killSalamander(container::iterator s);
 
     ///Height of this bin above sealevel across all times IN KILOMETERS
     double heightkm;
