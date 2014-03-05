@@ -160,7 +160,7 @@ int main(int argc, char **argv){
 
   //Set up the runs
   for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=2e-4)
-  for(double temperature_drift_sd=1e-2; temperature_drift_sd<1e-1; temperature_drift_sd+=2e-2)
+  for(double temperature_drift_sd=1; temperature_drift_sd<10; temperature_drift_sd+=2)
   for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01){
     struct run temp;
     temp.mutation_probability = mutation_probability;
