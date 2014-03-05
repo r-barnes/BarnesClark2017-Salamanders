@@ -53,7 +53,7 @@ int main(int argc, char **argv){
   //Print out the final parameters of the runs
   cout<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive"<<endl;
   for(unsigned int r=0;r<runs.size();++r){
-    cout<<r<<",";
+    cout<<r;
     cout<<", " << runs[r].mutation_probability;
     cout<<", " << runs[r].temperature_drift_sd;
     cout<<", " << runs[r].species_sim_thresh;
