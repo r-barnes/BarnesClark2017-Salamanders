@@ -19,8 +19,6 @@ class Salamander {
     ///is based on a merge of the bit fields of the parents' genomes.
     Salamander breed(const Salamander &b) const;
 
-    ///Print the salamanders genome as a bit field. TODO: Consider eliminating.
-    void printGenome() const;
 
     ///Determine whether two salamander genomes are similar. If the genomes are
     ///considered similary, then the individuals are members of the same

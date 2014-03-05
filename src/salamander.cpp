@@ -29,14 +29,6 @@ Salamander::Salamander(){
   temperature_drift_sd = 1e-3;
 }
 
-void Salamander::printGenome() const {
-  Salamander::genetype selector=1;
-  for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    std::cerr<<((genes&selector)?'1':'0');
-    selector=selector<<1;
-  }
-  std::cerr<<std::endl;
-}
 
 //TODO: Think about this one more time.
 Salamander Salamander::breed(const Salamander &b) const {
