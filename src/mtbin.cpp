@@ -110,11 +110,6 @@ unsigned int MtBin::kkap(double tMyrs) const {
 }
 
 
-void MtBin::killAll() {
-  bin.clear();
-}
-
-
 void MtBin::addSalamander(const Salamander &s) {
   bin.push_back(s);
 }

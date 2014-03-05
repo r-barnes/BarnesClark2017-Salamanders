@@ -44,9 +44,6 @@ class MtBin {
     ///Returns a number [0, binmax].
     unsigned int kkap(double tMyrs) const;    
 
-    ///Kill all of the salamanders in the bin. TODO: Probably not needed any more.
-    void killAll();
-
     ///Add a salamander to the bin. Fail silently if there's no room.
     void addSalamander(const Salamander &s);
 
