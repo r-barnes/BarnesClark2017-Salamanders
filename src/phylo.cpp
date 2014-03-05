@@ -71,8 +71,10 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double specie
     //this was the case.
     bool has_parent=false;
 
-    //See if I am similar to any other salamanders, starting with the most recent
-    //TODO: Don't search past my parent
+    //See if I am similar to any other salamanders, starting with the most
+    //recent. If I reach my parent, then I know I can't be related to any
+    //species that was added to the phylogeny before my parent except by random
+    //chance; therefore, I stop my search at that point.
     for(int p=nodes.size()-1;p>=s.parent;--p) {
       //If the last child of this potential parent was born more than one time
       //step ago, then this parent's lineage is dead and I cannot be a part of
