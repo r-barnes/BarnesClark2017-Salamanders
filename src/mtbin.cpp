@@ -150,6 +150,8 @@ void MtBin::breed(double t, double species_sim_thresh){
 
 
 void MtBin::diffuse(double t, MtBin &b) {
+  if(bin.empty() && b.bin.empty()) return;
+  
   //We are now swapping 1/10 of the population in each bin.
   unsigned int aswapn=  alive()/10;
   unsigned int bswapn=b.alive()/10;
