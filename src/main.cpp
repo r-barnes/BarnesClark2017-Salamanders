@@ -174,6 +174,18 @@ int main(int argc, char **argv){
     runs[i].phylos   = phylos;
   }
 
+  //Print out the final parameters of the runs
+  cout<<"Run #, MutationProb, TempDriftSD, SimThresh, Nalive, ECDF, AvgOtempdegC"<<endl;
+  for(unsigned int r=0;r<runs.size();++r){
+    cout<<i<<","
+    cout<<", " << mutation_probability;
+    cout<<", " << temperature_drift_sd;
+    cout<<", " << sim_thresh;
+    cout<<", " << nalive;
+    cout<<", " << ecdf;
+    cout<<", " << avg_otempdegC;
+    cout<<endl;
+  }
 
   int min=0;
   for(unsigned int i=1;i<runs.size();++i)
