@@ -60,15 +60,15 @@ int main(int argc, char **argv){
     runs[i].runSimulation();
   }
 
-  //Print out the final parameters of the runs
-  
-  
+  //Print out the summary statistics of all of the runs
   std::ofstream f_summary(out_summary.c_str());
   f_summary<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive"<<endl;
   for(unsigned int r=0;r<runs.size();++r){
     f_summary<<r<<", "<<runs[r].printSummary(f_summary)<<endl;
   }
 
+  //Print out the phylogenies and persistance graphs of the runs which approximate
+  //the phylogeny of Kozak and Wiens (2010)
   int something_good=false;
   for(unsigned int i=0;i<runs.size();++i){
     //Mark as best match if there are 80-120 species alive at the end of the

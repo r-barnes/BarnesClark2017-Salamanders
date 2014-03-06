@@ -52,9 +52,11 @@ class PhyloNode {
     bool aliveAt(double t) const;
 };
 
-///Phylogeny stores all of the nodes corresponding to living and extinct species.
-///It also includes functions for making comparing generated phylogenies to the
-///results in Kozak and Wiens 2010, as well as make .tre files in Newick format.
+
+///Phylogeny stores all of the nodes corresponding to living and extinct
+///species. It also includes functions for comparing generated phylogenies to
+///the results in Kozak and Wiens 2010, as well as to produce .tre files in
+///Newick format.
 class Phylogeny {
  private:
   ///Adds a new node to the phylogeny
