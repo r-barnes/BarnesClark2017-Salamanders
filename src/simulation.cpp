@@ -150,7 +150,7 @@ double Simulation::AvgElevation() const {
   double weighted_elevation = 0;
   for(const auto &m: mts){
     salamander_count   += m.alive();
-    weighted_elevation += m.height()*m.alive();
+    weighted_elevation += m.alive()*m.height();
   }
   return weighted_elevation/salamander_count;
 }
