@@ -3,6 +3,7 @@
 #include "phylo.hpp"
 #include "simulation.hpp"
 #include "temp.hpp"
+#include "random.hpp"
 #include <array>
 #include <vector>
 #include <iostream>
@@ -66,9 +67,10 @@ int main(int argc, char **argv){
   std::vector<Simulation> runs;
 
   //Set up the runs
-  for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=2e-4)
-  for(double temperature_drift_sd=1; temperature_drift_sd<10; temperature_drift_sd+=2)
-  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01){
+  for(int iteration=0; iteration<20; iteration++)
+  for(double mutation_probability=1e-4; mutation_probability<1e-2; mutation_probability+=1e-3)
+  for(double temperature_drift_sd=0.01; temperature_drift_sd<10.0; temperature_drift_sd+=0.1)
+  for(double sim_thresh=0.90; sim_thresh<0.99; sim_thresh+=0.1){
     Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,0.5); //The last argument sets the timestep
     runs.push_back(temp);
   }
