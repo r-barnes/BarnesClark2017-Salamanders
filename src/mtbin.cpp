@@ -29,7 +29,7 @@ void MtBin::killSalamander(MtBin::container::iterator s) {
   assert(!bin.empty());
 
   //We swap the indicated salamander, which is now dead, with the salamander at
-  //the  back of the bin, which is still alive. If this method is called by an
+  //the back of the bin, which is still alive. If this method is called by an
   //iterator the iterator must decrement and then advance so that the swapped
   //salamander is still considered
   std::swap(*s,bin.back());
