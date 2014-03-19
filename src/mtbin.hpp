@@ -69,6 +69,10 @@ class MtBin {
     ///considered.
     void killSalamander(container::iterator s);
 
+    ///This friend function safely transfers one living salamander from bin a to
+    ///bin b
+    friend void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b);
+
     ///Height of this bin above sealevel across all times IN KILOMETERS
     double heightkm;
 };

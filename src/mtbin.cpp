@@ -6,6 +6,12 @@
 #include <cmath>
 #include <iterator>
 
+void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b){
+  auto temp=a.randomSalamander();
+  b.addSalamander(*temp);
+  a.killSalamander(temp);
+}
+
 
 ///Generic Gaussian distribution function
 double Gaussian(double x, double mean, double sigma){
@@ -146,7 +152,6 @@ void MtBin::breed(double t, double species_sim_thresh){
   }
 }
 
-
 void MtBin::diffuse(double t, MtBin &b) {
   if(bin.empty() && b.bin.empty()) return;
   
@@ -171,20 +176,14 @@ void MtBin::diffuse(double t, MtBin &b) {
     aswapn-=swapc; //These are the excess salamanders left in A after swapping
     //Make sure that we don't exceed the carrying capacity in B.
     aswapn=std::min(aswapn,kb-b.alive());
-    for(unsigned int i=0;i<aswapn;++i){
-      auto temp=randomSalamander(); //Choose a random salamander to push into B
-      b.addSalamander(*temp);
-      killSalamander(temp);
-    }
+    for(unsigned int i=0;i<aswapn;++i)
+      transferRandomSalamanderFromAtoB(*this,b);
   } else if(aswapn<bswapn) {
     bswapn-=swapc; //These are the excess salamanders left in B after swapping
     //Make sure that we don't exceed the carrying capacity in A.
     bswapn=std::min(bswapn,ka-alive());
-    for(unsigned int i=0;i<bswapn;++i){
-      auto temp=b.randomSalamander();  //Choose a random salamander to push into A
-      addSalamander(*temp);
-      b.killSalamander(temp);
-    }
+    for(unsigned int i=0;i<bswapn;++i)
+      transferRandomSalamanderFromAtoB(b,*this);
   }
 }
 
