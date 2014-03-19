@@ -28,10 +28,10 @@ double Temperature::getTemp(double tMyrs) const {
   
   double timeKyrs = tMyrs*1000;
 
-  int t0=(int)timeKyrs; //Time of the start of the 1kyr bin 
+  unsigned int t0=(int)timeKyrs; //Time of the start of the 1kyr bin 
 
   assert(t0 >= 0);
-  assert(t0 < 65000);
+  assert(t0 < temps.size()-2);
 
   double ta    = temps[t0];      //Temperature of this 1kyr bin
   double tb    = temps[t0+1];    //Temperature of the next 1kyr bin
