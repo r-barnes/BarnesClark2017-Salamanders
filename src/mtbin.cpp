@@ -353,4 +353,19 @@ void MtBinUnitTest::run() const {
     bin.breed(0,0);
     std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
   }
+
+  {
+    //Construct bins at 0km, 1.6km, and 2.8km
+    MtBin bin0(0), bin1(1.6), bin2(2.8);
+    Temperature::getInstance().testOff();
+    std::cerr<<std::endl;
+    std::cerr<<"Temperature at 0Myr at: "<<std::endl;
+    std::cerr<<"  0.0km="<<bin0.temp(0)<<std::endl;
+    std::cerr<<"  1.6km="<<bin1.temp(0)<<std::endl;
+    std::cerr<<"  2.8km="<<bin2.temp(0)<<std::endl;
+    std::cerr<<"Temperature at 64.9Myr at: "<<std::endl;
+    std::cerr<<"  0.0km="<<bin0.temp(64.9)<<std::endl;
+    std::cerr<<"  1.6km="<<bin1.temp(64.9)<<std::endl;
+    std::cerr<<"  2.8km="<<bin2.temp(64.9)<<std::endl;
+  }
 }
