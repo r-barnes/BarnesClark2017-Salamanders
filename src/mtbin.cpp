@@ -130,7 +130,7 @@ void MtBin::breed(double t, double species_sim_thresh){
 
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
-  while(alive()<maxalive && max_babies>=0 && maxtries-->0){
+  while(alive()<maxalive && max_babies>0 && maxtries-->0){
     auto parenta=randomSalamander();
     auto parentb=randomSalamander();
     //If parents are genetically similar enough to be classed as the same
@@ -235,6 +235,7 @@ void MtBinUnitTest::run() const {
 
   {
     std::cerr<<"MtBin: Simple addition and removal test."<<std::endl;
+    std::cerr<<std::endl;
     MtBin bin(0);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
@@ -245,6 +246,7 @@ void MtBinUnitTest::run() const {
 
   {
     std::cerr<<"MtBin: Simple addition and random removal test."<<std::endl;
+    std::cerr<<std::endl;
     MtBin bin(0);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
@@ -255,6 +257,7 @@ void MtBinUnitTest::run() const {
 
   {
     std::cerr<<"MtBin: Test whether transfers work"<<std::endl;
+    std::cerr<<std::endl;
     MtBin bin1(0), bin2(0);
     for(unsigned int i=0;i<num_to_test;i++)
       bin1.addSalamander(Salamander());
@@ -266,6 +269,7 @@ void MtBinUnitTest::run() const {
 
   {
     MtBin bin(0);
+    std::cerr<<std::endl;
     std::cerr<<"Test salamander freezing death response"<<std::endl;
     Temperature::getInstance().testOn(-10);
     for(unsigned int i=0;i<num_to_test;i++)
@@ -276,6 +280,7 @@ void MtBinUnitTest::run() const {
 
   {
     MtBin bin(0);
+    std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response"<<std::endl;
     Temperature::getInstance().testOn(100);
     for(unsigned int i=0;i<num_to_test;i++)
@@ -284,9 +289,9 @@ void MtBinUnitTest::run() const {
     assert(bin.alive()==0);
   }
 
-  //Testing salamander response to sup-optimal temperature
   {
     MtBin bin(0);
+    std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C."<<std::endl;
     Temperature::getInstance().testOn(33);
     for(unsigned int i=0;i<num_to_test;i++){
@@ -299,9 +304,9 @@ void MtBinUnitTest::run() const {
     std::cerr<<"Salamanders left alive: "<<bin.alive()<<"/"<<num_to_test<<std::endl;
   }
 
-  //Testing salamander response to sup-optimal temperature
   {
     MtBin bin(0);
+    std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C."<<std::endl;
     Temperature::getInstance().testOn(25);
     for(unsigned int i=0;i<num_to_test;i++){
@@ -312,5 +317,35 @@ void MtBinUnitTest::run() const {
 
     bin.mortaliate(0);
     std::cerr<<"Salamanders left alive: "<<bin.alive()<<"/"<<num_to_test<<std::endl;
+  }
+
+  {
+    MtBin bin(0);
+    std::cerr<<std::endl;
+    std::cerr<<"Breeding a sea-level bin at t=0 with "<<100<<" salamanders leaves ";
+    for(unsigned int i=0;i<100;i++)
+      bin.addSalamander(Salamander());
+    bin.breed(0,0);
+    std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
+  }
+
+  {
+    MtBin bin(0);
+    std::cerr<<std::endl;
+    std::cerr<<"Breeding a sea-level bin at t=0 with "<<200<<" salamanders leaves ";
+    for(unsigned int i=0;i<200;i++)
+      bin.addSalamander(Salamander());
+    bin.breed(0,0);
+    std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
+  }
+
+  {
+    MtBin bin(0);
+    std::cerr<<std::endl;
+    std::cerr<<"Breeding a sea-level bin at t=0 with "<<5<<" salamanders leaves ";
+    for(unsigned int i=0;i<5;i++)
+      bin.addSalamander(Salamander());
+    bin.breed(0,0);
+    std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
   }
 }
