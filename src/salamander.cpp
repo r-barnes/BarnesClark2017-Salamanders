@@ -97,20 +97,16 @@ bool Salamander::pDie(double tempdegC) const {
   const double logitint   = -2.197225;
 
   //For temperatures outside of these limits, the salamander always dies
-  if(!(0<=tempdegC && tempdegC<=50)) {
+  if(!(0<=tempdegC && tempdegC<=50))
     return true; //Dies
-  } else {      
+
   //Find probability of death if bounds are not exceeded
-    //Squared difference between salamander's optimal temp and input temp
-    double dtemp = pow(otempdegC-tempdegC, 2);
+  //Squared difference between salamander's optimal temp and input temp
+  double dtemp = pow(otempdegC-tempdegC, 2);
 
-    //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
-    double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
+  //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
+  double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
 
-    //Kill individual with probability pdeath
-    if(uniform_rand_real(0,1)<pdeath)
-      return true; //Dies
-  }
-  
-  return false; //Lives
+  //Kill individual with probability pdeath
+  return uniform_rand_real(0,1)<pdeath; //If true, salamander dies
 }
