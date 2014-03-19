@@ -99,7 +99,7 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, do
 }
 
 
-int Phylogeny::numAlive(double t) const {
+int Phylogeny::livingSpecies(double t) const {
   //One might think this function can be sped up by recognising that phylogenic
   //nodes are added in monotonically increasing order of time, but that forgets
   //that old nodes may survive all the way to the present. Thus, an exhaustive

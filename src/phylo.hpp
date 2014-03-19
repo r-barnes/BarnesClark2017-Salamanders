@@ -85,7 +85,7 @@ class Phylogeny {
   void UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, double species_sim_thresh);
 
   ///Counts the number of species which are alive at a given point in time
-  int numAlive(double t) const;
+  int livingSpecies(double t) const;
 
   ///Calculate empirical cumulative distribution function of branch distances.
   ///Creates evenly-spaced bins along the range of branch lengths that result
