@@ -57,6 +57,8 @@ class Simulation {
   double    ecdf;
   //Length of a timestep in the simulation
   double    timestep;
+  //Time at which the simulation ended
+  double    endtime;
 };
 
 #endif

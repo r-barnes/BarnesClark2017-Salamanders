@@ -10,6 +10,10 @@
 #include <string>
 using namespace std;
 
+std::string SimulationSummaryHeader() {
+  return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive, EndTime";
+}
+
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<r;
   out<<", " << sim.mutation_probability;
@@ -19,6 +23,7 @@ void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<", " << sim.ecdf;
   out<<", " << sim.avg_otempdegC;
   out<<", " << sim.salive;
+  out<<", " << sim.endtime;
   out<<endl;
 }
 
@@ -46,7 +51,7 @@ int main(int argc, char **argv){
     std::ofstream f_persist  (out_persist.c_str());
     std::ofstream f_phylogeny(out_phylogeny.c_str());
     std::ofstream f_summary  (out_summary.c_str());
-    f_summary<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive"<<endl;
+    f_summary<<SimulationSummaryHeader()<<endl;
     printSimulationSummary(f_summary, 0, sim);
     sim.phylos.persistGraph(f_persist);
     f_phylogeny<<sim.phylos.printNewick()<<endl;
@@ -74,7 +79,7 @@ int main(int argc, char **argv){
 
   //Print out the summary statistics of all of the runs
   std::ofstream f_summary(out_summary.c_str());
-  f_summary<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Salive"<<endl;
+  f_summary<<SimulationSummaryHeader()<<endl;
   for(unsigned int r=0;r<runs.size();++r)
     printSimulationSummary(f_summary, r, runs[r]);
 
