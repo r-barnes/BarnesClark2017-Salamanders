@@ -87,9 +87,9 @@ void Simulation::runSimulation(){
     //TODO: Perhaps this should visit bins in a random order? It is easier for
     //salamanders to move up the mountain than down right now.
     for(unsigned int m=0;m<mts.size();++m){
-      if(m==0)            mts[m].diffuse(tMyrs,0,&mts[m+1]);
-      else if(m==mts.size()-1) mts[m].diffuse(tMyrs,&mts[m-1],0);
-      else mts[m].diffuse(tMyrs,&mts[m-1],&mts[m+1]);
+      if(m==0)                 mts[m].diffuse(tMyrs,nullptr,  &mts[m+1]);
+      else if(m==mts.size()-1) mts[m].diffuse(tMyrs,&mts[m-1],nullptr  );
+      else                     mts[m].diffuse(tMyrs,&mts[m-1],&mts[m+1]);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and
