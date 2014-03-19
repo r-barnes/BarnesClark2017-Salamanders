@@ -9,7 +9,7 @@ ODIR=obj
 PRE_FLAGS=-O3
 #PRE_FLAGS=-g
 
-_OBJ = salamander.o main.o mtbin.o data.o phylo.o random.o simulation.o
+_OBJ = salamander.o mtbin.o data.o phylo.o random.o simulation.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.cpp
@@ -18,6 +18,10 @@ $(ODIR)/%.o: %.cpp
 salamander: $(OBJ) obj/main.o
 	$(CC) $(PRE_FLAGS) -o salamander.exe $^ $(CFLAGS)
 	du -hs ./salamander.exe
+
+test: $(OBJ) obj/test.o
+	$(CC) $(PRE_FLAGS) -o test.exe $^ $(CFLAGS)
+	du -hs ./test.exe	
 
 clean:
 	rm -f $(ODIR)/*.o *~ core salamander.exe

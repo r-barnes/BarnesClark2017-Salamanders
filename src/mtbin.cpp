@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cmath>
 #include <iterator>
+#include <iostream>
 
 void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b){
   auto temp=a.randomSalamander();
@@ -227,4 +228,39 @@ MtBin::container::iterator MtBin::randomSalamander(){
   int pos=uniform_rand_int(0, bin.size()-1);
   std::advance(temp,pos);
   return temp;
+}
+
+void MtBinUnitTest::run() const {
+  unsigned int num_to_test=100;
+
+  {
+    std::cerr<<"MtBin: Simple addition and removal test."<<std::endl;
+    MtBin bin(0);
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin.addSalamander(Salamander());
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin.killSalamander(bin.bin.begin());
+    assert(bin.alive()==0);
+  }
+
+  {
+    std::cerr<<"MtBin: Simple addition and random removal test."<<std::endl;
+    MtBin bin(0);
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin.addSalamander(Salamander());
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin.killSalamander(bin.randomSalamander());
+    assert(bin.alive()==0);
+  }
+
+  {
+    std::cerr<<"MtBin: Test whether transfers work"<<std::endl;
+    MtBin bin1(0), bin2(0);
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin1.addSalamander(Salamander());
+    for(unsigned int i=0;i<num_to_test;i++)
+      transferRandomSalamanderFromAtoB(bin1,bin2);
+    assert(bin1.alive()==0);
+    assert(bin2.alive()==num_to_test);
+  }
 }
