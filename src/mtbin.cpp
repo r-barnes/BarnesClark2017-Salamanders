@@ -10,8 +10,7 @@
 
 void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b){
   auto temp=a.randomSalamander();
-  b.addSalamander(*temp);
-  a.killSalamander(temp);
+  a.moveSalamanderTo(temp,b);
 }
 
 
@@ -140,6 +139,16 @@ void MtBin::breed(double t, double species_sim_thresh){
       max_babies--;
     }
   }
+}
+
+void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
+  b.addSalamander(*s);
+  killSalamander(s);
+}
+
+void MtBin::pullSalamanderFrom(const MtBin::container::iterator &s, MtBin &b){
+  addSalamander(*s);
+  b.killSalamander(s);
 }
 
 void MtBin::diffuse(double t, MtBin &b) {
