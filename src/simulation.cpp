@@ -1,14 +1,14 @@
 #include "simulation.hpp"
 #include <iostream>
 
-Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0){
+Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double timestep0){
   mutation_probability = mutation_probability0;
   temperature_drift_sd = temperature_drift_sd0;
   species_sim_thresh   = species_sim_thresh0;
   avg_otempdegC        = 0;
   salive               = 0;
   nspecies             = 0;
-  timestep             = 0.5;
+  timestep             = timestep0;
 }
 
 void Simulation::runSimulation(){

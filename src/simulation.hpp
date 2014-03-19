@@ -14,7 +14,7 @@ class Simulation {
    std::vector<MtBin> mts;
 
  public:
-  Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0);
+  Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double timestep0);
 
   //We use this many elevation bins to represent the mountain
   const int numbins = 1000;
