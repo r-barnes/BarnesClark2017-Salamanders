@@ -55,6 +55,8 @@ class Simulation {
   Phylogeny phylos;
   //Empirical cumulative distribution (ECDF) of average branch lengths between extant taxa
   double    ecdf;
+  //Length of a timestep in the simulation
+  double    timestep;
 };
 
 #endif

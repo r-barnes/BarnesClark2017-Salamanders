@@ -49,7 +49,7 @@ void Phylogeny::addNode(const Salamander &s, double t){
 }
 
 
-void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh){
+void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, double species_sim_thresh){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
     //If I have no parent, skip me
@@ -78,9 +78,9 @@ void Phylogeny::UpdatePhylogeny(double t, std::vector<MtBin> &mts, double specie
     for(int p=nodes.size()-1;p>=s.parent;--p) {
       //If the last child of this potential parent was born more than one time
       //step ago, then this parent's lineage is dead and I cannot be a part of
-      //it. This works because we are stepping by 0.5Myr, so 1Myr is two time
-      //steps. (TODO: Make sure this stays up to date if we change timesteps.)
-      if( (t-nodes.at(p).lastchild)>=1 ) continue;
+      //it. This works because we are stepping by dt-Myr, so 2*dt-Myr is two
+      //time steps.
+      if( (t-nodes.at(p).lastchild)>=dt*2 ) continue;
       
       //If my parent is the same as this salamander's parent and my genes are
       //similar to this salamander's then this salamander and I are both part

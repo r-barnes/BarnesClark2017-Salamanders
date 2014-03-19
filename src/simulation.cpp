@@ -8,6 +8,7 @@ Simulation::Simulation(double mutation_probability0, double temperature_drift_sd
   avg_otempdegC        = 0;
   salive               = 0;
   nspecies             = 0;
+  timestep             = 0.5;
 }
 
 void Simulation::runSimulation(){
@@ -63,7 +64,7 @@ void Simulation::runSimulation(){
 
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
-  for(double tMyrs=0;tMyrs<65.001;tMyrs+=0.5){
+  for(double tMyrs=0;tMyrs<65.001;tMyrs+=timestep){
     //This requires a linear walk of all the bins on the mountain. Hence, it's a
     //little expensive. But it prevents many walks below if all the salamanders
     //go extinct early on. Therefore, in a parameter space where many
@@ -91,7 +92,7 @@ void Simulation::runSimulation(){
 
     //Updates the phylogeny based on the current time, living salamanders, and
     //species similarity threshold
-    phylos.UpdatePhylogeny(tMyrs, mts, species_sim_thresh);
+    phylos.UpdatePhylogeny(tMyrs, timestep, mts, species_sim_thresh);
   }
 
   //Records the average optimal temperature of the salamanders alive at present

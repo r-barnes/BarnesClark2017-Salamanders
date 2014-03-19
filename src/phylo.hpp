@@ -82,7 +82,7 @@ class Phylogeny {
   std::vector<PhyloNode> nodes;
 
   ///Updates the phylogeny based on the current state of the salamanders
-  void UpdatePhylogeny(double t, std::vector<MtBin> &mts, double species_sim_thresh);
+  void UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, double species_sim_thresh);
 
   ///Counts the number of species which are alive at a given point in time
   int numAlive(double t) const;
