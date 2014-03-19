@@ -100,7 +100,7 @@ void Simulation::runSimulation(){
 
   //Records the time at which the simulation ended
   endtime = tMyrs;
-  if(tMyrs>65) tMyrs=65; //Since the last step goes past the end of time
+  if(tMyrs>=65) tMyrs-=dt; //Since the last step goes past the end of time
 
   //Records the average optimal temperature of the salamanders alive at present
   //day
@@ -110,10 +110,10 @@ void Simulation::runSimulation(){
   salive        = alive();
   
   //Record number of species alive at present day
-  nspecies      = phylos.numAlive(65);
+  nspecies      = phylos.livingSpecies(endtime);
   
   //Record mean branch distance ECDF of those species alive at present day
-  ecdf          = phylos.compareECDF(65);
+  ecdf          = phylos.compareECDF(endtime);
 
   //Record the average elevation at which salamanders are found at the end of
   //the simulation
