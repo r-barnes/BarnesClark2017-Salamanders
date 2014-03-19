@@ -242,6 +242,7 @@ void MtBinUnitTest::run() const {
     for(unsigned int i=0;i<num_to_test;i++)
       bin.killSalamander(bin.bin.begin());
     assert(bin.alive()==0);
+    std::cerr<<"Passed"<<std::endl;
   }
 
   {
@@ -253,6 +254,7 @@ void MtBinUnitTest::run() const {
     for(unsigned int i=0;i<num_to_test;i++)
       bin.killSalamander(bin.randomSalamander());
     assert(bin.alive()==0);
+    std::cerr<<"Passed"<<std::endl;
   }
 
   {
@@ -265,6 +267,7 @@ void MtBinUnitTest::run() const {
       transferRandomSalamanderFromAtoB(bin1,bin2);
     assert(bin1.alive()==0);
     assert(bin2.alive()==num_to_test);
+    std::cerr<<"Passed"<<std::endl;
   }
 
   {
@@ -276,6 +279,7 @@ void MtBinUnitTest::run() const {
       bin.addSalamander(Salamander());
     bin.mortaliate(0);
     assert(bin.alive()==0);
+    std::cerr<<"Passed"<<std::endl;
   }
 
   {
@@ -287,6 +291,7 @@ void MtBinUnitTest::run() const {
       bin.addSalamander(Salamander());
     bin.mortaliate(0);
     assert(bin.alive()==0);
+    std::cerr<<"Passed"<<std::endl;
   }
 
   {
