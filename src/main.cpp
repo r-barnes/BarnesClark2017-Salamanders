@@ -102,17 +102,17 @@ int main(int argc, char **argv){
       (4.629879<runs[i].avg_otempdegC && runs[i].avg_otempdegC<20.97868)
     ) {
       something_good=true;
-
-      //Output persistance table for each run within the boundries
-      string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
-      std::ofstream f_persist(outputname_persist);
-      runs[i].phylos.persistGraph(f_persist);
-
-      //Output phylogeny for each run within the boundries
-      string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
-      std::ofstream f_phylogeny(outputname_phylo);
-      f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
     }
+
+    //Output persistance table for each run within the boundries
+    string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
+    std::ofstream f_persist(outputname_persist);
+    runs[i].phylos.persistGraph(f_persist);
+
+    //Output phylogeny for each run within the boundries
+    string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
+    std::ofstream f_phylogeny(outputname_phylo);
+    f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
   }
 
   if(something_good)
