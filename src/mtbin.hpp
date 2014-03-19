@@ -57,8 +57,8 @@ class MtBin {
     ///species_sim_thresh, which takes values [0,1].
     void breed(double tMyrs, double species_sim_thresh);
 
-    ///Swap some salamanders with those in another bin
-    void diffuse(double tMyrs, MtBin &a);
+    ///Salamanders have the opportunity to move up or down the mountain
+    void diffuse(double t, MtBin *lower, MtBin *upper);
 
     container::iterator randomSalamander();
 
@@ -68,9 +68,6 @@ class MtBin {
     ///decrement itself and then advance so that the swapped salamander is
     ///considered.
     void killSalamander(container::iterator s);
-
-    ///Safely transfers one living salamander from bin a to bin b
-    friend void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b);
 
     ///Safely transfers salamander s from here to b
     void moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b);

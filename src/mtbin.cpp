@@ -8,12 +8,6 @@
 #include <iostream>
 
 
-void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b){
-  auto temp=a.randomSalamander();
-  a.moveSalamanderTo(temp,b);
-}
-
-
 ///Generic Gaussian distribution function
 double Gaussian(double x, double mean, double sigma){
   const double PI=3.14159265359;
@@ -151,38 +145,22 @@ void MtBin::pullSalamanderFrom(const MtBin::container::iterator &s, MtBin &b){
   b.killSalamander(s);
 }
 
-void MtBin::diffuse(double t, MtBin &b) {
-  if(bin.empty() && b.bin.empty()) return;
-  
-  //We are now swapping 1/10 of the population in each bin.
-  unsigned int aswapn=  alive()/10;
-  unsigned int bswapn=b.alive()/10;
+void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
+  if(bin.empty()) return;
 
-  //Find minimum of the two swap sizes.
-  int swapc=std::min(aswapn,bswapn);
-  for(int i=0;i<swapc;++i)
-    //Up to the shared number of swaps (swapc), swap individuals between bins
-    std::swap(*randomSalamander(), *b.randomSalamander());
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    if(uniform_rand_int(0,1)>=0.1) //10% chance of wanting to migrate
+      continue;
 
-  //Find carrying capacity in each bin
-  unsigned int ka = kkap(t);
-  unsigned int kb = b.kkap(t);
-
-  //If more individuals are leaving A than are leaving B, take the extra
-  //individuals from A and move them to B. Else, if more individuals are leaving
-  //B than are leaving A, take the extra individuals from B and move them to A.
-  if(aswapn>bswapn){
-    aswapn-=swapc; //These are the excess salamanders left in A after swapping
-    //Make sure that we don't exceed the carrying capacity in B.
-    aswapn=std::min(aswapn,kb-b.alive());
-    for(unsigned int i=0;i<aswapn;++i)
-      transferRandomSalamanderFromAtoB(*this,b);
-  } else if(aswapn<bswapn) {
-    bswapn-=swapc; //These are the excess salamanders left in B after swapping
-    //Make sure that we don't exceed the carrying capacity in A.
-    bswapn=std::min(bswapn,ka-alive());
-    for(unsigned int i=0;i<bswapn;++i)
-      transferRandomSalamanderFromAtoB(b,*this);
+    //Salamander's optimal temp is greater than my temp and closer to my upper neighbour's temp than mine and my neighbour has carrying capacity
+    if(upper && s->otempdegC<temp(t) && std::abs(s->otempdegC-upper->temp(t)) < std::abs(s->otempdegC-temp(t))){
+      moveSalamanderTo(s,*upper);
+      --s;
+    //Salamander's optimal temp is less than my temp and closer to my lower neighbour's temp than mine and my neighbour has carrying capacity
+    } else if(lower && s->otempdegC>temp(t) && std::abs(s->otempdegC-lower->temp(t)) < std::abs(s->otempdegC-temp(t))){
+      moveSalamanderTo(s,*lower);
+      --s;
+    }
   }
 }
 
@@ -267,16 +245,69 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    std::cerr<<"MtBin: Test whether transfers work"<<std::endl;
     std::cerr<<std::endl;
-    MtBin bin1(0), bin2(0);
-    for(unsigned int i=0;i<num_to_test;i++)
-      bin1.addSalamander(Salamander());
-    for(unsigned int i=0;i<num_to_test;i++)
-      transferRandomSalamanderFromAtoB(bin1,bin2);
-    assert(bin1.alive()==0);
-    assert(bin2.alive()==num_to_test);
-    std::cerr<<"Passed"<<std::endl;
+    std::cerr<<"MtBin: Test whether diffusion UP works."<<std::endl;
+    MtBin bin1(0), bin2(2.8/10); //A bin at sea-level and a bin just above it
+    std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<std::endl;
+    std::cerr<<"Remaining salamanders: ";
+    //Fill bin1 with a number of salamanders optimally adapted to bin2
+    for(unsigned int i=0;i<num_to_test;i++){
+      Salamander temp;
+      temp.otempdegC=bin2.temp(0);
+      bin1.addSalamander(temp);
+    }
+    //Test 100 times to show effect of diffusion
+    for(unsigned int i=0;i<100;i++){
+      std::cerr<<" "<<bin1.alive();
+      bin1.diffuse(0,nullptr,&bin2);
+    }
+    std::cerr<<std::endl;
+  }
+
+  {
+    std::cerr<<std::endl;
+    std::cerr<<"MtBin: Test whether diffusion DOWN works."<<std::endl;
+    MtBin bin1(2.8/10), bin2(0); //A bin at sea-level and a bin just above it
+    std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<std::endl;
+    std::cerr<<"Remaining salamanders: ";
+    //Fill bin1 with a number of salamanders optimally adapted to bin2
+    for(unsigned int i=0;i<num_to_test;i++){
+      Salamander temp;
+      temp.otempdegC=bin2.temp(0);
+      bin1.addSalamander(temp);
+    }
+    //Test 100 times to show effect of diffusion
+    for(unsigned int i=0;i<100;i++){
+      std::cerr<<" "<<bin1.alive();
+      bin1.diffuse(0,&bin2,nullptr);
+    }
+    std::cerr<<std::endl;
+  }
+
+  {
+    std::cerr<<std::endl;
+    std::cerr<<"MtBin: Test whether diffusion both ways works."<<std::endl;
+    MtBin bin1(2.8/10), bin2(0), bin3(2.8/10*2); //A bin at sea-level and a bin just above it
+    std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<". Bin3 temp="<<bin3.temp(0)<<"."<<std::endl;
+    std::cerr<<"Remaining salamanders: ";
+    //Fill bin1 with a number of salamanders optimally adapted to bin2
+    for(unsigned int i=0;i<num_to_test;i++){
+      Salamander temp;
+      temp.otempdegC=bin2.temp(0);
+      bin1.addSalamander(temp);
+    }
+    //Fill bin1 with a number of salamanders optimally adapted to bin3
+    for(unsigned int i=0;i<num_to_test;i++){
+      Salamander temp;
+      temp.otempdegC=bin3.temp(0);
+      bin1.addSalamander(temp);
+    }
+    //Test 100 times to show effect of diffusion
+    for(unsigned int i=0;i<100;i++){
+      std::cerr<<" "<<bin1.alive()<<"("<<bin2.alive()<<","<<bin3.alive()<<") ";
+      bin1.diffuse(0,&bin2,&bin3);
+    }
+    std::cerr<<std::endl;
   }
 
   {
