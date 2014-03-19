@@ -66,7 +66,7 @@ void Simulation::runSimulation(){
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
   double tMyrs=0;
-  for(tMyrs=0;tMyrs<65.001;tMyrs+=timestep){
+  for(tMyrs=0;tMyrs<65.000;tMyrs+=timestep){
     //This requires a linear walk of all the bins on the mountain. Hence, it's a
     //little expensive. But it prevents many walks below if all the salamanders
     //go extinct early on. Therefore, in a parameter space where many
