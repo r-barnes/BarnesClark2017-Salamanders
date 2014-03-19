@@ -11,7 +11,7 @@
 using namespace std;
 
 std::string SimulationSummaryHeader() {
-  return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive, EndTime";
+  return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive, EndTime, AvgElevation";
 }
 
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
@@ -24,6 +24,7 @@ void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<", " << sim.avg_otempdegC;
   out<<", " << sim.salive;
   out<<", " << sim.endtime;
+  out<<", " << sim.avg_elevation;
   out<<endl;
 }
 

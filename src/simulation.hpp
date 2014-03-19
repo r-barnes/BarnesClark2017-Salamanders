@@ -37,7 +37,11 @@ class Simulation {
   */
   void      runSimulation();
   int       alive() const;
+  //Returns the average optimal temperature of the living salamanders
   double    AvgOtempdegC() const;
+  //Returns the average elevation at which the living salamanders are found on
+  //the mountain
+  double    AvgElevation() const;
   //A value [0,1] indicating the probability TODO
   double    mutation_probability;
   //A value [0, Inf] dictating the standard deviation of the random, normal
@@ -59,6 +63,8 @@ class Simulation {
   double    timestep;
   //Time at which the simulation ended
   double    endtime;
+  //Average elevation of the salamanders at the end of the simulation
+  double    avg_elevation;
 };
 
 #endif

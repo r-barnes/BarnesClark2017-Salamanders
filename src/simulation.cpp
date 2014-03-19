@@ -10,6 +10,7 @@ Simulation::Simulation(double mutation_probability0, double temperature_drift_sd
   nspecies             = 0;
   timestep             = timestep0;
   endtime              = 0;
+  avg_elevation        = 0;
 }
 
 void Simulation::runSimulation(){
@@ -114,6 +115,10 @@ void Simulation::runSimulation(){
   //Record mean branch distance ECDF of those species alive at present day
   ecdf          = phylos.compareECDF(65);
 
+  //Record the average elevation at which salamanders are found at the end of
+  //the simulation
+  avg_elevation = AvgElevation();
+
   //Destroy all of the salamanders and mountain bins so that the simulation is
   //not using excessive memory when it is not being run. We don't need this
   //information anyway because we capture it in the summary statistics above.
@@ -138,4 +143,14 @@ double Simulation::AvgOtempdegC() const {
   }
 
   return avg/alive;
+}
+
+double Simulation::AvgElevation() const {
+  double salamander_count   = 0;
+  double weighted_elevation = 0;
+  for(const auto &m: mts){
+    salamander_count+=m.alive();
+    weighted_elevation+=m.height()*m.alive();
+  }
+  return weighted_elevation/salamander_count;
 }
