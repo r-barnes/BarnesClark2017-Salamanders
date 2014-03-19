@@ -250,6 +250,7 @@ void MtBinUnitTest::run() const {
     std::cerr<<"MtBin: Test whether diffusion UP works."<<std::endl;
     MtBin bin1(0), bin2(2.8/10); //A bin at sea-level and a bin just above it
     std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<std::endl;
+    std::cerr<<"Output of type: bin1(bin2,bin3)"<<std::endl;
     std::cerr<<"Remaining salamanders: ";
     //Fill bin1 with a number of salamanders optimally adapted to bin2
     for(unsigned int i=0;i<num_to_test;i++){
