@@ -99,8 +99,8 @@ void Simulation::runSimulation(){
   }
 
   //Records the time at which the simulation ended
-  endtime = tMyrs;
   if(tMyrs>=65) tMyrs-=timestep; //Since the last step goes past the end of time
+  endtime = tMyrs;
 
   //Records the average optimal temperature of the salamanders alive at present
   //day
