@@ -1,11 +1,12 @@
 #include "mtbin.hpp"
-#include "data.hpp"
+#include "temp.hpp"
 #include "random.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <iterator>
 #include <iostream>
+
 
 void transferRandomSalamanderFromAtoB(MtBin &a, MtBin &b){
   auto temp=a.randomSalamander();
@@ -74,23 +75,11 @@ void MtBin::mortaliate(double tMyrs) {
 
 
 double MtBin::temp(double tMyrs) const {
-  //Input "t" is in millions of years - transform this into thousands of years
-  double timeKyrs = tMyrs*1000;
-
-  assert(timeKyrs >= 0);
-  assert(timeKyrs <= 65000);
-
   //Find out the temperature adjustment for that height assuming a dry air
   //adiabatic lapse rate of 9.8 degC per vertical kilometer
   double altitude_temp_adjust = -9.8*heightkm;
 
-  //Interpolate temperature for this time. Temperature is binned into 1kyr bins.
-  int    t0    = (int)timeKyrs;  //Time of the start of the 1kyr bin
-  double ta    = temps[t0];      //Temperature of this 1kyr bin
-  double tb    = temps[t0+1];    //Temperature of the next 1kyr bin
-  double tdiff = tb-ta;          //Temperature difference between the two bins
-  double sea_level_temp = ta + tdiff*(timeKyrs-t0);
-  return sea_level_temp + altitude_temp_adjust;
+  return Temperature::getInstance().getTemp(tMyrs) + altitude_temp_adjust;
 }
 
 

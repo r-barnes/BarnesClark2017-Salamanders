@@ -1,6 +1,5 @@
 #include "salamander.hpp"
 #include "random.hpp"
-#include "data.hpp"
 #include <cstdlib>
 #include <functional>
 #include <iostream>

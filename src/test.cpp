@@ -2,7 +2,7 @@
 #include "mtbin.hpp"
 #include "phylo.hpp"
 #include "simulation.hpp"
-#include "data.hpp"
+#include "temp.hpp"
 #include <array>
 #include <vector>
 #include <iostream>

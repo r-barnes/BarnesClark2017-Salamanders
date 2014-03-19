@@ -1,6 +1,6 @@
 //Define a singleton class for Temperatures
 
-#include "data.hpp"
+#include "temp.hpp"
 #include <fstream>
 #include <iostream>
 #include <cassert>

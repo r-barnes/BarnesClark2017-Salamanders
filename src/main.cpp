@@ -2,6 +2,7 @@
 #include "mtbin.hpp"
 #include "phylo.hpp"
 #include "simulation.hpp"
+#include "temp.hpp"
 #include <array>
 #include <vector>
 #include <iostream>
@@ -35,6 +36,8 @@ int main(int argc, char **argv){
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
     return -1;
   }
+
+  Temperature::getInstance().init("data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
 
   string out_summary   = argv[1];
   string out_persist   = argv[2];
