@@ -42,7 +42,7 @@ double Temperature::getTemp(double tMyrs) const {
 void Temperature::testOn(double temp){
   test=true;
   testTemp=temp;
-  std::cerr<<"Temperature test mode on."<<std::endl;
+  std::cerr<<"Temperature test mode on. Temp set to "<<testTemp<<"degC"<<std::endl;
 }
 
 void Temperature::testOff(){
