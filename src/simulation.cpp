@@ -132,14 +132,3 @@ double Simulation::AvgOtempdegC() const {
 
   return avg/alive;
 }
-
-std::ostream& Simulation::printSummary(std::ostream& out) const {
-  out<<mutation_probability;
-  out<<", " << temperature_drift_sd;
-  out<<", " << species_sim_thresh;
-  out<<", " << nspecies;
-  out<<", " << ecdf;
-  out<<", " << avg_otempdegC;
-  out<<", " << salive;
-  return out;
-}

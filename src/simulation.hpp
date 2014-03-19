@@ -55,8 +55,6 @@ class Simulation {
   Phylogeny phylos;
   //Empirical cumulative distribution (ECDF) of average branch lengths between extant taxa
   double    ecdf;
-  //Print the summary statistics in a handy format
-  std::ostream& printSummary(std::ostream& out) const;
 };
 
 #endif

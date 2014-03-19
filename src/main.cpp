@@ -10,6 +10,18 @@
 #include <string>
 using namespace std;
 
+void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
+  out<<r;
+  out<<", " << sim.mutation_probability;
+  out<<", " << sim.temperature_drift_sd;
+  out<<", " << sim.species_sim_thresh;
+  out<<", " << sim.nspecies;
+  out<<", " << sim.ecdf;
+  out<<", " << sim.avg_otempdegC;
+  out<<", " << sim.salive;
+  out<<endl;
+}
+
 int main(int argc, char **argv){
   if(argc<4 || argc>5){
     cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> [once]"<<endl;
@@ -35,7 +47,7 @@ int main(int argc, char **argv){
     std::ofstream f_phylogeny(out_phylogeny.c_str());
     std::ofstream f_summary  (out_summary.c_str());
     f_summary<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive"<<endl;
-    f_summary<<0<<", "<<sim.printSummary(f_summary)<<endl;
+    printSimulationSummary(f_summary, 0, sim);
     sim.phylos.persistGraph(f_persist);
     f_phylogeny<<sim.phylos.printNewick()<<endl;
     return 0;
@@ -62,10 +74,9 @@ int main(int argc, char **argv){
 
   //Print out the summary statistics of all of the runs
   std::ofstream f_summary(out_summary.c_str());
-  f_summary<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive"<<endl;
-  for(unsigned int r=0;r<runs.size();++r){
-    f_summary<<r<<", "<<runs[r].printSummary(f_summary)<<endl;
-  }
+  f_summary<<"Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Salive"<<endl;
+  for(unsigned int r=0;r<runs.size();++r)
+    printSimulationSummary(f_summary, r, runs[r]);
 
   //Print out the phylogenies and persistance graphs of the runs which approximate
   //the phylogeny of Kozak and Wiens (2010)
