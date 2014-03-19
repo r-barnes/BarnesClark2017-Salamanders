@@ -17,7 +17,7 @@ class Simulation {
   Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double timestep0);
 
   //We use this many elevation bins to represent the mountain
-  const int numbins = 10;
+  static const int numbins = 10;
 
   /**
     This function runs a simulation with the specified mutation probability and
