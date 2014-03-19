@@ -263,4 +263,54 @@ void MtBinUnitTest::run() const {
     assert(bin1.alive()==0);
     assert(bin2.alive()==num_to_test);
   }
+
+  {
+    MtBin bin(0);
+    std::cerr<<"Test salamander freezing death response"<<std::endl;
+    Temperature::getInstance().testOn(-10);
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin.addSalamander(Salamander());
+    bin.mortaliate(0);
+    assert(bin.alive()==0);
+  }
+
+  {
+    MtBin bin(0);
+    std::cerr<<"Test salamander heat death response"<<std::endl;
+    Temperature::getInstance().testOn(100);
+    for(unsigned int i=0;i<num_to_test;i++)
+      bin.addSalamander(Salamander());
+    bin.mortaliate(0);
+    assert(bin.alive()==0);
+  }
+
+  //Testing salamander response to sup-optimal temperature
+  {
+    MtBin bin(0);
+    std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C."<<std::endl;
+    Temperature::getInstance().testOn(33);
+    for(unsigned int i=0;i<num_to_test;i++){
+      Salamander temp;
+      temp.otempdegC=25;
+      bin.addSalamander(temp);
+    }
+
+    bin.mortaliate(0);
+    std::cerr<<"Salamanders left alive: "<<bin.alive()<<"/"<<num_to_test<<std::endl;
+  }
+
+  //Testing salamander response to sup-optimal temperature
+  {
+    MtBin bin(0);
+    std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C."<<std::endl;
+    Temperature::getInstance().testOn(25);
+    for(unsigned int i=0;i<num_to_test;i++){
+      Salamander temp;
+      temp.otempdegC=33;
+      bin.addSalamander(temp);
+    }
+
+    bin.mortaliate(0);
+    std::cerr<<"Salamanders left alive: "<<bin.alive()<<"/"<<num_to_test<<std::endl;
+  }
 }
