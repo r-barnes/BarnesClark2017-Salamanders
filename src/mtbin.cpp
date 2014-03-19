@@ -149,7 +149,8 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
-    if(uniform_rand_int(0,1)>=0.1) //10% chance of wanting to migrate
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=0.1)
       continue;
 
     //Salamander's optimal temp is greater than my temp and closer to my upper neighbour's temp than mine and my neighbour has carrying capacity
