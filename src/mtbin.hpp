@@ -71,8 +71,6 @@ class MtBin {
 
     ///Safely transfers salamander s from here to b
     void moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b);
-    ///Safely transfers salamanader s from b to here
-    void pullSalamanderFrom(const MtBin::container::iterator &s, MtBin &b);
 
     ///Height of this bin above sealevel across all times IN KILOMETERS
     double heightkm;

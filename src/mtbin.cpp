@@ -140,11 +140,6 @@ void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
   killSalamander(s);
 }
 
-void MtBin::pullSalamanderFrom(const MtBin::container::iterator &s, MtBin &b){
-  addSalamander(*s);
-  b.killSalamander(s);
-}
-
 void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
