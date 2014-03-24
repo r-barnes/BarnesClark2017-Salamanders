@@ -92,21 +92,7 @@ int main(int argc, char **argv){
 
   //Print out the phylogenies and persistance graphs of the runs which approximate
   //the phylogeny of Kozak and Wiens (2010)
-  int something_good=false;
   for(unsigned int i=0;i<runs.size();++i){
-    //Mark as best match if there are 80-120 species alive at the end of the
-    //simulation, and if the ECDF is more similar to the Kozak and Wiens data
-    //based on ECDF of mean branch distances than previous results.
-    //otemp limits are from Gifford (&Martin) 1970: Mean +/- 2SD for salamander
-    //feeding optimum
-    if(
-      //runs[i].ecdf<runs[min].ecdf && //TODO: Adjust this so that it looks at an absolute range for ECDF
-      (80<runs[i].nspecies && runs[i].nspecies<120) &&
-      (4.629879<runs[i].avg_otempdegC && runs[i].avg_otempdegC<20.97868)
-    ) {
-      something_good=true;
-    }
-
     //Output persistance table for each run within the boundries
     string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
     std::ofstream f_persist(outputname_persist);
@@ -118,8 +104,5 @@ int main(int argc, char **argv){
     f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
   }
 
-  if(something_good)
-    return 0;
-  else
-    return 1;
+  return 0;
 }
