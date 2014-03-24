@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
-#include <iostream> //TODO: USED ONLY FOR DEBGUGING
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   //Copy relevant parameters from the Salamander that originates this strain
@@ -53,10 +52,8 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, do
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
     //If I have no parent, skip me
-    if(s.parent==-1){
-      std::cerr<<"Salamander with bad parent discovered!"<<std::endl;
-      continue;
-    }
+    if(s.parent==-1)
+      throw "Salamander with bad parent discovered!";
 
     //I am similar to my parent, so mark my parent (species) as having survived
     //this long
