@@ -3,6 +3,7 @@
 #include "phylo.hpp"
 #include "simulation.hpp"
 #include "temp.hpp"
+#include "random.hpp"
 #include <array>
 #include <vector>
 #include <iostream>
