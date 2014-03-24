@@ -104,7 +104,7 @@ bool Salamander::pDie(double tempdegC) const {
   double dtemp = pow(otempdegC-tempdegC, 2);
 
   //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
-  double pdeath = 1/(1+exp(-(dtemp*logitslope+logitint)));
+  double pdeath = 1/(1+exp(-(dtemp*logitslope*tempdeathfactor+logitint)));
 
   //Kill individual with probability pdeath
   return uniform_rand_real(0,1)<pdeath; //If true, salamander dies
