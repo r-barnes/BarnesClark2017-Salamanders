@@ -26,12 +26,16 @@ Salamander::Salamander(){
   parent               = -1;
   mutation_probability = 1e-4;
   temperature_drift_sd = 1e-3;
+  //We are using infinity as a default value to ensure that everything dies
+  //always if a salamander is not initialized. This should provide a cue that
+  //something is amiss if it occurs.
+  tempdeathfactor      = std::numeric_limits<double>::infinity();
 }
 
 
 //TODO: Think about this one more time.
 Salamander Salamander::breed(const Salamander &b) const {
-  Salamander child;
+  Salamander child=*this;
 
   child.parent = parent;
 

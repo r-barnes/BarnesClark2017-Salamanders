@@ -1,7 +1,8 @@
 #include "simulation.hpp"
 #include <iostream>
+#include <limits>
 
-Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double timestep0){
+Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double tempdeathfactor0, double timestep0){
   mutation_probability = mutation_probability0;
   temperature_drift_sd = temperature_drift_sd0;
   species_sim_thresh   = species_sim_thresh0;
@@ -11,6 +12,7 @@ Simulation::Simulation(double mutation_probability0, double temperature_drift_sd
   timestep             = timestep0;
   endtime              = 0;
   avg_elevation        = 0;
+  tempdeathfactor      = tempdeathfactor0;
 }
 
 void Simulation::runSimulation(){
@@ -50,6 +52,10 @@ void Simulation::runSimulation(){
   //evolution of the salamanders.
   Eve.mutation_probability = mutation_probability;
   Eve.temperature_drift_sd = temperature_drift_sd;
+
+  //Eve gets this simulations setting for how her mortality should respond to
+  //temperature. All of her children inherit this.
+  Eve.tempdeathfactor = tempdeathfactor;
 
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a

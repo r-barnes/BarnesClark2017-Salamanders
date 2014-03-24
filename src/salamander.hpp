@@ -78,6 +78,11 @@ class Salamander {
     ///("Eve"), which is its own parent, set at 0. TODO: This is more of a
     ///"speciesid"
     int parent;
+
+    ///This variable adjusts how the the salamander's probability of death is
+    ///affected by temperature. For further details, please look at the pDie()
+    ///method
+    double tempdeathfactor;    
 };
 
 #endif
