@@ -259,14 +259,17 @@ std::string Phylogeny::printNewick(int n, int depth) const {
       //child split from the parent line. This branching took place at the point
       //in time at which the previous child emerged. So the length to that node
       //is from the emergence time of this child (the time of this splitting) to
-      //the emergence time of the previous child. (TODO: What happens if the
-      //previous child split at the same time this child did?)
+      //the emergence time of the previous child. Note: If the previous child
+      //split at the same time this child did, then there is a trifurcation. We
+      //do not explicitly handle this case.
       int prevchild=my_children[c-1];
       temp+=std::to_string(nodes[prevchild].emergence-nodes[child].emergence);
       temp+=",";
       temp+=childphylo;
       //This phylogeny splits off right here so I don't specify a branch length.
-      //TODO: Should we add a :0 to this?
+      //Note: This seems okay as is, but perhaps there should be a :0 here if we
+      //wanted to be super-accurate, or some other number if we wanted a little
+      //"jiggle" in the phylogeny.
       temp+=")";
       my_phylo=temp;
     }
