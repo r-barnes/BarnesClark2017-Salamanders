@@ -67,10 +67,10 @@ int main(int argc, char **argv){
   std::vector<Simulation> runs;
 
   //Set up the runs
-  for(int iterationnumber=0; iterationnumber<1; iterationnumber++)
-  for(double mutation_probability=1e-4; mutation_probability<1e-3; mutation_probability+=2e-4)
-  for(double temperature_drift_sd=1; temperature_drift_sd<10; temperature_drift_sd+=2)
-  for(double sim_thresh=0.95; sim_thresh<1; sim_thresh+=0.01)
+  for(int iterationnumber=0; iterationnumber<100; iterationnumber++)
+  for(double mutation_probability=1e-2; mutation_probability<1; mutation_probability+=10)
+  for(double temperature_drift_sd=1; temperature_drift_sd<2; temperature_drift_sd+=10)
+  for(double sim_thresh=0.96; sim_thresh<1; sim_thresh+=10)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor+=0.1){
     Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5); //The last argument sets the timestep
     runs.push_back(temp);
