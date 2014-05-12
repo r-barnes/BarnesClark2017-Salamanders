@@ -249,9 +249,9 @@ std::string Phylogeny::printNewick(int n, int depth) const {
       my_phylo+=childphylo;
       my_phylo+=")";
       if(c+1<my_children.size()){
-        //my_phylo+=":" + std::to_string(nodes[child].emergence-nodes[n].emergence);
-      } else {
         my_phylo+=":" + std::to_string(nodes[child].emergence-nodes[my_children[c+1]].emergence);
+      } else {
+        //my_phylo+=":" + std::to_string(nodes[child].emergence-nodes[n].emergence);
       }
     } else {
     //This isn't the most recent child the parent has had. The current child has
