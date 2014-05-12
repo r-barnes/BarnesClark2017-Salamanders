@@ -209,7 +209,7 @@ void Phylogeny::persistGraph(std::ofstream &out) const {
 std::string Phylogeny::printNewick(int n, int depth) const {
   if(nodes[n].children.empty()){
     double length=nodes[n].lastchild-nodes[n].emergence;
-    return "(S"+std::to_string(n) + ":" + std::to_string(length) + ")";
+    return "S"+std::to_string(n) + ":" + std::to_string(length);
   }
 
   //Copy this node's list of children so that we can guarantee that this method
@@ -248,11 +248,6 @@ std::string Phylogeny::printNewick(int n, int depth) const {
       my_phylo+=",";
       my_phylo+=childphylo;
       my_phylo+=")";
-      if(c+1<my_children.size()){
-        my_phylo+=":" + std::to_string(nodes[child].emergence-nodes[my_children[c+1]].emergence);
-      } else {
-        //my_phylo+=":" + std::to_string(nodes[child].emergence-nodes[n].emergence);
-      }
     } else {
     //This isn't the most recent child the parent has had. The current child has
     //a phylogeny and the more recent child has a phylogeny as well. Thus, we
@@ -279,6 +274,8 @@ std::string Phylogeny::printNewick(int n, int depth) const {
       my_phylo=temp;
     }
   }
+
+  my_phylo+=":"+std::to_string(nodes[my_children.back()].emergence-nodes[n].emergence);
 
   if(depth==0)
     my_phylo+=";";
