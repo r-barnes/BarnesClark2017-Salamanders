@@ -266,15 +266,17 @@ std::string Phylogeny::printNewick(int n, int depth) const {
       temp+=std::to_string(nodes[prevchild].emergence-nodes[child].emergence);
       temp+=",";
       temp+=childphylo;
-      //This phylogeny splits off right here so I don't specify a branch length.
-      //Note: This seems okay as is, but perhaps there should be a :0 here if we
-      //wanted to be super-accurate, or some other number if we wanted a little
-      //"jiggle" in the phylogeny.
+      //Since "childphylo" is a valid phylogeny and includes a distance to
+      //root, it is not necessary to specify a distance here
       temp+=")";
       my_phylo=temp;
     }
   }
 
+  //This is the distance between the least recent child's emergence and the
+  //emergence of the parent. Having this here ensures that every time this
+  //function returns the result is a valid phylogeny including a distance to
+  //root
   my_phylo+=":"+std::to_string(nodes[my_children.back()].emergence-nodes[n].emergence);
 
   if(depth==0)
