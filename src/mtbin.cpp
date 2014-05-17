@@ -86,15 +86,16 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //Based on linear shrinking of mountain hight from 2.8km at 65Mya (according
   //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
   //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
-  double const height_65mya = 2.8; //km
+  double const height_65mya = 1.6;//2.8; //km
   double const height_0mya  = 1.6; //km
   double const erosion_rate = (height_65mya-height_0mya)/65000; //Erosion rate per 1kyr
-  double maxelevation       = 2.8-erosion_rate*timeKyrs; //km
+  double maxelevation       = 1.6;//2.8-erosion_rate*timeKyrs; //km
   double minarea_today      = area(maxelevation, tMyrs);
   
   //Returns a number [0, binmax].The smallest area (at the top of the mountain)
   //will always have a carrying capacity of at least 1 salamander and all other
   //bins are scaled to this bin's size. TODO: Think about this more later.
+  return binmax;
   return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
 }
 

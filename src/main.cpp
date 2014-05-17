@@ -39,6 +39,7 @@ int main(int argc, char **argv){
   }
 
   Temperature::getInstance().init("data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
+  Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
 
   string out_summary   = argv[1];
   string out_persist   = argv[2];
@@ -68,9 +69,9 @@ int main(int argc, char **argv){
 
   //Set up the runs
   for(int iterationnumber=0; iterationnumber<100; iterationnumber++)
-  for(double mutation_probability=1e-2; mutation_probability<1; mutation_probability+=10)
-  for(double temperature_drift_sd=1; temperature_drift_sd<2; temperature_drift_sd+=10)
-  for(double sim_thresh=0.96; sim_thresh<1; sim_thresh+=10)
+  for(double mutation_probability=1e-3; mutation_probability<1e-1; mutation_probability+=5e-3)
+  for(double temperature_drift_sd=0.1; temperature_drift_sd<10; temperature_drift_sd+=5e-1)
+  for(double sim_thresh=0.90; sim_thresh<1; sim_thresh+=0.02)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor+=0.1){
     Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5); //The last argument sets the timestep
     runs.push_back(temp);
@@ -92,17 +93,17 @@ int main(int argc, char **argv){
 
   //Print out the phylogenies and persistance graphs of the runs which approximate
   //the phylogeny of Kozak and Wiens (2010)
-  for(unsigned int i=0;i<runs.size();++i){
+  //for(unsigned int i=0;i<runs.size();++i){
     //Output persistance table for each run within the boundries
-    string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
-    std::ofstream f_persist(outputname_persist);
-    runs[i].phylos.persistGraph(f_persist);
+    //string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
+    //std::ofstream f_persist(outputname_persist);
+    //runs[i].phylos.persistGraph(f_persist);
 
     //Output phylogeny for each run within the boundries
-    string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
-    std::ofstream f_phylogeny(outputname_phylo);
-    f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
-  }
+    //string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
+    //std::ofstream f_phylogeny(outputname_phylo);
+    //f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
+  //}
 
   return 0;
 }
