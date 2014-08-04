@@ -39,7 +39,9 @@ int main(int argc, char **argv){
   }
 
   Temperature::getInstance().init("data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
-  Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
+  if(!vary_temp) {
+    Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
+  }
 
   string out_summary   = argv[1];
   string out_persist   = argv[2];
@@ -68,7 +70,7 @@ int main(int argc, char **argv){
   std::vector<Simulation> runs;
 
   //Set up the runs
-  for(int iterationnumber=0; iterationnumber<100; iterationnumber++)
+  for(int iterationnumber=0; iterationnumber<1; iterationnumber++)
   for(double mutation_probability=1e-3; mutation_probability<1e-1; mutation_probability+=5e-3)
   for(double temperature_drift_sd=0.1; temperature_drift_sd<10; temperature_drift_sd+=5e-1)
   for(double sim_thresh=0.90; sim_thresh<1; sim_thresh+=0.02)

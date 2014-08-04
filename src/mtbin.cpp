@@ -15,8 +15,9 @@ double Gaussian(double x, double mean, double sigma){
 }
 
 
-MtBin::MtBin(double heightkm0){
+MtBin::MtBin(double heightkm0, bool vary_height0){
   heightkm    = heightkm0;
+  vary_height = vary_height0;
   bin.reserve(binmax); //Maximum salamander populations per mountain bin
 }
 
@@ -77,6 +78,8 @@ double MtBin::temp(double tMyrs) const {
 
 
 unsigned int MtBin::kkap(double tMyrs) const {
+  if(!vary_height) tMyrs=65;
+  
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
 
@@ -86,10 +89,10 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //Based on linear shrinking of mountain hight from 2.8km at 65Mya (according
   //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
   //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
-  double const height_65mya = 1.6;//2.8; //km
+  double const height_65mya = 2.8; //km
   double const height_0mya  = 1.6; //km
   double const erosion_rate = (height_65mya-height_0mya)/65000; //Erosion rate per 1kyr
-  double maxelevation       = 1.6;//2.8-erosion_rate*timeKyrs; //km
+  double maxelevation       = 2.8-erosion_rate*timeKyrs; //km
   double minarea_today      = area(maxelevation, tMyrs);
   
   //Returns a number [0, binmax].The smallest area (at the top of the mountain)
@@ -166,6 +169,8 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
 ///Given a time tMyrs in millions of years ago returns area at that elevation
 ///IN SQUARE KILOMETERS
 double MtBin::area(double elevationkm, double tMyrs) const {
+  if(!vary_height) tMyrs=65;
+  
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Paramteres are fit to
   ///contemporary height distributions presented in Kozak and Wiens 2010.
