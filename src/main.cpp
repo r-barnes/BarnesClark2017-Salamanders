@@ -31,11 +31,43 @@ void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
 }
 
 int main(int argc, char **argv){
-  if(argc<4 || argc>5){
-    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> [once]"<<endl;
+  bool vary_temp;
+  bool vary_height;
+  bool run_once;
+  string out_summary;
+  string out_persist;
+  string out_phylogeny;
+
+  //seed_rand(); //TODO: Uncomment this line before production
+
+  if(argc<6 || argc>7){
+    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany>"<<endl;
     cout<<"'once' indicates the program should be run once, for testing."<<endl;
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
     return -1;
+  } else {
+    string out_summary       = argv[1];
+    string out_persist       = argv[2];
+    string out_phylogeny     = argv[3];
+    string vary_height_or_no = argv[4];
+    string vary_temp_or_no   = argv[5];
+    string run_once_or_many  = argv[6];
+
+    if( !(vary_height_or_no=="NoVaryHeight" || vary_height_or_no=="VaryHeight")){
+      cerr<<"Unrecognised vary height directive."<<endl;
+      return -1;
+    }
+    if( !(vary_height_or_no=="NoVaryTemp" || vary_height_or_no=="VaryTemp")){
+      cerr<<"Unrecognised vary temp directive."<<endl;
+      return -1;
+    }
+    if( !(run_once_or_many=="RunOnce" || run_once_or_many=="RunMany")){
+      cerr<<"Unrecognised vary temp directive."<<endl;
+      return -1;
+    }
+    vary_height = (vary_height_or_no == "VaryHeight");
+    vary_temp   = (vary_temp_or_no   == "VaryTemp"  );
+    run_once    = (run_once_or_many  == "RunOnce"   );
   }
 
   Temperature::getInstance().init("data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
@@ -43,14 +75,8 @@ int main(int argc, char **argv){
     Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
   }
 
-  string out_summary   = argv[1];
-  string out_persist   = argv[2];
-  string out_phylogeny = argv[3];
-
-  //seed_rand(); //TODO: Uncomment this line before production
-
-  if(argc==5 && std::string(argv[4])==std::string("once")){
-    Simulation sim(0.001, 0.01, 0.96, 1, 0.5, true); //The last argument sets the timestep
+  if(argc==5 && run_once){
+    Simulation sim(0.001, 0.01, 0.96, 1, 0.5, vary_height); //The last argument sets the timestep
     sim.runSimulation();
 
     out_persist   += ".csv";
@@ -75,7 +101,7 @@ int main(int argc, char **argv){
   for(double temperature_drift_sd=0.1; temperature_drift_sd<10; temperature_drift_sd+=5e-1)
   for(double sim_thresh=0.90; sim_thresh<1; sim_thresh+=0.02)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor+=0.1){
-    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5,true); //The last argument sets the timestep
+    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5,vary_height); //The last argument sets the timestep
     runs.push_back(temp);
   }
 
