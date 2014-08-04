@@ -15,8 +15,9 @@ double Gaussian(double x, double mean, double sigma){
 }
 
 
-MtBin::MtBin(double heightkm0){
+MtBin::MtBin(double heightkm0, bool vary_height0){
   heightkm    = heightkm0;
+  vary_height = vary_height0;
   bin.reserve(binmax); //Maximum salamander populations per mountain bin
 }
 

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <limits>
 
-Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double tempdeathfactor0, double timestep0){
+Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double tempdeathfactor0, double timestep0, bool vary_height0){
   mutation_probability = mutation_probability0;
   temperature_drift_sd = temperature_drift_sd0;
   species_sim_thresh   = species_sim_thresh0;
@@ -13,6 +13,7 @@ Simulation::Simulation(double mutation_probability0, double temperature_drift_sd
   endtime              = 0;
   avg_elevation        = 0;
   tempdeathfactor      = tempdeathfactor0;
+  vary_height          = vary_height0;
 }
 
 void Simulation::runSimulation(){
@@ -20,7 +21,7 @@ void Simulation::runSimulation(){
   //point to its given elevation band.
   mts.reserve(numbins);
   for(int m=0;m<numbins;m++)
-    mts.push_back(MtBin(m*2.8/numbins));
+    mts.push_back(MtBin(m*2.8/numbins, vary_height));
 
 
   ////////////////////////////////////
