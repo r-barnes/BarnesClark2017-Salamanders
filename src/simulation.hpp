@@ -68,6 +68,8 @@ class Simulation {
   //Adjusts how salamander mortality relates to temperature. See
   //Salamander::pDie() for details.
   double    tempdeathfactor;
+  //Determines whether the mountains erode over time
+  bool vary_height;
 };
 
 #endif

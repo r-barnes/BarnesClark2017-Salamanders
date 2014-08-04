@@ -79,7 +79,7 @@ double MtBin::temp(double tMyrs) const {
 
 unsigned int MtBin::kkap(double tMyrs) const {
   if(!vary_height) tMyrs=65;
-  
+
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
 
@@ -94,7 +94,7 @@ unsigned int MtBin::kkap(double tMyrs) const {
   double const erosion_rate = (height_65mya-height_0mya)/65000; //Erosion rate per 1kyr
   double maxelevation       = 2.8-erosion_rate*timeKyrs; //km
   double minarea_today      = area(maxelevation, tMyrs);
-  
+
   //Returns a number [0, binmax].The smallest area (at the top of the mountain)
   //will always have a carrying capacity of at least 1 salamander and all other
   //bins are scaled to this bin's size. TODO: Think about this more later.
@@ -170,18 +170,18 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
 ///IN SQUARE KILOMETERS
 double MtBin::area(double elevationkm, double tMyrs) const {
   if(!vary_height) tMyrs=65;
-  
+
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Paramteres are fit to
   ///contemporary height distributions presented in Kozak and Wiens 2010.
-  ///deltasd describes change in sd per year, which  
+  ///deltasd describes change in sd per year, which
 
   //Scaling parameter transforming standard normal dist to total area of the
   //Appalachians at present (0Mya) IN SQUARE KILOMETERS, as described by the
   //calculate_area_parameters.R script
   const double elek     = 1202975;
 
-  //Standard deviation of an analogous normal distribution to above, but 65Mya, IN KILOMETERS  
+  //Standard deviation of an analogous normal distribution to above, but 65Mya, IN KILOMETERS
   const double elesigma = 0.3858345;
 
   //Mean of the above normal distribution IN KILOMETERS
@@ -225,7 +225,7 @@ void MtBinUnitTest::run() const {
   {
     std::cerr<<"MtBin: Simple addition and removal test."<<std::endl;
     std::cerr<<std::endl;
-    MtBin bin(0);
+    MtBin bin(0, true);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
     for(unsigned int i=0;i<num_to_test;i++)
@@ -237,7 +237,7 @@ void MtBinUnitTest::run() const {
   {
     std::cerr<<"MtBin: Simple addition and random removal test."<<std::endl;
     std::cerr<<std::endl;
-    MtBin bin(0);
+    MtBin bin(0,true);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
     for(unsigned int i=0;i<num_to_test;i++)
@@ -249,7 +249,7 @@ void MtBinUnitTest::run() const {
   {
     std::cerr<<std::endl;
     std::cerr<<"MtBin: Test whether diffusion UP works."<<std::endl;
-    MtBin bin1(0), bin2(2.8/10); //A bin at sea-level and a bin just above it
+    MtBin bin1(0,true), bin2(2.8/10,true); //A bin at sea-level and a bin just above it
     std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<std::endl;
     std::cerr<<"Remaining salamanders: ";
     //Fill bin1 with a number of salamanders optimally adapted to bin2
@@ -269,7 +269,7 @@ void MtBinUnitTest::run() const {
   {
     std::cerr<<std::endl;
     std::cerr<<"MtBin: Test whether diffusion DOWN works."<<std::endl;
-    MtBin bin1(2.8/10), bin2(0); //A bin at sea-level and a bin just above it
+    MtBin bin1(2.8/10, true), bin2(0, true); //A bin at sea-level and a bin just above it
     std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<std::endl;
     std::cerr<<"Remaining salamanders: ";
     //Fill bin1 with a number of salamanders optimally adapted to bin2
@@ -289,7 +289,7 @@ void MtBinUnitTest::run() const {
   {
     std::cerr<<std::endl;
     std::cerr<<"MtBin: Test whether diffusion both ways works."<<std::endl;
-    MtBin bin1(2.8/10), bin2(0), bin3(2.8/10*2); //A bin at sea-level and a bin just above it
+    MtBin bin1(2.8/10, true), bin2(0, true), bin3(2.8/10*2, true); //A bin at sea-level and a bin just above it
     std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<". Bin3 temp="<<bin3.temp(0)<<"."<<std::endl;
     std::cerr<<"Output of type: bin1(bin2,bin3)"<<std::endl;
     std::cerr<<"Remaining salamanders: ";
@@ -314,7 +314,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander freezing death response"<<std::endl;
     Temperature::getInstance().testOn(-10);
@@ -326,7 +326,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response"<<std::endl;
     Temperature::getInstance().testOn(100);
@@ -338,7 +338,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C."<<std::endl;
     Temperature::getInstance().testOn(33);
@@ -353,7 +353,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C."<<std::endl;
     Temperature::getInstance().testOn(25);
@@ -368,7 +368,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Breeding a sea-level bin at t=0 with "<<100<<" salamanders leaves ";
     for(unsigned int i=0;i<100;i++)
@@ -378,7 +378,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Breeding a sea-level bin at t=0 with "<<200<<" salamanders leaves ";
     for(unsigned int i=0;i<200;i++)
@@ -388,7 +388,7 @@ void MtBinUnitTest::run() const {
   }
 
   {
-    MtBin bin(0);
+    MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Breeding a sea-level bin at t=0 with "<<5<<" salamanders leaves ";
     for(unsigned int i=0;i<5;i++)
@@ -399,7 +399,7 @@ void MtBinUnitTest::run() const {
 
   {
     //Construct bins at 0km, 1.6km, and 2.8km
-    MtBin bin0(0), bin1(1.6), bin2(2.8);
+    MtBin bin0(0, true), bin1(1.6, true), bin2(2.8, true);
     Temperature::getInstance().testOff();
     std::cerr<<std::endl;
     std::cerr<<"Temperature at 0Myr at: "<<std::endl;

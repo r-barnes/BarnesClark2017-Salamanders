@@ -25,7 +25,7 @@ class MtBin {
     container bin;
 
     ///Initializes this bin with elevation specified by heightkm0
-    MtBin(double heightkm0);
+    MtBin(double heightkm0, bool vary_height0);
 
     ///Returns the height of this bin IN KILOMETERS
     double height() const;
@@ -42,10 +42,10 @@ class MtBin {
     ///Return the area of the bin at a elevationkm kilometers at time tMyrs, in
     ///millions of years.
     double area(double elevationkm, double tMyrs) const;
-    
+
     ///Karrying Kapacity of the bin given its area at a given time tMyrs.
     ///Returns a number [0, binmax].
-    unsigned int kkap(double tMyrs) const;    
+    unsigned int kkap(double tMyrs) const;
 
     ///Add a salamander to the bin. Fail silently if there's no room.
     void addSalamander(const Salamander &s);

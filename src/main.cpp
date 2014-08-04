@@ -50,7 +50,7 @@ int main(int argc, char **argv){
   //seed_rand(); //TODO: Uncomment this line before production
 
   if(argc==5 && std::string(argv[4])==std::string("once")){
-    Simulation sim(0.001, 0.01, 0.96, 1, 0.5); //The last argument sets the timestep
+    Simulation sim(0.001, 0.01, 0.96, 1, 0.5, true); //The last argument sets the timestep
     sim.runSimulation();
 
     out_persist   += ".csv";
@@ -75,7 +75,7 @@ int main(int argc, char **argv){
   for(double temperature_drift_sd=0.1; temperature_drift_sd<10; temperature_drift_sd+=5e-1)
   for(double sim_thresh=0.90; sim_thresh<1; sim_thresh+=0.02)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor+=0.1){
-    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5); //The last argument sets the timestep
+    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5,true); //The last argument sets the timestep
     runs.push_back(temp);
   }
 
