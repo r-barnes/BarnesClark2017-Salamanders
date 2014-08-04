@@ -57,6 +57,8 @@ class Simulation {
   int       salive;
   //Phylogeny resulting from running the simulation
   Phylogeny phylos;
+  //Dumps the phylogeny object to save space
+  void dumpPhylogeny();
   //Empirical cumulative distribution (ECDF) of average branch lengths between extant taxa
   double    ecdf;
   //Length of a timestep in the simulation

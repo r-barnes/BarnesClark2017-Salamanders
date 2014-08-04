@@ -33,7 +33,7 @@ void Simulation::runSimulation(){
 
   //Eve is her own ancestor so that her children have the correct parent
   //relationship
-  Eve.parent = 0; 
+  Eve.parent = 0;
 
   //This is the mean summer diurnal temperature at sea level 65 million years
   //ago in Greensboro, NC. Today, the optimal temperature for salamanders is
@@ -80,7 +80,7 @@ void Simulation::runSimulation(){
     //go extinct early on. Therefore, in a parameter space where many
     //populations won't make it, this is a worthwhile thing to do.
     if(alive()==0) break;
-    
+
     //Visit death upon each bin
     for(auto &m: mts)
       m.mortaliate(tMyrs);
@@ -114,10 +114,10 @@ void Simulation::runSimulation(){
 
   //Records number of salamanders alive at present day
   salive        = alive();
-  
+
   //Record number of species alive at present day
   nspecies      = phylos.livingSpecies(endtime);
-  
+
   //Record mean branch distance ECDF of those species alive at present day
   ecdf          = phylos.compareECDF(endtime);
 
@@ -149,6 +149,10 @@ double Simulation::AvgOtempdegC() const {
   }
 
   return avg/alive;
+}
+
+void Simulation::dumpPhylogeny() {
+  phylos = Phylogeny();
 }
 
 double Simulation::AvgElevation() const {
