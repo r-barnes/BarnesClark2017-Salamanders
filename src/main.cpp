@@ -39,7 +39,7 @@ int main(int argc, char **argv){
   }
 
   Temperature::getInstance().init("data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
-  if(~vary_temp) {
+  if(!vary_temp) {
     Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
   }
 
