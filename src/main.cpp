@@ -46,9 +46,9 @@ int main(int argc, char **argv){
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
     return -1;
   } else {
-    string out_summary       = argv[1];
-    string out_persist       = argv[2];
-    string out_phylogeny     = argv[3];
+    out_summary              = argv[1];
+    out_persist              = argv[2];
+    out_phylogeny            = argv[3];
     string vary_height_or_no = argv[4];
     string vary_temp_or_no   = argv[5];
     string run_once_or_many  = argv[6];
@@ -114,6 +114,7 @@ int main(int argc, char **argv){
   }
 
   //Print out the summary statistics of all of the runs
+  cerr<<"Printing summaries to: "<<out_summary<<endl;
   std::ofstream f_summary(out_summary.c_str());
   f_summary<<SimulationSummaryHeader()<<endl;
   for(unsigned int r=0;r<runs.size();++r)
