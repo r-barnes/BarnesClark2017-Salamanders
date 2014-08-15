@@ -98,7 +98,6 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //Returns a number [0, binmax].The smallest area (at the top of the mountain)
   //will always have a carrying capacity of at least 1 salamander and all other
   //bins are scaled to this bin's size. TODO: Think about this more later.
-  return binmax;
   return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
 }
 
