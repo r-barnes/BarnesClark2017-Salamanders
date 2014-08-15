@@ -22,7 +22,7 @@ int main(){
   cerr<<endl<<"Carrying Capacity"<<endl;
   cerr<<"Elevation   KKap(0)  KKap(64.9)"<<endl;
   for(int i=0;i<Simulation::numbins;i++){
-    MtBin bin(2.8/Simulation::numbins*i);
+    MtBin bin(2.8/Simulation::numbins*i, true);
     cerr<<setw(9)<<bin.height()<<setw(10)<<bin.kkap(0)<<setw(12)<<bin.kkap(64.9)<<endl;
   }
 
