@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iterator>
 #include <iostream>
+#include <iomanip>
 
 
 ///Generic Gaussian distribution function
@@ -409,5 +410,20 @@ void MtBinUnitTest::run() const {
     std::cerr<<"  0.0km="<<bin0.temp(64.9)<<std::endl;
     std::cerr<<"  1.6km="<<bin1.temp(64.9)<<std::endl;
     std::cerr<<"  2.8km="<<bin2.temp(64.9)<<std::endl;
+  }
+
+  {
+    MtBin bin_novary(2.8,false), bin_vary(2.8,true);
+    std::cerr<<std::endl;
+    std::cerr<<"Checking kkap and area for mountain with non-varying height."<<std::endl;
+    std::cerr<<std::setw(10)<<"kkap "<<std::setw(10)<<"area"<<std::endl;
+    for(double tMyrs=0;tMyrs<65.000;tMyrs+=1)
+      std::cerr<<std::setw(10)<<bin_novary.kkap(tMyrs)<<" "<<std::setw(10)<<bin_novary.area(2.8, tMyrs)<<std::endl;
+
+    std::cerr<<std::endl;
+    std::cerr<<"Checking area and kkap for mountain with varying height."<<std::endl;
+    std::cerr<<std::setw(10)<<"kkap "<<std::setw(10)<<"area"<<std::endl;
+    for(double tMyrs=0;tMyrs<65.000;tMyrs+=1)
+      std::cerr<<std::setw(10)<<bin_vary.kkap(tMyrs)<<" "<<std::setw(10)<<bin_vary.area(2.8, tMyrs)<<std::endl;
   }
 }
