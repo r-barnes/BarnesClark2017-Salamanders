@@ -200,12 +200,12 @@ double Phylogeny::compareECDF(double t) const {
   double sum_squared_difference=0;
   for(unsigned int i=0; i<number_of_bins;i++) {
     double squared_diff=std::pow(ecdf[i]-observed_ecdf[i],2);
-    std::cerr<<ecdf[i]<<" "<<observed_ecdf[i]<<" "<<squared_diff<<std::endl;
+    //std::cerr<<ecdf[i]<<" "<<observed_ecdf[i]<<" "<<squared_diff<<std::endl;
     assert(0<=squared_diff && squared_diff<=1);
     assert(i<100);
     sum_squared_difference+=squared_diff;
   }
-  std::cerr<<"SS diff: "<<sum_squared_difference<<std::endl;
+  //std::cerr<<"SS diff: "<<sum_squared_difference<<std::endl;
 
   return sum_squared_difference;
 }
