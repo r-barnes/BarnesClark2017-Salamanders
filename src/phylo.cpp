@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   //Copy relevant parameters from the Salamander that originates this strain
@@ -185,15 +186,26 @@ double Phylogeny::compareECDF(double t) const {
       ecdf[nbin]++;
     } else {
       ecdf[nbin]/=number_of_species; //standardize ECDf to 1;
+      assert(ecdf[nbin]<=1);
+      assert(ecdf[nbin]>=0);
       nbin++;
       ecdf[nbin]++;
     }
   }
+  //This divides the last bin, which is not otherwise caught by the above loop
+  if(number_of_species>0)
+    ecdf[nbin]/=number_of_species;
   
   // compare simulated ecdf with actual ecdf
   double sum_squared_difference=0;
-  for(unsigned int i=0; i<number_of_bins;i++)
-    sum_squared_difference+=std::pow(ecdf[i]-observed_ecdf[i],2);
+  for(unsigned int i=0; i<number_of_bins;i++) {
+    double squared_diff=std::pow(ecdf[i]-observed_ecdf[i],2);
+    std::cerr<<ecdf[i]<<" "<<observed_ecdf[i]<<" "<<squared_diff<<std::endl;
+    assert(0<=squared_diff && squared_diff<=1);
+    assert(i<100);
+    sum_squared_difference+=squared_diff;
+  }
+  std::cerr<<"SS diff: "<<sum_squared_difference<<std::endl;
 
   return sum_squared_difference;
 }

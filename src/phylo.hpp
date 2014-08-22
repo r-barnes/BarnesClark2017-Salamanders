@@ -62,11 +62,15 @@ class Phylogeny {
   ///Adds a new node to the phylogeny
   void addNode(const Salamander &s, double t);
 
-  ///Calculate the mean branch distance for the phylogeny. Finds the number of
-  ///years separating them from their last common ancestor (e.g., if 2MY
+  ///Calculate the mean branch distance for the phylogeny. Finds the
+  //distance between each species and the last common ancestor of that species
+  //and all other species in the phylogeny. (e.g., if 2MY
   ///separates each from the ancestor, distance = 4MY), and then takes the
   ///average of this number across all unique species pairs. Is used as a
   ///summary statistic for comparing to the Kozak and Wiens phylogeny.
+  ///For each species i. Examine every other species j. Find distance between
+  ///species i and last common ancestor of i and j. Average these distances.
+  ///mbdStruct is a <Mean Branch Length, Species ID> pair
   typedef std::vector< std::pair<double, int> > mbdStruct;
   mbdStruct meanBranchDistance(double t) const;
 
