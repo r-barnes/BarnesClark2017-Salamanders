@@ -37,11 +37,15 @@ int main(int argc, char **argv){
   string out_summary;
   string out_persist;
   string out_phylogeny;
+  int maxiter;
+  double mprob;
+  double tdrift;
+  double simthresh;
 
   //seed_rand(); //TODO: Uncomment this line before production
 
-  if(argc<6 || argc>7){
-    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany>"<<endl;
+  if(argc!=11){
+    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mortality Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
     cout<<"'once' indicates the program should be run once, for testing."<<endl;
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
     return -1;
@@ -52,6 +56,10 @@ int main(int argc, char **argv){
     string vary_height_or_no = argv[4];
     string vary_temp_or_no   = argv[5];
     string run_once_or_many  = argv[6];
+    maxiter                  = stoi(std::string(argv[7]));
+    mprob                    = stod(std::string(argv[8]));
+    tdrift                   = stod(std::string(argv[9]));
+    simthresh                = stod(std::string(argv[10]));
 
     if( !(vary_height_or_no=="NoVaryHeight" || vary_height_or_no=="VaryHeight")){
       cerr<<"Unrecognised vary height directive."<<endl;
@@ -99,11 +107,11 @@ int main(int argc, char **argv){
   //point numbers. So don't try a "pragam omp parallel collapse (5)" here, or
   //some such nonesense.
   //Set up the runs
-  for(int iterationnumber=0; iterationnumber<100; iterationnumber++)
-  for(double mutation_probability=1e-3; mutation_probability<1e-1; mutation_probability+=5e-3)
-  for(double temperature_drift_sd=0.1; temperature_drift_sd<10; temperature_drift_sd+=5e-1)
-  for(double sim_thresh=0.90; sim_thresh<1; sim_thresh+=0.02)
-  for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor+=0.1){
+  for(int iterationnumber=0; iterationnumber<maxiter; iterationnumber++)
+  for(double mutation_probability=mprob; mutation_probability<=mprob; mutation_probability+=5e-3)
+  for(double temperature_drift_sd=tdrift; temperature_drift_sd<=tdrift; temperature_drift_sd++)
+  for(double sim_thresh=simthresh; sim_thresh<=simthresh; sim_thresh++)
+  for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor++){
     Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5,vary_height); //The last argument sets the timestep
     runs.push_back(temp);
   }
