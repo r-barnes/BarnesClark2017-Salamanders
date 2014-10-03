@@ -3,3 +3,4 @@
 *.Rhistory
 *.csv
 *.tre
+output/
