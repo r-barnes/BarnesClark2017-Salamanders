@@ -114,7 +114,7 @@ int main(int argc, char **argv){
     #pragma omp critical
       cout<<"Run #"<<i<<endl;
     runs[i].runSimulation();
-    runs[i].dumpPhylogeny();
+    //runs[i].dumpPhylogeny();
   }
 
   //Print out the summary statistics of all of the runs
@@ -126,17 +126,17 @@ int main(int argc, char **argv){
 
   //Print out the phylogenies and persistance graphs of the runs which approximate
   //the phylogeny of Kozak and Wiens (2010)
-  //for(unsigned int i=0;i<runs.size();++i){
+  for(unsigned int i=0;i<runs.size();++i){
     //Output persistance table for each run within the boundries
-    //string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
-    //std::ofstream f_persist(outputname_persist);
-    //runs[i].phylos.persistGraph(f_persist);
+    string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
+    std::ofstream f_persist(outputname_persist);
+    runs[i].phylos.persistGraph(f_persist);
 
     //Output phylogeny for each run within the boundries
-    //string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
-    //std::ofstream f_phylogeny(outputname_phylo);
-    //f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
-  //}
+    string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
+    std::ofstream f_phylogeny(outputname_phylo);
+    f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
+  }
 
   return 0;
 }
