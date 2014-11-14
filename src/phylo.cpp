@@ -212,9 +212,9 @@ double Phylogeny::compareECDF(double t) const {
 
 
 void Phylogeny::persistGraph(std::ofstream &out) const {
-  out<<"#Emergence, Species, Last Child, Species"<<std::endl;
+  out<<"#Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<std::endl;
+    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<","<<nodes[i].otempdegC<<std::endl;
 }
 
 
