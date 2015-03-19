@@ -42,7 +42,7 @@ int main(int argc, char **argv){
   double tdrift;
   double simthresh;
 
-  //seed_rand(); //TODO: Uncomment this line before production
+  seed_rand(); //TODO: Uncomment this line before production
 
   if(argc!=11){
     cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mortality Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
