@@ -15,6 +15,10 @@ void Temperature::init(const char filename[]) {
 
   //Read in temperatures
   std::ifstream fin(filename);
+  if(!fin.good()){
+    std::cerr<<"Could not open temperature file!"<<std::endl;
+    assert(fin.good());
+  }
   double temp;
   while(fin>>temp)
     temps.push_back(temp);
@@ -32,11 +36,11 @@ double Temperature::getTemp(double tMyrs) const {
   //If we are in testing mode, return the temperature the user wanted to test
   //with
   if(test) return testTemp;
-  
+
   double timeKyrs = tMyrs*1000;
 
   //Assumes that time is always positive
-  unsigned int t0=(unsigned int)timeKyrs; //Time of the start of the 1kyr bin 
+  unsigned int t0=(unsigned int)timeKyrs; //Time of the start of the 1kyr bin
 
   //Ensure that we have points to interpolate with
   assert(t0 >= 0);
