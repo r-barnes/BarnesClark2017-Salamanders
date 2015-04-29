@@ -3,4 +3,6 @@
 *.Rhistory
 *.csv
 *.tre
+*.RData
+busysignal
 output/
