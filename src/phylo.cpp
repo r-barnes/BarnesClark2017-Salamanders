@@ -304,3 +304,20 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 
   return my_phylo;
 }
+
+
+void Phylogeny::speciesSummaries(std::ofstream &out) const {
+  out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg"<<std::endl;
+  for(unsigned int i=0;i<nodes.size();++i){
+    out<<i<<",";
+    for(auto &ss: nodes[i].stats){
+       out<<ss.num_alive    <<","
+          <<ss.elev_min     <<","
+          <<ss.elev_max     <<","
+          <<ss.elev_avg     <<","
+          <<ss.opt_temp_min <<","
+          <<ss.opt_temp_max <<","
+          <<ss.opt_temp_avg << std::endl;
+    }
+  }
+}

@@ -139,6 +139,9 @@ class Phylogeny {
   ///Returns a Newick representation of the tree's living members at a given
   ///time. See: https://en.wikipedia.org/wiki/Newick_format
   std::string printNewick(int n=0, int depth=0) const;
+
+  ///Prints each species' SpeciesStats vector to the specified file
+  void speciesSummaries(std::ofstream &out) const;
 };
 
 #endif

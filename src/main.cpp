@@ -37,6 +37,7 @@ int main(int argc, char **argv){
   string out_summary;
   string out_persist;
   string out_phylogeny;
+  string out_species_stats;
   int maxiter;
   double mprob;
   double tdrift;
@@ -45,7 +46,7 @@ int main(int argc, char **argv){
   seed_rand(); //TODO: Uncomment this line before production
 
   if(argc!=11){
-    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mortality Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
+    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <SpeciesStats Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mortality Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
     cout<<"'once' indicates the program should be run once, for testing."<<endl;
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
     return -1;
@@ -53,13 +54,14 @@ int main(int argc, char **argv){
     out_summary              = argv[1];
     out_persist              = argv[2];
     out_phylogeny            = argv[3];
-    string vary_height_or_no = argv[4];
-    string vary_temp_or_no   = argv[5];
-    string run_once_or_many  = argv[6];
-    maxiter                  = stoi(std::string(argv[7]));
-    mprob                    = stod(std::string(argv[8]));
-    tdrift                   = stod(std::string(argv[9]));
-    simthresh                = stod(std::string(argv[10]));
+    out_species_stats        = argv[4];
+    string vary_height_or_no = argv[5];
+    string vary_temp_or_no   = argv[6];
+    string run_once_or_many  = argv[7];
+    maxiter                  = stoi(std::string(argv[8]));
+    mprob                    = stod(std::string(argv[9]));
+    tdrift                   = stod(std::string(argv[10]));
+    simthresh                = stod(std::string(argv[11]));
 
     if( !(vary_height_or_no=="NoVaryHeight" || vary_height_or_no=="VaryHeight")){
       cerr<<"Unrecognised vary height directive."<<endl;
@@ -144,6 +146,10 @@ int main(int argc, char **argv){
     string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
     std::ofstream f_phylogeny(outputname_phylo);
     f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
+
+    string outputname_species_stats = std::string(out_species_stats)+"_run_"+std::to_string(i)+".csv";
+    std::ofstream f_species_stats(outputname_species_stats);
+    runs[i].phylos.speciesSummaries(f_species_stats);
   }
 
   return 0;
