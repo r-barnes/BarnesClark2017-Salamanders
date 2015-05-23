@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 
   seed_rand(); //TODO: Uncomment this line before production
 
-  if(argc!=11){
+  if(argc!=12){
     cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <SpeciesStats Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mortality Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
     cout<<"'once' indicates the program should be run once, for testing."<<endl;
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
