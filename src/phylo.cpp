@@ -31,7 +31,7 @@ bool PhyloNode::aliveAt(double t) const {
 }
 
 void PhyloNode::updateWithSal(const MtBin &mt, const Salamander &s, double t){
-  if(lastchild!=t){
+  if(lastchild!=t || stats.size()==0){
     lastchild = t;
     stats.emplace_back(SpeciesStats(t));
   }
@@ -308,16 +308,16 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 
 void Phylogeny::speciesSummaries(std::ofstream &out) const {
   out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg"<<std::endl;
-  for(unsigned int i=0;i<nodes.size();++i){
-    out<<i<<",";
-    for(auto &ss: nodes[i].stats){
-       out<<ss.num_alive    <<","
-          <<ss.elev_min     <<","
-          <<ss.elev_max     <<","
-          <<ss.elev_avg     <<","
-          <<ss.opt_temp_min <<","
-          <<ss.opt_temp_max <<","
-          <<ss.opt_temp_avg << std::endl;
-    }
+  for(unsigned int i=0;i<nodes.size();++i)
+  for(auto &ss: nodes[i].stats){
+     out<<i                              <<","
+        <<ss.t                           <<","
+        <<ss.num_alive                   <<","
+        <<ss.elev_min                    <<","
+        <<ss.elev_max                    <<","
+        <<(ss.elev_avg/ss.num_alive)     <<","
+        <<ss.opt_temp_min                <<","
+        <<ss.opt_temp_max                <<","
+        <<(ss.opt_temp_avg/ss.num_alive) << std::endl;
   }
 }
