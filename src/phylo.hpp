@@ -6,6 +6,35 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <limits>
+#include <algorithm>
+
+class SpeciesStats {
+ public:
+  double t;
+  int num_alive;
+  double elev_min, elev_max, elev_avg;
+  double opt_temp_min, opt_temp_max, opt_temp_avg;
+  SpeciesStats(double t0){
+    t            = t0;
+    num_alive    = 0;
+    elev_min     = std::numeric_limits<double>::max();
+    elev_max     = std::numeric_limits<double>::min();
+    elev_avg     = 0;
+    opt_temp_min = std::numeric_limits<double>::max();
+    opt_temp_max = std::numeric_limits<double>::min();
+    opt_temp_avg = 0;
+  }
+  void update(double elevation, double opt_temp) {
+    num_alive++;
+    elev_min     = std::min(elev_min,elevation);
+    elev_max     = std::max(elev_max,elevation);
+    elev_avg    += elevation;
+    opt_temp_min = std::min(opt_temp_min,opt_temp);
+    opt_temp_max = std::max(opt_temp_max,opt_temp);
+    opt_temp_avg += opt_temp;
+  }
+};
 
 ///PhyloNode is used to store information about distinct species, the time that
 ///the node came into being, the time that it went extict, the genetic
@@ -42,6 +71,8 @@ class PhyloNode {
     ///species.
     std::vector<int> children;
 
+    std::vector<SpeciesStats> stats;
+
     ///Adds a child to this node. Child is represented by an integer, which
     ///corresponds to the child's placement in the Phylogeny class's list of
     ///Phylonodes.
@@ -50,6 +81,9 @@ class PhyloNode {
     ///Returns true if the strain is alive at the indicated time, based on the
     ///emergence and lastchild data.
     bool aliveAt(double t) const;
+
+    ///Sets the lastchild time and updates the species' statistics
+    void updateWithSal(const MtBin &mt, const Salamander &s, double t);
 };
 
 
@@ -105,6 +139,9 @@ class Phylogeny {
   ///Returns a Newick representation of the tree's living members at a given
   ///time. See: https://en.wikipedia.org/wiki/Newick_format
   std::string printNewick(int n=0, int depth=0) const;
+
+  ///Prints each species' SpeciesStats vector to the specified file
+  void speciesSummaries(std::ofstream &out) const;
 };
 
 #endif
