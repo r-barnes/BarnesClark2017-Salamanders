@@ -6,3 +6,5 @@
 *.RData
 busysignal
 output/
+*.DS_Store
+run.out
