@@ -43,6 +43,8 @@ int main(int argc, char **argv){
   double tdrift;
   double simthresh;
 
+  const double timestep = 0.5; //My
+
   seed_rand(); //TODO: Uncomment this line before production
 
   if(argc!=12){
@@ -86,7 +88,7 @@ int main(int argc, char **argv){
   }
 
   if(argc==5 && run_once){
-    Simulation sim(0.001, 0.01, 0.96, 1, 0.5, vary_height); //The last argument sets the timestep
+    Simulation sim(0.001, 0.01, 0.96, 1, timestep, vary_height); //The last argument sets the timestep
     sim.runSimulation();
 
     out_persist   += ".csv";
@@ -114,7 +116,7 @@ int main(int argc, char **argv){
   for(double temperature_drift_sd=tdrift; temperature_drift_sd<=tdrift; temperature_drift_sd++)
   for(double sim_thresh=simthresh; sim_thresh<=simthresh; sim_thresh++)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor++){
-    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,0.5,vary_height); //The last argument sets the timestep
+    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,timestep,vary_height); //The last argument sets the timestep
     runs.push_back(temp);
   }
 
