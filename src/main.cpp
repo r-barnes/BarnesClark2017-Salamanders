@@ -43,6 +43,7 @@ int main(int argc, char **argv){
   double tdrift;
   double simthresh;
 
+  //The simulation timestep. This choice is somewhat arbitrary.
   const double timestep = 0.5; //My
 
   seed_rand(); //TODO: Uncomment this line before production
