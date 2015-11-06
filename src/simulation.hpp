@@ -19,23 +19,25 @@ class Simulation {
   //We use this many elevation bins to represent the mountain
   static const int numbins = 10;
 
-  /**
-    This function runs a simulation with the specified mutation probability and
-    species similarity threshold. It returns the resulting phylogeny. The function
-    is thread-safe.
-
-    @param[in]  mutation_probability  Mutation probability in per timestep
-    @param[in]  temperature_drift_sd  Std.Dev. of change in temperature tolerance
-                                      that occurs between parents and children.
-    @param[in]  species_sim_thresh    Threshold for two individuals to be considered
-                                      members of the same species. Has value [0,1].
-    @param[out] avg_otempdegC         Average optimal temperature of all surviving
-                                      species at the end of the run
-
-
-    @returns   A phylogeny object
-  */
+  
+  //This function runs a simulation with the specified mutation probability and
+  //species similarity threshold. It returns the resulting phylogeny. The function
+  //is thread-safe.
+  //
+  // @param[in]  mutation_probability  Mutation probability in per timestep
+  // @param[in]  temperature_drift_sd  Std.Dev. of change in temperature 
+  //                                   tolerance that occurs between parents and
+  //                                   children.                        
+  // @param[in]  species_sim_thresh    Threshold for two individuals to be
+  //                                   considered members of the same species. 
+  //                                   Has value [0,1].
+  // @param[out] avg_otempdegC         Average optimal temperature of all
+  //                                   surviving species at the end of the run
+  //
+  //
+  // @returns   A phylogeny object
   void      runSimulation();
+  //Number of living salamanders
   int       alive() const;
   //Returns the average optimal temperature of the living salamanders
   double    AvgOtempdegC() const;

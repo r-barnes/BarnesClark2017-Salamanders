@@ -1,8 +1,5 @@
-/**
-Spatial bins in which salamanders reside. Each bin represents a particular
-elevational band of the mountain.
-
-*/
+//Spatial bins in which salamanders reside. Each bin represents a particular
+//elevational band of the mountain.
 #ifndef _mtbin
 #define _mtbin
 
