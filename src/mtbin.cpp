@@ -84,7 +84,9 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
 
-  //TODO: The area isn't integrated over the height of the band. Is this bad?
+  //NOTE: Area isn't integrated over the height of the band. This is the
+  //simplest way of handling area, but could be refined. However, we do not
+  //expect such a refinement would alter our conclusions.
 
   //Maximum elevation of the mountain range over time
   //Based on linear shrinking of mountain hight from 2.8km at 65Mya (according
@@ -98,7 +100,7 @@ unsigned int MtBin::kkap(double tMyrs) const {
 
   //Returns a number [0, binmax].The smallest area (at the top of the mountain)
   //will always have a carrying capacity of at least 1 salamander and all other
-  //bins are scaled to this bin's size. TODO: Think about this more later.
+  //bins are scaled to this bin's size.
   return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
 }
 

@@ -89,10 +89,12 @@ void Simulation::runSimulation(){
     for(auto &m: mts)
       m.breed(tMyrs, species_sim_thresh);
 
-    //For each bin, offer some salamanders therein the opportunity to migrate
-    //up or down the mountain
-    //TODO: Perhaps this should visit bins in a random order? It is easier for
-    //salamanders to move up the mountain than down right now.
+    //For each bin, offer some salamanders therein the opportunity to migrate up
+    //or down the mountain. NOTE: Another way of doing this would be to visit
+    //bins in a random order. Since carrying capacities determine migration
+    //success, it is easy to move up the mountain than down. However, this would
+    //be true anyway becaues the bottom of the mountain typically has larger
+    //populations.
     for(unsigned int m=0;m<mts.size();++m){
       if(m==0)                 mts[m].diffuse(tMyrs,nullptr,  &mts[m+1]);
       else if(m==mts.size()-1) mts[m].diffuse(tMyrs,&mts[m-1],nullptr  );

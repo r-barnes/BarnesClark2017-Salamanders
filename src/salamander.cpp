@@ -6,7 +6,7 @@
 using namespace std;
 
 //Counts the number of bits that are "on"
-//This might use a method developed By Peter Wegner (TODO: This could be verified, but who wants to?)
+//This is a method developed by Peter Wegner.
 //See: Communications of the ACM, Vol. 3 No. 5, Page 322
 //doi: 10.1145/367236.367286
 //URL: http://cacm.acm.org/magazines/1960/5/14709-a-technique-for-counting-ones-in-a-binary-computer/abstract
@@ -33,7 +33,6 @@ Salamander::Salamander(){
 }
 
 
-//TODO: Think about this one more time.
 Salamander Salamander::breed(const Salamander &b) const {
   Salamander child=*this;
 
@@ -66,10 +65,6 @@ Salamander Salamander::breed(const Salamander &b) const {
   return child;
 }
 
-//TODO: A quicker, but perhaps less clear, way to do this is to choose a number
-//in the range [0,1/mutation_probability]. If this falls in the range
-//[0,LENGTH_GENOME] then mutate the indicated gene and repeat up to
-//LENGTH_GENOME times.
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){

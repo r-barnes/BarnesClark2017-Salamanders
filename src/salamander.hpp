@@ -58,24 +58,23 @@ class Salamander {
     ///mutation rate described in mutate().
     double otempdegC;
 
-    ///Mutation probability - used by mutate() to determine the probability of
-    ///mutation in the genome. Note - this changes the genome that determines
-    ///relatedness, speciation, and ability to breed. It does not directly alter
-    ///optimum temperature. TODO: Is this mutations per million years?
+    ///Mutation probability per timestep - used by mutate() to determine the
+    //probability of mutation in the genome. Note - this changes the genome that
+    //determines relatedness, speciation, and ability to breed. It does not
+    //directly alter optimum temperature.
     double mutation_probability;
 
-    ///Drift rate for temperature optimum - used by breed() to determine the
-    ///change in optimum temperature between children and parents. Note - this
-    ///changes the temperature optimum, but does not directly influence
-    ///relatedness, speciation, and ability to breed.
-    ///TODO: Is this mutations per million years?
+    ///Drift rate for temperature optimum per timestep - used by breed() to
+    //determine the change in optimum temperature between children and parents.
+    //Note - this changes the temperature optimum, but does not directly
+    //influence relatedness, speciation, and ability to breed.
     double temperature_drift_sd;
 
     ///The phylogeny this salamander is part of (i.e., from what lineage did
     ///this salamander arise?) Is set to -1 for initialized salamanders, but
     ///should always be set to a positive number indicating the salamander's
     ///parent  species. The only exception to this is the first salamander
-    ///("Eve"), which is its own parent, set at 0. TODO: This is more of a
+    ///("Eve"), which is its own parent, set at 0. Note: This is more of a
     ///"speciesid"
     int parent;
 
