@@ -46,7 +46,9 @@ int main(int argc, char **argv){
   //The simulation timestep. This choice is somewhat arbitrary.
   const double timestep = 0.5; //My
 
-  seed_rand(); //TODO: Uncomment this line before production
+  //NOTE: This line should be uncommented before running simulations for
+  //purposes other than testing.
+  seed_rand();
 
   if(argc!=12){
     cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <SpeciesStats Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mortality Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;

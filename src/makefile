@@ -1,13 +1,8 @@
-#CC=i586-mingw32msvc-g++
-#CC=x86_64-w64-mingw32-g++
-#CFLAGS=-Wall -Wno-unknown-pragmas -DARCGIS -static-libgcc -static-libstdc++ #-fopenmp
-
-CC=g++ -std=c++11
-CFLAGS=-Wall -fopenmp #-DNDEBUG #-DARCGIS #-lX11 -pthread #-ltbb
+CC=g++
+CFLAGS=-Wall --std=c++11 -fopenmp #-DNDEBUG
 
 ODIR=obj
 PRE_FLAGS=-O3
-#PRE_FLAGS=-g
 
 _OBJ = salamander.o mtbin.o temp.o phylo.o random.o simulation.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))

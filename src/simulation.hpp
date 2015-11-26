@@ -24,7 +24,7 @@ class Simulation {
     species similarity threshold. It returns the resulting phylogeny. The function
     is thread-safe.
 
-    @param[in]  mutation_probability  Mutation probability in TODO
+    @param[in]  mutation_probability  Mutation probability in per timestep
     @param[in]  temperature_drift_sd  Std.Dev. of change in temperature tolerance
                                       that occurs between parents and children.
     @param[in]  species_sim_thresh    Threshold for two individuals to be considered
@@ -42,7 +42,7 @@ class Simulation {
   //Returns the average elevation at which the living salamanders are found on
   //the mountain
   double    AvgElevation() const;
-  //A value [0,1] indicating the probability TODO
+  //A value [0,1] indicating the probability of mutation (see salamander.hpp)
   double    mutation_probability;
   //A value [0, Inf] dictating the standard deviation of the random, normal
   //change in temperature tolerance that occurs between parents and offspring.
