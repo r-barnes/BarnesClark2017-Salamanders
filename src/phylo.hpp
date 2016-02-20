@@ -9,6 +9,8 @@
 #include <limits>
 #include <algorithm>
 
+//SpeciesStats is used to hold summary statistics above the distribution of
+//salamander properties at each time step of a species' existence
 class SpeciesStats {
  public:
   double t;

@@ -9,7 +9,7 @@ using namespace std;
 //This is a method developed by Peter Wegner.
 //See: Communications of the ACM, Vol. 3 No. 5, Page 322
 //doi: 10.1145/367236.367286
-//URL: http://cacm.acm.org/magazines/1960/5/14709-a-technique-for-counting-ones-in-a-binary-computer/abstract
+//URL: http://dx.doi.org/10.1145/367236.367286
 template<class T>
 T countbits(T a){
   unsigned int c; // c accumulates the total bits set in combined
@@ -65,6 +65,8 @@ Salamander Salamander::breed(const Salamander &b) const {
   return child;
 }
 
+//Walk through the salamander's genome and with a probability
+//`mutation_probability` flip the gene.
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
@@ -74,12 +76,17 @@ void Salamander::mutate(){
   }
 }
 
+//Determine whether the genomes of two salamanders are more similar than the
+//given threshold.
 bool Salamander::pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const {
   Salamander::genetype combined=(genes & b) | (~genes & ~b);
   unsigned int shared_genes=countbits(combined);
   return shared_genes > species_sim_thresh*8*sizeof(Salamander::genetype);
 }
 
+//Determine whether two salamanders are similar. This only takes genomes into
+//account right now, but could, presumably, include other properties of the
+//salamanders.
 bool Salamander::pSimilar(const Salamander &b, double species_sim_thresh) const {
   return pSimilarGenome(b.genes, species_sim_thresh);
 }

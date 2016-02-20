@@ -7,35 +7,27 @@
 #include "phylo.hpp"
 
 //This class will hold the parameters used to control a simulation. Running the
-//simulation will cause certain summary variables to begin values. This allows
-//us to easily multi-thread the program.
+//simulation will result in the creation of a phylogeny and the setting of
+//summary variables. Since the simulations are stored as instantiations of this
+//class, it is simple to parallelize the program.
 class Simulation {
  private:
    std::vector<MtBin> mts;
 
  public:
-  Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double tempdeathfactor0, double timestep0, bool vary_height0);
+  Simulation(
+    double mutation_probability0, 
+    double temperature_drift_sd0, 
+    double species_sim_thresh0, 
+    double tempdeathfactor0, 
+    double timestep0,
+    bool vary_height0
+  );
 
   //We use this many elevation bins to represent the mountain
   static const int numbins = 10;
 
-  
-  //This function runs a simulation with the specified mutation probability and
-  //species similarity threshold. It returns the resulting phylogeny. The function
-  //is thread-safe.
-  //
-  // @param[in]  mutation_probability  Mutation probability in per timestep
-  // @param[in]  temperature_drift_sd  Std.Dev. of change in temperature 
-  //                                   tolerance that occurs between parents and
-  //                                   children.                        
-  // @param[in]  species_sim_thresh    Threshold for two individuals to be
-  //                                   considered members of the same species. 
-  //                                   Has value [0,1].
-  // @param[out] avg_otempdegC         Average optimal temperature of all
-  //                                   surviving species at the end of the run
-  //
-  //
-  // @returns   A phylogeny object
+  //Runs the simulations described by the following properties
   void      runSimulation();
   //Number of living salamanders
   int       alive() const;
@@ -73,7 +65,7 @@ class Simulation {
   //Salamander::pDie() for details.
   double    tempdeathfactor;
   //Determines whether the mountains erode over time
-  bool vary_height;
+  bool      vary_height;
 };
 
 #endif

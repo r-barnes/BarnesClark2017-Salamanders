@@ -51,9 +51,9 @@ double Temperature::getTemp(double tMyrs) const {
   //last temperature period for which we can perform an interpolation.
   assert(t0 < temps.size()-2);
 
-  double ta    = temps[t0];      //Temperature of this 1kyr bin
-  double tb    = temps[t0+1];    //Temperature of the next 1kyr bin
-  double tdiff = tb-ta;          //Temperature difference between the two bins
+  double ta    = temps[t0];        //Temperature of this 1kyr bin
+  double tb    = temps[t0+1];      //Temperature of the next 1kyr bin
+  double tdiff = tb-ta;            //Temperature difference between the two bins
   return ta + tdiff*(timeKyrs-t0); //Perform the interpolation
 }
 

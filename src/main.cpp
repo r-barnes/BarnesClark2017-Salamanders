@@ -1,3 +1,6 @@
+//This file reads in information used to set the parameters of a simulation or
+//ensemble of simulations, builds a list of simulations, executes them in
+//parallel, and prints the results.
 #include "salamander.hpp"
 #include "mtbin.hpp"
 #include "phylo.hpp"
@@ -13,7 +16,8 @@
 using namespace std;
 
 std::string SimulationSummaryHeader() {
-  return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, AvgOtempdegC, Nalive, EndTime, AvgElevation";
+  return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, "
+         "AvgOtempdegC, Nalive, EndTime, AvgElevation";
 }
 
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
@@ -51,7 +55,10 @@ int main(int argc, char **argv){
   seed_rand();
 
   if(argc!=12){
-    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> <Phylogeny Output Base> <SpeciesStats Output Base> <(No)VaryHeight> <(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mutation Prob (~1e-3)> <Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
+    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> ";
+    cout<<"<Phylogeny Output Base> <SpeciesStats Output Base> <(No)VaryHeight> ";
+    cout<<"<(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mutation Prob (~1e-3)> ";
+    cout<<"<Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
     cout<<"'once' indicates the program should be run once, for testing."<<endl;
     cout<<"Names marked base will have file extensions automatically appended."<<endl;
     return -1;
@@ -91,7 +98,7 @@ int main(int argc, char **argv){
   }
 
   if(argc==5 && run_once){
-    Simulation sim(0.001, 0.01, 0.96, 1, timestep, vary_height); //The last argument sets the timestep
+    Simulation sim(0.001, 0.01, 0.96, 1, timestep, vary_height);
     sim.runSimulation();
 
     out_persist   += ".csv";
@@ -113,17 +120,24 @@ int main(int argc, char **argv){
   //Set up the runs NOTE: OpenMP cannot perform parallel looping with floating-
   //point numbers. So don't try a "pragam omp parallel collapse (5)" here, or
   //some such nonesense.
-  //Set up the runs
+  //Generate a list of simulations to run
   for(int iterationnumber=0; iterationnumber<maxiter; iterationnumber++)
   for(double mutation_probability=mprob; mutation_probability<=mprob; mutation_probability+=5e-3)
   for(double temperature_drift_sd=tdrift; temperature_drift_sd<=tdrift; temperature_drift_sd++)
   for(double sim_thresh=simthresh; sim_thresh<=simthresh; sim_thresh++)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor++){
-    Simulation temp(mutation_probability,temperature_drift_sd,sim_thresh,tempdeathfactor,timestep,vary_height); //The last argument sets the timestep
+    Simulation temp(
+      mutation_probability,
+      temperature_drift_sd,
+      sim_thresh,
+      tempdeathfactor,
+      timestep,
+      vary_height
+    );
     runs.push_back(temp);
   }
 
-  //Run the runs
+  //Run the simulations in parallel using OpenMP
   #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical
@@ -143,17 +157,19 @@ int main(int argc, char **argv){
   //the phylogeny of Kozak and Wiens (2010)
   for(unsigned int i=0;i<runs.size();++i){
     //Output persistance table for each run within the boundries
-    string outputname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
-    std::ofstream f_persist(outputname_persist);
+    string fname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
+    std::ofstream f_persist(fname_persist);
     runs[i].phylos.persistGraph(f_persist);
 
     //Output phylogeny for each run within the boundries
-    string outputname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
-    std::ofstream f_phylogeny(outputname_phylo);
+    string fname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
+    std::ofstream f_phylogeny(fname_phylo);
     f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
 
-    string outputname_species_stats = std::string(out_species_stats)+"_run_"+std::to_string(i)+".csv";
-    std::ofstream f_species_stats(outputname_species_stats);
+    //Output summaries of the distribution of species properties at each point
+    //in time
+    string fname_species_stats = std::string(out_species_stats)+"_run_"+std::to_string(i)+".csv";
+    std::ofstream f_species_stats(fname_species_stats);
     runs[i].phylos.speciesSummaries(f_species_stats);
   }
 

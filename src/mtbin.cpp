@@ -154,12 +154,20 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
     if(uniform_rand_real(0,1)>=0.1)
       continue;
 
-    //Salamander's optimal temp is greater than my temp and closer to my upper neighbour's temp than mine and my neighbour has carrying capacity
-    if(upper && s->otempdegC<temp(t) && std::abs(s->otempdegC-upper->temp(t)) < std::abs(s->otempdegC-temp(t))){
+    //Salamander's optimal temp is greater than my temp and closer to my upper
+    //neighbour's temp than mine and my neighbour has carrying capacity
+    if( upper && 
+        s->otempdegC<temp(t) &&
+        std::abs(s->otempdegC-upper->temp(t)) < std::abs(s->otempdegC-temp(t))
+    ){
       moveSalamanderTo(s,*upper);
       --s;
-    //Salamander's optimal temp is less than my temp and closer to my lower neighbour's temp than mine and my neighbour has carrying capacity
-    } else if(lower && s->otempdegC>temp(t) && std::abs(s->otempdegC-lower->temp(t)) < std::abs(s->otempdegC-temp(t))){
+    //Salamander's optimal temp is less than my temp and closer to my lower
+    //neighbour's temp than mine and my neighbour has carrying capacity
+    } else if(lower && 
+              s->otempdegC>temp(t) && 
+              std::abs(s->otempdegC-lower->temp(t)) < std::abs(s->otempdegC-temp(t))
+    ){
       moveSalamanderTo(s,*lower);
       --s;
     }
@@ -211,16 +219,8 @@ MtBin::container::iterator MtBin::randomSalamander(){
 }
 
 
-
-
-
-
-
-
-
-
-
-
+//This runs a series of tests designed to ensure that the simulation is behaving
+//as we expect.
 void MtBinUnitTest::run() const {
   unsigned int num_to_test=100;
 
@@ -291,8 +291,10 @@ void MtBinUnitTest::run() const {
   {
     std::cerr<<std::endl;
     std::cerr<<"MtBin: Test whether diffusion both ways works."<<std::endl;
-    MtBin bin1(2.8/10, true), bin2(0, true), bin3(2.8/10*2, true); //A bin at sea-level and a bin just above it
-    std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp="<<bin2.temp(0)<<". Bin3 temp="<<bin3.temp(0)<<"."<<std::endl;
+    //A bin at sea-level and a bin just above it
+    MtBin bin1(2.8/10, true), bin2(0, true), bin3(2.8/10*2, true); 
+    std::cerr<<"Bin1 temp="<<bin1.temp(0)<<". Bin2 temp=";
+    std::cerr<<bin2.temp(0)<<". Bin3 temp="<<bin3.temp(0)<<"."<<std::endl;
     std::cerr<<"Output of type: bin1(bin2,bin3)"<<std::endl;
     std::cerr<<"Remaining salamanders: ";
     //Fill bin1 with a number of salamanders optimally adapted to bin2
@@ -342,7 +344,7 @@ void MtBinUnitTest::run() const {
   {
     MtBin bin(0, true);
     std::cerr<<std::endl;
-    std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C."<<std::endl;
+    std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C.\n";
     Temperature::getInstance().testOn(33);
     for(unsigned int i=0;i<num_to_test;i++){
       Salamander temp;
@@ -357,7 +359,7 @@ void MtBinUnitTest::run() const {
   {
     MtBin bin(0, true);
     std::cerr<<std::endl;
-    std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C."<<std::endl;
+    std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C.\n";
     Temperature::getInstance().testOn(25);
     for(unsigned int i=0;i<num_to_test;i++){
       Salamander temp;
@@ -420,12 +422,14 @@ void MtBinUnitTest::run() const {
     std::cerr<<"Checking kkap and area for mountain with non-varying height."<<std::endl;
     std::cerr<<std::setw(10)<<"kkap "<<std::setw(10)<<"area"<<std::endl;
     for(double tMyrs=0;tMyrs<65.000;tMyrs+=1)
-      std::cerr<<std::setw(10)<<bin_novary.kkap(tMyrs)<<" "<<std::setw(10)<<bin_novary.area(2.8, tMyrs)<<std::endl;
+      std::cerr<<std::setw(10)<<bin_novary.kkap(tMyrs)<<" "<<std::setw(10)
+               <<bin_novary.area(2.8, tMyrs)<<std::endl;
 
     std::cerr<<std::endl;
     std::cerr<<"Checking area and kkap for mountain with varying height."<<std::endl;
     std::cerr<<std::setw(10)<<"kkap "<<std::setw(10)<<"area"<<std::endl;
     for(double tMyrs=0;tMyrs<65.000;tMyrs+=1)
-      std::cerr<<std::setw(10)<<bin_vary.kkap(tMyrs)<<" "<<std::setw(10)<<bin_vary.area(2.8, tMyrs)<<std::endl;
+      std::cerr<<std::setw(10)<<bin_vary.kkap(tMyrs)<<" "<<std::setw(10)
+               <<bin_vary.area(2.8, tMyrs)<<std::endl;
   }
 }

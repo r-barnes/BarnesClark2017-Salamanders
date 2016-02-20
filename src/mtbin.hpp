@@ -1,5 +1,6 @@
-//Spatial bins in which salamanders reside. Each bin represents a particular
-//elevational band of the mountain.
+//A simulation is comprised of a number of spatial bins representing elevation
+//bands of the mountain range. Each bin contains many salamanders which interact
+//within the bin and migrate between bins. This class specifies the spatial bin.
 #ifndef _mtbin
 #define _mtbin
 

@@ -2,7 +2,15 @@
 #include <iostream>
 #include <limits>
 
-Simulation::Simulation(double mutation_probability0, double temperature_drift_sd0, double species_sim_thresh0, double tempdeathfactor0, double timestep0, bool vary_height0){
+//Used to instantiate this particular simulation
+Simulation::Simulation(
+  double mutation_probability0,
+  double temperature_drift_sd0,
+  double species_sim_thresh0,
+  double tempdeathfactor0,
+  double timestep0,
+  bool vary_height0
+){
   mutation_probability = mutation_probability0;
   temperature_drift_sd = temperature_drift_sd0;
   species_sim_thresh   = species_sim_thresh0;
@@ -134,6 +142,7 @@ void Simulation::runSimulation(){
   mts.shrink_to_fit();
 }
 
+//This calculates the total number of living salamanders
 int Simulation::alive() const {
   int sum = 0;
   for(const auto &m: mts)
@@ -141,6 +150,7 @@ int Simulation::alive() const {
   return sum;
 }
 
+//This finds the average optimal temperature of all of the salamanders
 double Simulation::AvgOtempdegC() const {
   int alive  = 0;
   double avg = 0;
@@ -153,10 +163,14 @@ double Simulation::AvgOtempdegC() const {
   return avg/alive;
 }
 
+//Replaces the stored phylogeny (which may take up quite a bit of memory!) with
+//a new, empty phylogeny object. This causes the old phylogeny to get recycled,
+//thereby freeing the memory.
 void Simulation::dumpPhylogeny() {
   phylos = Phylogeny();
 }
 
+//Returns the average elevation of all the salamanders on the mountain
 double Simulation::AvgElevation() const {
   double salamander_count   = 0;
   double weighted_elevation = 0;

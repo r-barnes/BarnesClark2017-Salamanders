@@ -1,3 +1,5 @@
+//This file contains a number of functions for getting seeding random number
+//generators and pulling numbers from them in a thread-safe manner.
 #ifndef _prng_header
 #define _prng_header
 

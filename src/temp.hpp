@@ -3,7 +3,8 @@
 
 #include <vector>
 
-//Define a singleton class for Temperatures
+//Define a singleton class for Temperatures which loads them, stores them, and
+//interpolates between them as necessary.
 class Temperature {
  private:
   std::vector<double> temps;

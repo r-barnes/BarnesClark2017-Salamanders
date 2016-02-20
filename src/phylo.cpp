@@ -19,10 +19,14 @@ PhyloNode::PhyloNode(const Salamander &s, double t){
   lastchild = t;
 }
 
+
+//Add a link to a descendent species in the phylogeny
 void PhyloNode::addChild(int n){
   children.push_back(n);
 }
 
+
+//Is this phylogenetic branch alive at the indicated time?
 bool PhyloNode::aliveAt(double t) const {
   //If the phylogenic node came into being before the time in question and
   //persists past or up to the given time, then this species is alive at the
@@ -30,6 +34,12 @@ bool PhyloNode::aliveAt(double t) const {
   return emergence<=t && t<=lastchild;
 }
 
+
+//Each time the phylogeny is updated, which happens every timestep, this is
+//called for each salamander that is still similar enough to its parent to be
+//part of the same species. The first time it is called, the lastchild is
+//updated; thereafter, the statisics of the species for this particular timestep
+//are updated.
 void PhyloNode::updateWithSal(const MtBin &mt, const Salamander &s, double t){
   if(lastchild!=t || stats.size()==0){
     lastchild = t;
@@ -46,18 +56,28 @@ void PhyloNode::updateWithSal(const MtBin &mt, const Salamander &s, double t){
 Phylogeny::Phylogeny(){}
 
 
+//Create a new phylogeny with the indicated salamander as its progenitor. There
+//is no preceeding organism; therefore, calling this is something of a Biblical
+//event (or some other story of Creation).
 Phylogeny::Phylogeny(const Salamander &s, double t){
   addNode(s,t);
 }
 
 
+//Make the indicated salander the progenitor of a new species which is a
+//descendent species of the salamander's parent species
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
   nodes[s.parent].addChild(nodes.size()-1);
 }
 
 
-void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, double species_sim_thresh){
+//This method loops through all existent salamanders and updates the
+//phylogenetic tree to reflect which species have gone extinct, been born, or
+//survived.
+void Phylogeny::UpdatePhylogeny(
+  double t, double dt, std::vector<MtBin> &mts, double species_sim_thresh
+){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
     //If I have no parent, skip me
@@ -93,7 +113,9 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, do
       //of the first generation of a new species of salamander. Therefore, I
       //will consider myself this salamander's child, since its genome is
       //already stored in the phylogeny
-      if(s.parent==nodes.at(p).parent && s.pSimilarGenome(nodes.at(p).genes, species_sim_thresh) ) {
+      if( s.parent==nodes.at(p).parent && 
+          s.pSimilarGenome(nodes.at(p).genes, species_sim_thresh)
+      ){
         s.parent   = p;
         has_parent = true;
         break;
@@ -105,6 +127,7 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts, do
 }
 
 
+//Determine the number of living species present in the phylogeny
 int Phylogeny::livingSpecies(double t) const {
   //One might think this function can be sped up by recognising that phylogenic
   //nodes are added in monotonically increasing order of time, but that forgets
@@ -156,7 +179,7 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
       do {
         if(parentsOfA.count(p)) break;
         p = nodes[p].parent;
-      } while( p  != nodes[p].parent);
+      } while(p!=nodes[p].parent);
       mbd[a].first += t-nodes[p].emergence;
       mbd[b].first += t-nodes[p].emergence;
     }
@@ -169,9 +192,10 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
 }
 
 
-
+//This method compares this phylogenetic tree to the one found by Kozak and
+//Wiens using ECDF (empirical cumulative distribution function)
 double Phylogeny::compareECDF(double t) const {
-  mbdStruct mbd=meanBranchDistance(t);
+  mbdStruct mbd = meanBranchDistance(t);
 
   //Build a cumulative distribution function from the existing phylogeny
   const unsigned int number_of_species = mbd.size();
@@ -180,15 +204,37 @@ double Phylogeny::compareECDF(double t) const {
 
   std::sort(mbd.begin(),mbd.end());
 
-  //The following values are taken from data/Kozak_Plethodontid_Data/phylodist_cdf_ecdf.csv
-  double observed_ecdf[number_of_bins]={0.0208333333333333, 0.15625, 0.208333333333333, 0.208333333333333, 0.239583333333333, 0.260416666666667, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333, 0.302083333333333, 0.333333333333333, 0.427083333333333, 0.427083333333333, 0.427083333333333, 0.489583333333333, 0.604166666666667, 0.625, 0.645833333333333, 0.65625, 0.65625, 0.6875, 0.6875, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.729166666666667, 0.729166666666667, 0.729166666666667, 0.739583333333333, 0.739583333333333, 0.760416666666667, 0.760416666666667, 0.760416666666667, 0.770833333333333, 0.770833333333333, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.833333333333333, 0.875, 0.90625, 0.90625, 0.927083333333333, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667, 0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333, 1};
+  //The following values are taken from
+  //data/Kozak_Plethodontid_Data/phylodist_cdf_ecdf.csv
+  const double observed_ecdf[number_of_bins]={ 0.0208333333333333, 0.15625,
+    0.208333333333333, 0.208333333333333, 0.239583333333333, 0.260416666666667,
+    0.270833333333333, 0.270833333333333, 0.270833333333333, 0.270833333333333,
+    0.270833333333333, 0.270833333333333, 0.270833333333333, 0.302083333333333,
+    0.333333333333333, 0.427083333333333, 0.427083333333333, 0.427083333333333,
+    0.489583333333333, 0.604166666666667, 0.625, 0.645833333333333, 0.65625,
+    0.65625, 0.6875, 0.6875, 0.697916666666667, 0.697916666666667,
+    0.697916666666667, 0.697916666666667, 0.697916666666667, 0.697916666666667,
+    0.697916666666667, 0.697916666666667, 0.71875, 0.71875, 0.71875, 0.71875,
+    0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875, 0.71875,
+    0.729166666666667, 0.729166666666667, 0.729166666666667, 0.739583333333333,
+    0.739583333333333, 0.760416666666667, 0.760416666666667, 0.760416666666667,
+    0.770833333333333, 0.770833333333333, 0.78125, 0.78125, 0.78125, 0.78125,
+    0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125, 0.78125,
+    0.78125, 0.833333333333333, 0.875, 0.90625, 0.90625, 0.927083333333333,
+    0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375, 0.9375,
+    0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667,
+    0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667,
+    0.979166666666667, 0.979166666666667, 0.979166666666667, 0.979166666666667,
+    0.989583333333333, 0.989583333333333, 0.989583333333333, 0.989583333333333,
+    0.989583333333333, 1};
 
-  //The following values are taken from data/Kozak_Plethodontid_Data/phylodist_cdf_bins.csv
+  //The following values are taken from
+  //data/Kozak_Plethodontid_Data/phylodist_cdf_bins.csv
   const double min_mbd      = 73.5209701979;
   const double max_mbd      = 118.6240912604;
   const double mbd_interval = (max_mbd-min_mbd)/(number_of_bins-1);
 
-  int nbin = 0; // What ECDF bin are we in?
+  int nbin = 0; //What ECDF bin are we in?
   for(unsigned int i=0;i<number_of_species; i++) {
     if(mbd[i].first<=min_mbd+i*mbd_interval) {
       ecdf[nbin]++;
@@ -200,11 +246,12 @@ double Phylogeny::compareECDF(double t) const {
       ecdf[nbin]++;
     }
   }
+
   //This divides the last bin, which is not otherwise caught by the above loop
   if(number_of_species>0)
     ecdf[nbin]/=number_of_species;
 
-  // compare simulated ecdf with actual ecdf
+  //Compare simulated ecdf with actual ecdf
   double sum_squared_difference=0;
   for(unsigned int i=0; i<number_of_bins;i++) {
     double squared_diff=std::pow(ecdf[i]-observed_ecdf[i],2);
@@ -219,13 +266,20 @@ double Phylogeny::compareECDF(double t) const {
 }
 
 
+//Print out a CSV of when each species emerged and died, and the optimal
+//temperature of that species when it emerged.
 void Phylogeny::persistGraph(std::ofstream &out) const {
+  //NOTE: Printing the species ID twice is done so that the species can be
+  //plotted as a line with 'i', the species ID, on the vertical axis and the
+  //species emergence and lastchild on the horizontal axis.
   out<<"#Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild<<","<<i<<","<<nodes[i].otempdegC<<std::endl;
+    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild
+       <<","<<i<<","<<nodes[i].otempdegC<<std::endl;
 }
 
 
+//Print the phylogeny as a Newick tree
 std::string Phylogeny::printNewick(int n, int depth) const {
   if(nodes[n].children.empty()){
     double length=nodes[n].lastchild-nodes[n].emergence;
@@ -299,6 +353,7 @@ std::string Phylogeny::printNewick(int n, int depth) const {
   //root
   my_phylo+=":"+std::to_string(nodes[my_children.back()].emergence-nodes[n].emergence);
 
+  //All done: let's wrap things up nicely
   if(depth==0)
     my_phylo+=";";
 
@@ -306,8 +361,10 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 }
 
 
+//For each node in the phylogenetic tree, print the summary statistics of that
+//species throughout the duration of its existence
 void Phylogeny::speciesSummaries(std::ofstream &out) const {
-  out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg"<<std::endl;
+  out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
   for(unsigned int i=0;i<nodes.size();++i)
   for(auto &ss: nodes[i].stats){
      out<<i                              <<","
