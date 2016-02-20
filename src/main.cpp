@@ -121,6 +121,11 @@ int main(int argc, char **argv){
   //point numbers. So don't try a "pragam omp parallel collapse (5)" here, or
   //some such nonesense.
   //Generate a list of simulations to run
+
+  //NOTE: These are set right now to not change the any of the parameters - this
+  //means that the output is a series of 'maxiter' runs all of which have
+  //identical parameters, but will vary because of random factors. The bounds of
+  //the loops below could be altered to sweep the parameter space.
   for(int iterationnumber=0; iterationnumber<maxiter; iterationnumber++)
   for(double mutation_probability=mprob; mutation_probability<=mprob; mutation_probability+=5e-3)
   for(double temperature_drift_sd=tdrift; temperature_drift_sd<=tdrift; temperature_drift_sd++)
