@@ -8,3 +8,7 @@ busysignal
 output/
 *.DS_Store
 run.out
+*.aux
+*.log
+*.out
+*.spl
