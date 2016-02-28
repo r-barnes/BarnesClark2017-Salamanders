@@ -50,9 +50,9 @@ void MtBin::mortaliate(double tMyrs) {
   double       mytemp   = temp(tMyrs);  //Current temperature of bin
   unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
 
-  //Since the carrying capacity of the bin may have been reduced since we last
-  //mortaliated, kill individuals at random until we are within carrying
-  //capacity.
+  //Since the carrying capacity of the bin may have been reduced or exceeded
+  //since we last mortaliated, kill individuals at random until we are within
+  //carrying capacity.
   while(alive()>maxalive)
     killSalamander(randomSalamander());
 
