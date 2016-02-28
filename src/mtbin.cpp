@@ -149,21 +149,29 @@ void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
 void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
+  //The following code allows salamanders to move into neighbouring bins in a
+  //way which may exceed their carrying capacity; however, in the Mortaliate()
+  //step, random salamanders are killed until the bin is back at the carrying
+  //capacity. Salamanders move without respecting carrying capacities and nature
+  //does not choose who wins and loses in this process.
+
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
     if(uniform_rand_real(0,1)>=0.1)
       continue;
 
-    //Salamander's optimal temp is greater than my temp and closer to my upper
-    //neighbour's temp than mine and my neighbour has carrying capacity
+    //Higher bins are cooler. If the salamander's optimal temperature is cooler
+    //than the current bin and closer to the upper neighbour than the current
+    //bin, the salamander tries to migrate up the mountain.
     if( upper && 
         s->otempdegC<temp(t) &&
         std::abs(s->otempdegC-upper->temp(t)) < std::abs(s->otempdegC-temp(t))
     ){
       moveSalamanderTo(s,*upper);
       --s;
-    //Salamander's optimal temp is less than my temp and closer to my lower
-    //neighbour's temp than mine and my neighbour has carrying capacity
+    //Lower bins are warmer. If the salamander's optimal temperature is warmer
+    //than the current bin and closer to the lower neighbour than the current
+    //bin, the salamander tries to migrate down the mountain.
     } else if(lower && 
               s->otempdegC>temp(t) && 
               std::abs(s->otempdegC-lower->temp(t)) < std::abs(s->otempdegC-temp(t))
