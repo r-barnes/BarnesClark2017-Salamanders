@@ -21,7 +21,7 @@ class Salamander {
 
 
     ///Determine whether two salamander genomes are similar. If the genomes are
-    ///considered similary, then the individuals are members of the same
+    ///considered similarly, then the individuals are members of the same
     ///species. species_sim_thresh is a number in [0,1] describing how similar
     ///two genomes must be before salamanders are deemed to be of the same
     ///species. Returns TRUE if salamanders are of the same species.

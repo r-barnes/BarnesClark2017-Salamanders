@@ -55,7 +55,7 @@ int main(int argc, char **argv){
   seed_rand();
 
   if(argc!=12){
-    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistance Graph Output Base> ";
+    cout<<"Syntax: "<<argv[0]<<" <Summary Stats> <Persistence Graph Output Base> ";
     cout<<"<Phylogeny Output Base> <SpeciesStats Output Base> <(No)VaryHeight> ";
     cout<<"<(No)VaryTemp> <RunOnce/RunMany> <Maximum Iterations> <Mutation Prob (~1e-3)> ";
     cout<<"<Temperature Drift Rate (~0.1)> <Species Similarity Threshold (~0.95)>"<<endl;
@@ -158,15 +158,15 @@ int main(int argc, char **argv){
   for(unsigned int r=0;r<runs.size();++r)
     printSimulationSummary(f_summary, r, runs[r]);
 
-  //Print out the phylogenies and persistance graphs of the runs which approximate
+  //Print out the phylogenies and persistence graphs of the runs which approximate
   //the phylogeny of Kozak and Wiens (2010)
   for(unsigned int i=0;i<runs.size();++i){
-    //Output persistance table for each run within the boundries
+    //Output persistence table for each run within the boundaries
     string fname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
     std::ofstream f_persist(fname_persist);
     runs[i].phylos.persistGraph(f_persist);
 
-    //Output phylogeny for each run within the boundries
+    //Output phylogeny for each run within the boundaries
     string fname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
     std::ofstream f_phylogeny(fname_phylo);
     f_phylogeny   <<runs[i].phylos.printNewick() <<endl;

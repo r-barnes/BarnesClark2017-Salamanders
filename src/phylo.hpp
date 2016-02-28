@@ -39,34 +39,34 @@ class SpeciesStats {
 };
 
 ///PhyloNode is used to store information about distinct species, the time that
-///the node came into being, the time that it went extict, the genetic
+///the node came into being, the time that it went extinct, the genetic
 ///attributes of the parent species from which the node arose, and any child
 ///species that arose from the node. This is used to figure out which species
 ///and lineage each salamander belongs to.
 class PhyloNode {
   public:
     ///Copy relevant properties from the indicated salamander into this
-    ///phylogenic record.
+    ///phylogenetic record.
     PhyloNode(const Salamander &s, double t);
 
     ///Genome of the strain.
     Salamander::genetype genes;
 
     ///When this strain emerged. Emergence describes the time that the species
-    ///arose. Copied from Salamander on initialization.
+    ///arose. Copied from Salamander on initialisation.
     double emergence;
 
     ///Last time this strain had a child. lastchild is used to identify species
     ///that have gone extinct, and is updated with the current time whenever a
-    ///living salamader is identified as a member of the species.
+    ///living salamander is identified as a member of the species.
     double lastchild;
 
     ///Which strain this one emerged from. Copied from Salamander on
-    ///initialization.
+    ///initialisation.
     int parent;
 
     ///Which optimal temperature did the first member of this strain have?
-    ///Copied from Salamander on initialization.
+    ///Copied from Salamander on initialisation.
     double otempdegC;
 
     ///Children of this node. Lists all species that have branched off of this
@@ -118,7 +118,7 @@ class Phylogeny {
   ///Initialize using a single salamander as the parent
   Phylogeny(const Salamander &s, double t);
 
-  ///The collection of phylogenic nodes compromising the tree
+  ///The collection of phylogenetic nodes compromising the tree
   std::vector<PhyloNode> nodes;
 
   ///Updates the phylogeny based on the current state of the salamanders
@@ -135,7 +135,7 @@ class Phylogeny {
   ///in Kozak and Wiens 2010 to assess phylogeny similarity.
   double compareECDF(double t) const;
 
-  ///Print species labels and their persistance to the specified output stream
+  ///Print species labels and their persistence to the specified output stream
   void persistGraph(std::ofstream &out) const;
 
   ///Returns a Newick representation of the tree's living members at a given

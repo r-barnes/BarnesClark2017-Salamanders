@@ -28,7 +28,7 @@ void PhyloNode::addChild(int n){
 
 //Is this phylogenetic branch alive at the indicated time?
 bool PhyloNode::aliveAt(double t) const {
-  //If the phylogenic node came into being before the time in question and
+  //If the phylogenetic node came into being before the time in question and
   //persists past or up to the given time, then this species is alive at the
   //given time
   return emergence<=t && t<=lastchild;
@@ -38,8 +38,8 @@ bool PhyloNode::aliveAt(double t) const {
 //Each time the phylogeny is updated, which happens every timestep, this is
 //called for each salamander that is still similar enough to its parent to be
 //part of the same species. The first time it is called, the lastchild is
-//updated; thereafter, the statisics of the species for this particular timestep
-//are updated.
+//updated; thereafter, the statistics of the species for this particular
+//timestep are updated.
 void PhyloNode::updateWithSal(const MtBin &mt, const Salamander &s, double t){
   if(lastchild!=t || stats.size()==0){
     lastchild = t;
@@ -57,14 +57,14 @@ Phylogeny::Phylogeny(){}
 
 
 //Create a new phylogeny with the indicated salamander as its progenitor. There
-//is no preceeding organism; therefore, calling this is something of a Biblical
+//is no preceding organism; therefore, calling this is something of a Biblical
 //event (or some other story of Creation).
 Phylogeny::Phylogeny(const Salamander &s, double t){
   addNode(s,t);
 }
 
 
-//Make the indicated salander the progenitor of a new species which is a
+//Make the indicated salamander the progenitor of a new species which is a
 //descendent species of the salamander's parent species
 void Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
@@ -129,10 +129,10 @@ void Phylogeny::UpdatePhylogeny(
 
 //Determine the number of living species present in the phylogeny
 int Phylogeny::livingSpecies(double t) const {
-  //One might think this function can be sped up by recognising that phylogenic
-  //nodes are added in monotonically increasing order of time, but that forgets
-  //that old nodes may survive all the way to the present. Thus, an exhaustive
-  //search is necessary
+  //One might think this function can be sped up by recognising that
+  //phylogenetic nodes are added in monotonically increasing order of time, but
+  //that forgets that old nodes may survive all the way to the present. Thus, an
+  //exhaustive search is necessary
 
   int sum=0;
   //Loop through the nodes of the phylogeny
@@ -152,7 +152,7 @@ Phylogeny::mbdStruct Phylogeny::meanBranchDistance(double t) const {
     if(nodes[i].aliveAt(t))
       alive.push_back(i);
 
-  //Enlarge to match size of alive. Initialize everything to 0.
+  //Enlarge to match size of alive. Initialise everything to 0.
   mbd.resize(alive.size(),std::pair<double,int>(0,0));
 
   //For each species that is alive

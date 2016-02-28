@@ -89,7 +89,7 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //expect such a refinement would alter our conclusions.
 
   //Maximum elevation of the mountain range over time
-  //Based on linear shrinking of mountain hight from 2.8km at 65Mya (according
+  //Based on linear shrinking of mountain height from 2.8km at 65Mya (according
   //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
   //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
   double const height_65mya = 2.8; //km
@@ -190,7 +190,7 @@ double MtBin::area(double elevationkm, double tMyrs) const {
   if(!vary_height) tMyrs=65;
 
   ///Constants defining a normal distribution that describes area available at
-  ///different height bands in the Appalachian mountains. Paramteres are fit to
+  ///different height bands in the Appalachian mountains. Parameters are fit to
   ///contemporary height distributions presented in Kozak and Wiens 2010.
   ///deltasd describes change in sd per year, which
 
