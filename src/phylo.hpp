@@ -13,11 +13,17 @@
 //salamander properties at each time step of a species' existence
 class SpeciesStats {
  public:
-  double t;
-  int num_alive;
-  double elev_min, elev_max, elev_avg;
-  double opt_temp_min, opt_temp_max, opt_temp_avg;
+  double t;             //Time at which these statistics were collected
+  int num_alive;        //Number of species alive at that time
+  double elev_min;      //Minimum elevation of the species at that time
+  double elev_max;      //Maximum elevation of the species at that time
+  double elev_avg;      //Average elevation of the species at that time
+  double opt_temp_min;  //Minimum of the optimum temperature trait at that time
+  double opt_temp_max;  //Maximum of the optimum temperature trait at that time
+  double opt_temp_avg;  //Average of the optimum temperature trait at that time
   SpeciesStats(double t0){
+    //In the following we set everything up so it is ready for a "reduction"
+    //pattern
     t            = t0;
     num_alive    = 0;
     elev_min     = std::numeric_limits<double>::max();
@@ -27,6 +33,7 @@ class SpeciesStats {
     opt_temp_max = std::numeric_limits<double>::min();
     opt_temp_avg = 0;
   }
+
   void update(double elevation, double opt_temp) {
     num_alive++;
     elev_min     = std::min(elev_min,elevation);
@@ -38,54 +45,55 @@ class SpeciesStats {
   }
 };
 
+
 ///PhyloNode is used to store information about distinct species, the time that
 ///the node came into being, the time that it went extinct, the genetic
 ///attributes of the parent species from which the node arose, and any child
 ///species that arose from the node. This is used to figure out which species
 ///and lineage each salamander belongs to.
 class PhyloNode {
-  public:
-    ///Copy relevant properties from the indicated salamander into this
-    ///phylogenetic record.
-    PhyloNode(const Salamander &s, double t);
+ public:
+  ///Copy relevant properties from the indicated salamander into this
+  ///phylogenetic record.
+  PhyloNode(const Salamander &s, double t);
 
-    ///Genome of the strain.
-    Salamander::genetype genes;
+  ///Genome of the strain.
+  Salamander::genetype genes;
 
-    ///When this strain emerged. Emergence describes the time that the species
-    ///arose. Copied from Salamander on initialisation.
-    double emergence;
+  ///When this strain emerged. Emergence describes the time that the species
+  ///arose. Copied from Salamander on initialisation.
+  double emergence;
 
-    ///Last time this strain had a child. lastchild is used to identify species
-    ///that have gone extinct, and is updated with the current time whenever a
-    ///living salamander is identified as a member of the species.
-    double lastchild;
+  ///Last time this strain had a child. lastchild is used to identify species
+  ///that have gone extinct, and is updated with the current time whenever a
+  ///living salamander is identified as a member of the species.
+  double lastchild;
 
-    ///Which strain this one emerged from. Copied from Salamander on
-    ///initialisation.
-    int parent;
+  ///Which strain this one emerged from. Copied from Salamander on
+  ///initialisation.
+  int parent;
 
-    ///Which optimal temperature did the first member of this strain have?
-    ///Copied from Salamander on initialisation.
-    double otempdegC;
+  ///Which optimal temperature did the first member of this strain have?
+  ///Copied from Salamander on initialisation.
+  double otempdegC;
 
-    ///Children of this node. Lists all species that have branched off of this
-    ///species.
-    std::vector<int> children;
+  ///Children of this node. Lists all species that have branched off of this
+  ///species.
+  std::vector<int> children;
 
-    std::vector<SpeciesStats> stats;
+  std::vector<SpeciesStats> stats;
 
-    ///Adds a child to this node. Child is represented by an integer, which
-    ///corresponds to the child's placement in the Phylogeny class's list of
-    ///Phylonodes.
-    void addChild(int n);
+  ///Adds a child to this node. Child is represented by an integer, which
+  ///corresponds to the child's placement in the Phylogeny class's list of
+  ///Phylonodes.
+  void addChild(int n);
 
-    ///Returns true if the strain is alive at the indicated time, based on the
-    ///emergence and lastchild data.
-    bool aliveAt(double t) const;
+  ///Returns true if the strain is alive at the indicated time, based on the
+  ///emergence and lastchild data.
+  bool aliveAt(double t) const;
 
-    ///Sets the lastchild time and updates the species' statistics
-    void updateWithSal(const MtBin &mt, const Salamander &s, double t);
+  ///Sets the lastchild time and updates the species' statistics
+  void updateWithSal(const MtBin &mt, const Salamander &s, double t);
 };
 
 

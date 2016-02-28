@@ -20,6 +20,7 @@ std::string SimulationSummaryHeader() {
          "AvgOtempdegC, Nalive, EndTime, AvgElevation";
 }
 
+
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<r;
   out<<", " << sim.mutation_probability;
@@ -33,6 +34,7 @@ void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<", " << sim.avg_elevation;
   out<<endl;
 }
+
 
 int main(int argc, char **argv){
   bool vary_temp;

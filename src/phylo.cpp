@@ -50,7 +50,9 @@ void PhyloNode::updateWithSal(const MtBin &mt, const Salamander &s, double t){
 
 
 
-
+///////////////////
+//Phylogeny Class
+///////////////////
 
 
 Phylogeny::Phylogeny(){}

@@ -24,6 +24,7 @@ Simulation::Simulation(
   vary_height          = vary_height0;
 }
 
+
 void Simulation::runSimulation(){
   //65Mya the Appalachian Mountains were 2.8km tall. Initialize each bin to
   //point to its given elevation band.
@@ -142,6 +143,7 @@ void Simulation::runSimulation(){
   mts.shrink_to_fit();
 }
 
+
 //This calculates the total number of living salamanders
 int Simulation::alive() const {
   int sum = 0;
@@ -149,6 +151,7 @@ int Simulation::alive() const {
     sum += m.alive();
   return sum;
 }
+
 
 //This finds the average optimal temperature of all of the salamanders
 double Simulation::AvgOtempdegC() const {
@@ -163,12 +166,14 @@ double Simulation::AvgOtempdegC() const {
   return avg/alive;
 }
 
+
 //Replaces the stored phylogeny (which may take up quite a bit of memory!) with
 //a new, empty phylogeny object. This causes the old phylogeny to get recycled,
 //thereby freeing the memory.
 void Simulation::dumpPhylogeny() {
   phylos = Phylogeny();
 }
+
 
 //Returns the average elevation of all the salamanders on the mountain
 double Simulation::AvgElevation() const {

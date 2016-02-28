@@ -19,7 +19,6 @@ T countbits(T a){
 }
 
 
-
 Salamander::Salamander(){
   genes                = 0;
   otempdegC            = 0;
@@ -34,8 +33,13 @@ Salamander::Salamander(){
 
 
 Salamander Salamander::breed(const Salamander &b) const {
+  //The child starts out as a copy of one of its parents. We modify that copy to
+  //build up the child.
   Salamander child=*this;
 
+  //Set the child's parent species to be the parent species of one of its two
+  //parents. Since both of the parents must belong to the same species, just
+  //choose one.
   child.parent = parent;
 
   //Child optimum temperature is the average of its parents, plus a mutation,
@@ -65,6 +69,7 @@ Salamander Salamander::breed(const Salamander &b) const {
   return child;
 }
 
+
 //Walk through the salamander's genome and with a probability
 //`mutation_probability` flip the gene.
 void Salamander::mutate(){
@@ -76,6 +81,7 @@ void Salamander::mutate(){
   }
 }
 
+
 //Determine whether the genomes of two salamanders are more similar than the
 //given threshold.
 bool Salamander::pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const {
@@ -83,6 +89,7 @@ bool Salamander::pSimilarGenome(const Salamander::genetype &b, double species_si
   unsigned int shared_genes=countbits(combined);
   return shared_genes > species_sim_thresh*8*sizeof(Salamander::genetype);
 }
+
 
 //Determine whether two salamanders are similar. This only takes genomes into
 //account right now, but could, presumably, include other properties of the

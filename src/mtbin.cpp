@@ -19,15 +19,20 @@ double Gaussian(double x, double mean, double sigma){
 MtBin::MtBin(double heightkm0, bool vary_height0){
   heightkm    = heightkm0;
   vary_height = vary_height0;
-  bin.reserve(binmax); //Maximum salamander populations per mountain bin
+  //Reserve enough space to hold the maximum population. This keeps things
+  //running fast by reducing the need to dynamically reallocate memory.
+  bin.reserve(binmax); 
 }
 
 
+//Returns the nominal height of the bin.
 double MtBin::height() const {
   return heightkm;
 }
 
 
+//Removes a salamander from this bin. The removed salamander ceases to exist,
+//which, for our purposes, is the same as killing it.
 void MtBin::killSalamander(MtBin::container::iterator s) {
   assert(!bin.empty());
 
@@ -69,6 +74,7 @@ void MtBin::mortaliate(double tMyrs) {
 }
 
 
+//Get the temperature of this bin at tMyrs, taking into account its elevation.
 double MtBin::temp(double tMyrs) const {
   //Find out the temperature adjustment for that height assuming a dry air
   //adiabatic lapse rate of 9.8 degC per vertical kilometer
@@ -78,6 +84,7 @@ double MtBin::temp(double tMyrs) const {
 }
 
 
+//Get the carrying capacity of this bin, taking into account its elevation.
 unsigned int MtBin::kkap(double tMyrs) const {
   if(!vary_height) tMyrs=65;
 
@@ -105,16 +112,21 @@ unsigned int MtBin::kkap(double tMyrs) const {
 }
 
 
+//Add the indicated salamander to the bin
 void MtBin::addSalamander(const Salamander &s) {
   bin.push_back(s);
 }
 
 
+//Return the number of living salamanders in this bin
 unsigned int MtBin::alive() const {
+  //Since the bin vector only ever contains living salamanders, its size is
+  //equal to that number
   return bin.size();
 }
 
 
+//Give salamanders in this bin the opportunity to breed
 void MtBin::breed(double t, double species_sim_thresh){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
@@ -141,11 +153,15 @@ void MtBin::breed(double t, double species_sim_thresh){
   }
 }
 
+
+//Move salamanders from this bin to a different bin
 void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
-  b.addSalamander(*s);
-  killSalamander(s);
+  b.addSalamander(*s); //Add salamander to the indicated bin
+  killSalamander(s);   //Remove the salamander from this bin
 }
 
+
+//Give salamanders in this bin the opportunity to move to neighbouring bins
 void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
@@ -183,7 +199,6 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
 }
 
 
-
 ///Given a time tMyrs in millions of years ago returns area at that elevation
 ///IN SQUARE KILOMETERS
 double MtBin::area(double elevationkm, double tMyrs) const {
@@ -218,11 +233,18 @@ double MtBin::area(double elevationkm, double tMyrs) const {
   return area;
 }
 
+
+//Choose a random salamander from the bin
 MtBin::container::iterator MtBin::randomSalamander(){
+  //Cannot run this on an empty bin
   assert(!bin.empty());
-  std::vector<Salamander>::iterator temp=bin.begin();
+  //Generate an iterator to the beginning of the bin
+  std::vector<Salamander>::iterator temp = bin.begin();
+  //Choose a random member of the bin
   int pos=uniform_rand_int(0, bin.size()-1);
+  //Advance the iterator so that it points at this member
   std::advance(temp,pos);
+  //Return the iterator
   return temp;
 }
 

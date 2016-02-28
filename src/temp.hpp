@@ -7,12 +7,17 @@
 //interpolates between them as necessary.
 class Temperature {
  private:
+  //The temperature series
   std::vector<double> temps;
+
   ///If this is TRUE then any calls to getTemp() return testTemp instead. This
   ///is FALSE by default.s
   bool test;
+
   ///testTemp is the value to return from getTemp() if test is TRUE
   double testTemp;
+
+  //The following ensure that this class is a singleton
   Temperature();                               ///Prevent construction
   Temperature(const Temperature&);             ///Prevent copying
   Temperature& operator=(const Temperature&);  ///Prevent assignment
@@ -22,6 +27,7 @@ class Temperature {
     static Temperature instance;
     return instance;
   }
+  
   ///Load temperature data from the filename
   void init(const char filename[]);
 
