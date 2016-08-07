@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cassert>
 #include <algorithm>
+#include <string>
 
 Temperature::Temperature(){
   test = false;
@@ -12,7 +13,7 @@ Temperature::Temperature(){
 
 
 //Use the RAII pattern. Load a file and read in the temperature data.
-void Temperature::init(const char filename[]) {
+void Temperature::init(const std::string filename) {
   assert(temps.size()==0);
 
   //Read in temperatures

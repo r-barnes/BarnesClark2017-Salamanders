@@ -2,6 +2,7 @@
 #define _temp_hpp_
 
 #include <vector>
+#include <string>
 
 //Define a singleton class for Temperatures which loads them, stores them, and
 //interpolates between them as necessary.
@@ -29,7 +30,7 @@ class Temperature {
   }
   
   ///Load temperature data from the filename
-  void init(const char filename[]);
+  void init(const std::string filename);
 
   ///Get temperature at tMyrs performing interpolation if necessary. If test
   ///mode is on, then the actual temperature data is ignored and testTemp is
