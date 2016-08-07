@@ -12,7 +12,7 @@
 std::default_random_engine& rand_engine();
 
 //Seeds the PRNG engines using entropy from the computer's random device
-void seed_rand();
+void seed_rand(unsigned long seed);
 
 //Returns an integer value on the closed interval [from,thru]
 //Thread-safe

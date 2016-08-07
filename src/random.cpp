@@ -17,12 +17,15 @@ std::default_random_engine& rand_engine(){
 }
 
 
-void seed_rand(){
+void seed_rand(unsigned long seed){
   static std::random_device rd{};
   #pragma omp parallel
   {
     #pragma omp critical
-    rand_engine().seed( rd() );
+    if(seed==0)
+      rand_engine().seed( rd() );
+    else
+      rand_engine().seed( seed*omp_get_thread_num() );
   }
 }
 
