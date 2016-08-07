@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <cmath>
 
 PhyloNode::PhyloNode(const Salamander &s, double t){
   //Copy relevant parameters from the Salamander that originates this strain
