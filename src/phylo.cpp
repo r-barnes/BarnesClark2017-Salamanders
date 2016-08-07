@@ -368,7 +368,7 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 void Phylogeny::speciesSummaries(std::ofstream &out) const {
   out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
   for(unsigned int i=0;i<nodes.size();++i)
-  for(auto &ss: nodes[i].stats){
+  for(auto &ss: nodes[i].stats){  //There is a stats record of each time the species was alive
      out<<i                              <<","
         <<ss.t                           <<","
         <<ss.num_alive                   <<","
