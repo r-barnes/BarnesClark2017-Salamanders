@@ -59,13 +59,13 @@ class MtBin {
 	void breed(double tMyrs, double species_sim_thresh);
 
 	///Salamanders have the opportunity to move up or down the mountain if advantageous
-	void diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper);
+	void diffuseToBetter(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper);
 
 	///Salamanders have the opportunity to move up or down the mountain
-	void diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper);
+	void diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper);
 
 	///Salamanders have the opportunity to move all over the mountain
-	void diffuseGlobal(double tMyrs, std::vector<MtBin> &bins);
+	void diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &bins);
 
 	///Fetch an iterator to a random salamander from this bin
 	container::iterator randomSalamander();

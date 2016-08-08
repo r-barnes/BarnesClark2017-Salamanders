@@ -162,7 +162,7 @@ void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
 
 
 //Give salamanders in this bin the opportunity to move to neighbouring bins if advantageous
-void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
+void MtBin::diffuseToBetter(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -173,7 +173,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=0.1)
+    if(uniform_rand_real(0,1)>=dispersal_prob)
       continue;
 
     //Higher bins are cooler. If the salamander's optimal temperature is cooler
@@ -199,7 +199,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
 }
 
 //Give salamanders in this bin the opportunity to move to neighbouring bins
-void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
+void MtBin::diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -210,7 +210,7 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=0.1)
+    if(uniform_rand_real(0,1)>=dispersal_prob)
       continue;
 
     if(uniform_rand_real(0,1)>0.5){
@@ -230,7 +230,7 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
 
 
 //Give salamanders in this bin the opportunity to move all over
-void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &bins) {
+void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &bins) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -241,7 +241,7 @@ void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &bins) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=0.1)
+    if(uniform_rand_real(0,1)>=dispersal_prob)
       continue;
 
     int to_bin = uniform_rand_int(0,bin.size()-1);
@@ -346,7 +346,7 @@ void MtBinUnitTest::run() const {
     //Test 100 times to show effect of diffusion
     for(unsigned int i=0;i<100;i++){
       std::cerr<<" "<<bin1.alive();
-      bin1.diffuseToBetter(0,nullptr,&bin2);
+      bin1.diffuseToBetter(0,0.1,nullptr,&bin2);
     }
     std::cerr<<std::endl;
   }
@@ -366,7 +366,7 @@ void MtBinUnitTest::run() const {
     //Test 100 times to show effect of diffusion
     for(unsigned int i=0;i<100;i++){
       std::cerr<<" "<<bin1.alive();
-      bin1.diffuseToBetter(0,&bin2,nullptr);
+      bin1.diffuseToBetter(0,0.1,&bin2,nullptr);
     }
     std::cerr<<std::endl;
   }
@@ -395,7 +395,7 @@ void MtBinUnitTest::run() const {
     //Test 100 times to show effect of diffusion
     for(unsigned int i=0;i<100;i++){
       std::cerr<<" "<<bin1.alive()<<"("<<bin2.alive()<<","<<bin3.alive()<<") ";
-      bin1.diffuseToBetter(0,&bin2,&bin3);
+      bin1.diffuseToBetter(0,0.1,&bin2,&bin3);
     }
     std::cerr<<std::endl;
   }

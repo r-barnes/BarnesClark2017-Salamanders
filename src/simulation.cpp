@@ -16,7 +16,7 @@ void Simulation::runSimulation(){
   for(int m=0;m<numbins;m++)
     mts.push_back(MtBin(m*2.8/numbins, params.pVaryHeight()));
 
-//TODO: Incorporate dispersal_prob, initial_altitude
+//TODO: Incorporate initial_altitude
 
   ////////////////////////////////////
   //INITIALIZE
@@ -91,19 +91,19 @@ void Simulation::runSimulation(){
     //populations.
     if(params.getDispersalType()==DISPERSAL_BETTER){
       for(unsigned int m=0;m<mts.size();++m){
-        if(m==0)                 mts[m].diffuseToBetter(tMyrs,nullptr,  &mts[m+1]);
-        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs,&mts[m-1],nullptr  );
-        else                     mts[m].diffuseToBetter(tMyrs,&mts[m-1],&mts[m+1]);
+        if(m==0)                 mts[m].diffuseToBetter(tMyrs, params.getDispersalProb(), nullptr,   &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, params.getDispersalProb(), &mts[m-1], nullptr  );
+        else                     mts[m].diffuseToBetter(tMyrs, params.getDispersalProb(), &mts[m-1], &mts[m+1]);
       }
     } else if(params.getDispersalType()==DISPERSAL_MAYBE_WORSE) {
       for(unsigned int m=0;m<mts.size();++m){
-        if(m==0)                 mts[m].diffuseLocal(tMyrs,nullptr,  &mts[m+1]);
-        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs,&mts[m-1],nullptr  );
-        else                     mts[m].diffuseLocal(tMyrs,&mts[m-1],&mts[m+1]);
+        if(m==0)                 mts[m].diffuseLocal(tMyrs, params.getDispersalProb(), nullptr,   &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, params.getDispersalProb(), &mts[m-1], nullptr  );
+        else                     mts[m].diffuseLocal(tMyrs, params.getDispersalProb(), &mts[m-1], &mts[m+1]);
       }
     } else if(params.getDispersalType()==DISPERSAL_GLOBAL) {
       for(auto &m: mts)
-        m.diffuseGlobal(tMyrs,mts);
+        m.diffuseGlobal(tMyrs, params.getDispersalProb(), mts);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and
