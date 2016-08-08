@@ -23,7 +23,20 @@ Params::Params(std::string filename){
   timestep             = Input_Double(fparam, "timestep");
 
   dispersal_prob = Input_Double(fparam, "DispersalProb");
-  dispersal_type = Input_Filename(fparam,"DispersalType");
+
+  {
+    std::string temp = Input_Filename(fparam,"DispersalType");
+    if(temp=="Global")
+      dispersal_type = DISPERSAL_GLOBAL;
+    else if(temp=="MaybeWorse")
+      dispersal_type = DISPERSAL_MAYBE_WORSE;
+    else if(temp=="Better")
+      dispersal_type = DISPERSAL_BETTER;
+    else {
+      std::cerr<<"Unrecognised dispersal type! Expected: Global, MaybeWorse, Better"<<std::endl;
+      throw std::runtime_error("Unrecognised dispersal type! Expected: Global, MaybeWorse, Better");
+    }
+  }
 
   maxiter     = Input_Integer(fparam,"maxiter");
   random_seed = Input_Integer(fparam,"PRNGseed");
@@ -100,7 +113,7 @@ double      Params::getSpeciesSimthresh        () const {return species_sim_thre
 double      Params::getTimestep                () const {return timestep;             }
 int         Params::getMaxiter                 () const {return maxiter;              }
 double      Params::getDispersalProb           () const {return dispersal_prob;       }
-std::string Params::getDispersalType           () const {return dispersal_type;       }
+int         Params::getDispersalType           () const {return dispersal_type;       }
 std::string Params::getTempSeriesFilename      () const {return temp_series_filename; }
 int         Params::getInitialAltitude         () const {return initial_altitude;     }
 int         Params::getRandomSeed              () const {return random_seed;          }

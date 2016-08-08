@@ -3,6 +3,10 @@
 
 #include <fstream>
 
+const int DISPERSAL_BETTER      = 1;
+const int DISPERSAL_MAYBE_WORSE = 2;
+const int DISPERSAL_GLOBAL      = 3;
+
 class Params {
  private:
   void        Input_CheckParamName(std::ifstream &fparam, const std::string &param_name) const;
@@ -39,7 +43,7 @@ class Params {
   int random_seed;
 
   double dispersal_prob;
-  std::string dispersal_type;
+  int    dispersal_type;
   
   std::string temp_series_filename;
   int initial_altitude;
@@ -74,7 +78,7 @@ class Params {
   double      getTimestep                () const;
   int         getMaxiter                 () const;
   double      getDispersalProb           () const;
-  std::string getDispersalType           () const;
+  int         getDispersalType           () const;
   std::string getTempSeriesFilename      () const;
   int         getInitialAltitude         () const;
   int         getRandomSeed              () const;

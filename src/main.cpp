@@ -66,8 +66,6 @@ int main(int argc, char **argv){
 
   seed_rand(params.getRandomSeed());
 
-  //TODO: Incorporate dispersal_prob, dispersal_type, initial_altitude
-
   Temperature::getInstance().init(params.getTempSeriesFilename());
   if(!params.pVaryTemp()) {
     Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE

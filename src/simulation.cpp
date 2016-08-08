@@ -16,6 +16,7 @@ void Simulation::runSimulation(){
   for(int m=0;m<numbins;m++)
     mts.push_back(MtBin(m*2.8/numbins, params.pVaryHeight()));
 
+//TODO: Incorporate dispersal_prob, dispersal_type, initial_altitude
 
   ////////////////////////////////////
   //INITIALIZE
