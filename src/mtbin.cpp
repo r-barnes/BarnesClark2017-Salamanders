@@ -161,8 +161,8 @@ void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
 }
 
 
-//Give salamanders in this bin the opportunity to move to neighbouring bins
-void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
+//Give salamanders in this bin the opportunity to move to neighbouring bins if advantageous
+void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -180,8 +180,8 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
     //than the current bin and closer to the upper neighbour than the current
     //bin, the salamander tries to migrate up the mountain.
     if( upper && 
-        s->otempdegC<temp(t) &&
-        std::abs(s->otempdegC-upper->temp(t)) < std::abs(s->otempdegC-temp(t))
+        s->otempdegC<temp(tMyrs) &&
+        std::abs(s->otempdegC-upper->temp(tMyrs)) < std::abs(s->otempdegC-temp(tMyrs))
     ){
       moveSalamanderTo(s,*upper);
       --s;
@@ -189,14 +189,67 @@ void MtBin::diffuse(double t, MtBin *lower, MtBin *upper) {
     //than the current bin and closer to the lower neighbour than the current
     //bin, the salamander tries to migrate down the mountain.
     } else if(lower && 
-              s->otempdegC>temp(t) && 
-              std::abs(s->otempdegC-lower->temp(t)) < std::abs(s->otempdegC-temp(t))
+              s->otempdegC>temp(tMyrs) && 
+              std::abs(s->otempdegC-lower->temp(tMyrs)) < std::abs(s->otempdegC-temp(tMyrs))
     ){
       moveSalamanderTo(s,*lower);
       --s;
     }
   }
 }
+
+//Give salamanders in this bin the opportunity to move to neighbouring bins
+void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
+  if(bin.empty()) return;
+
+  //The following code allows salamanders to move into neighbouring bins in a
+  //way which may exceed their carrying capacity; however, in the Mortaliate()
+  //step, random salamanders are killed until the bin is back at the carrying
+  //capacity. Salamanders move without respecting carrying capacities and nature
+  //does not choose who wins and loses in this process.
+
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=0.1)
+      continue;
+
+    if(uniform_rand_real(0,1)>0.5){
+      if(upper){
+        moveSalamanderTo(s,*upper);
+        --s;
+      }
+    } else {
+      if(lower){
+        moveSalamanderTo(s,*lower);
+        --s;
+      }
+    }
+  }
+}
+
+
+
+//Give salamanders in this bin the opportunity to move all over
+void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &bins) {
+  if(bin.empty()) return;
+
+  //The following code allows salamanders to move into neighbouring bins in a
+  //way which may exceed their carrying capacity; however, in the Mortaliate()
+  //step, random salamanders are killed until the bin is back at the carrying
+  //capacity. Salamanders move without respecting carrying capacities and nature
+  //does not choose who wins and loses in this process.
+
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=0.1)
+      continue;
+
+    int to_bin = uniform_rand_int(0,bin.size()-1);
+    moveSalamanderTo(s,bins[to_bin]);
+    --s;
+  }
+}
+
 
 
 ///Given a time tMyrs in millions of years ago returns area at that elevation
@@ -293,7 +346,7 @@ void MtBinUnitTest::run() const {
     //Test 100 times to show effect of diffusion
     for(unsigned int i=0;i<100;i++){
       std::cerr<<" "<<bin1.alive();
-      bin1.diffuse(0,nullptr,&bin2);
+      bin1.diffuseToBetter(0,nullptr,&bin2);
     }
     std::cerr<<std::endl;
   }
@@ -313,7 +366,7 @@ void MtBinUnitTest::run() const {
     //Test 100 times to show effect of diffusion
     for(unsigned int i=0;i<100;i++){
       std::cerr<<" "<<bin1.alive();
-      bin1.diffuse(0,&bin2,nullptr);
+      bin1.diffuseToBetter(0,&bin2,nullptr);
     }
     std::cerr<<std::endl;
   }
@@ -342,7 +395,7 @@ void MtBinUnitTest::run() const {
     //Test 100 times to show effect of diffusion
     for(unsigned int i=0;i<100;i++){
       std::cerr<<" "<<bin1.alive()<<"("<<bin2.alive()<<","<<bin3.alive()<<") ";
-      bin1.diffuse(0,&bin2,&bin3);
+      bin1.diffuseToBetter(0,&bin2,&bin3);
     }
     std::cerr<<std::endl;
   }

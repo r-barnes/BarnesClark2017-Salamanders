@@ -16,7 +16,7 @@ void Simulation::runSimulation(){
   for(int m=0;m<numbins;m++)
     mts.push_back(MtBin(m*2.8/numbins, params.pVaryHeight()));
 
-//TODO: Incorporate dispersal_prob, dispersal_type, initial_altitude
+//TODO: Incorporate dispersal_prob, initial_altitude
 
   ////////////////////////////////////
   //INITIALIZE
@@ -89,10 +89,21 @@ void Simulation::runSimulation(){
     //success, it is easy to move up the mountain than down. However, this would
     //be true anyway becaues the bottom of the mountain typically has larger
     //populations.
-    for(unsigned int m=0;m<mts.size();++m){
-      if(m==0)                 mts[m].diffuse(tMyrs,nullptr,  &mts[m+1]);
-      else if(m==mts.size()-1) mts[m].diffuse(tMyrs,&mts[m-1],nullptr  );
-      else                     mts[m].diffuse(tMyrs,&mts[m-1],&mts[m+1]);
+    if(params.getDispersalType()==DISPERSAL_BETTER){
+      for(unsigned int m=0;m<mts.size();++m){
+        if(m==0)                 mts[m].diffuseToBetter(tMyrs,nullptr,  &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs,&mts[m-1],nullptr  );
+        else                     mts[m].diffuseToBetter(tMyrs,&mts[m-1],&mts[m+1]);
+      }
+    } else if(params.getDispersalType()==DISPERSAL_MAYBE_WORSE) {
+      for(unsigned int m=0;m<mts.size();++m){
+        if(m==0)                 mts[m].diffuseLocal(tMyrs,nullptr,  &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs,&mts[m-1],nullptr  );
+        else                     mts[m].diffuseLocal(tMyrs,&mts[m-1],&mts[m+1]);
+      }
+    } else if(params.getDispersalType()==DISPERSAL_GLOBAL) {
+      for(auto &m: mts)
+        m.diffuseGlobal(tMyrs,mts);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and
