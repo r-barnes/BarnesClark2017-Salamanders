@@ -230,7 +230,7 @@ void MtBin::diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBi
 
 
 //Give salamanders in this bin the opportunity to move all over
-void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &bins) {
+void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &mts) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -244,8 +244,8 @@ void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin
     if(uniform_rand_real(0,1)>=dispersal_prob)
       continue;
 
-    int to_bin = uniform_rand_int(0,bin.size()-1);
-    moveSalamanderTo(s,bins[to_bin]);
+    int to_bin = uniform_rand_int(0,mts.size()-1);
+    moveSalamanderTo(s,mts[to_bin]);
     --s;
   }
 }

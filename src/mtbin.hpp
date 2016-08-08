@@ -65,7 +65,7 @@ class MtBin {
 	void diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper);
 
 	///Salamanders have the opportunity to move all over the mountain
-	void diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &bins);
+	void diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &mts);
 
 	///Fetch an iterator to a random salamander from this bin
 	container::iterator randomSalamander();
