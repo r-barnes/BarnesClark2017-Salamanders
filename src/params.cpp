@@ -41,7 +41,7 @@ Params::Params(std::string filename){
   maxiter     = Input_Integer(fparam,"maxiter");
   random_seed = Input_Integer(fparam,"PRNGseed");
 
-  std::string temp_series_filename = Input_Filename(fparam,"TempSeries");
+  temp_series_filename = Input_Filename(fparam,"TempSeries");
 
   initial_altitude = Input_Integer(fparam,"InitialAltitude");
 
