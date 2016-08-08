@@ -19,7 +19,7 @@ void Temperature::init(const std::string filename) {
   //Read in temperatures
   std::ifstream fin(filename);
   if(!fin.good()){
-    std::cerr<<"Could not open temperature file'"<<filename<<"'!"<<std::endl;
+    std::cerr<<"Could not open temperature file '"<<filename<<"'!"<<std::endl;
     assert(fin.good());
   }
 
