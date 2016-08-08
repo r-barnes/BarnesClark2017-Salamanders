@@ -4,7 +4,7 @@ CFLAGS=-Wall --std=c++11 -fopenmp #-DNDEBUG
 ODIR=obj
 PRE_FLAGS=-O3
 
-_OBJ = salamander.o mtbin.o temp.o phylo.o random.o simulation.o
+_OBJ = salamander.o mtbin.o temp.o phylo.o random.o simulation.o params.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.cpp

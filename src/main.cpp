@@ -7,6 +7,7 @@
 #include "simulation.hpp"
 #include "temp.hpp"
 #include "random.hpp"
+#include "params.hpp"
 #include <array>
 #include <vector>
 #include <iostream>
@@ -20,7 +21,6 @@ std::string SimulationSummaryHeader() {
   return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, "
          "AvgOtempdegC, Nalive, EndTime, AvgElevation";
 }
-
 
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<r;
@@ -36,65 +36,7 @@ void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<endl;
 }
 
-void Input_CheckParamName(std::ifstream &fparam, const std::string &param_name){
-  std::string in_param_name;
-  fparam>>in_param_name;
-  if(in_param_name!=param_name){
-    std::cerr<<"Unexpected parameter name! Found '"<<in_param_name<<"' expected '"<<param_name<<"'"<<endl;
-    throw std::runtime_error("Unexpected parameter name!");
-  }
-}
-
-std::string Input_Filename(std::ifstream &fparam, const std::string &param_name){
-  Input_CheckParamName(fparam, param_name);
-  std::string temp;
-  fparam>>temp;
-  return temp;
-}
-
-bool Input_YesNo(std::ifstream &fparam, const std::string &param_name){
-  Input_CheckParamName(fparam, param_name);
-  std::string temp;
-  fparam>>temp;
-  if(! (temp=="YES" || temp=="NO")){
-    cerr<<"Paremeter '"<<param_name<<"' must be YES or NO!"<<endl;
-    throw std::runtime_error("Bad parameter value!");
-  }
-  return (temp=="YES");
-}
-
-double Input_Double(std::ifstream &fparam, const std::string &param_name){
-  Input_CheckParamName(fparam, param_name);
-  double temp;
-  fparam>>temp;
-  return temp;
-}
-
-int Input_Integer(std::ifstream &fparam, const std::string &param_name){
-  Input_CheckParamName(fparam, param_name);
-  int temp;
-  fparam>>temp;
-  return temp;
-}
-
 int main(int argc, char **argv){
-  bool vary_temp;
-  bool vary_height;
-  bool run_once;
-  string out_summary;
-  string out_persist;
-  string out_phylogeny;
-  string out_species_stats;
-  int maxiter;
-  double mprob;
-  double tdrift;
-  double simthresh;
-
-  std::string temp_series_filename = "data/temp_series_degreesC_0_65MYA_by_0.001MY.csv";
-
-  //The simulation timestep.
-  double timestep = 0.5; //My
-
   if(argc!=2){
     cout<<"Syntax: "<<argv[0]<<" <Parameters File>\n";
     cout<<"Parmeters file can contain:\n";
@@ -110,55 +52,33 @@ int main(int argc, char **argv){
     cout<<"\tTemperatureDrift          Double                 \n";
     cout<<"\tSpeciesSimilarity         Double                 \n";
     cout<<"\ttimestep                  Double      Units are in My.\n";
+    cout<<"\tDispersalProb             Double      Prob of salamander trying to move between bins.\n";
+    cout<<"\tDispersalType             String      Must be: Global, Better, MaybeWorse\n";
     cout<<"\tmaxiter                   Integer     Numer of times to run each parameter combination.\n";
     cout<<"\tPRNGseed                  Integer     Use 0 for true entropy; otherwise, seed engine to given value.\n";
     cout<<"\tTempSeries                Filename    If not specified, a default time series is used. NO SPACES ALLOWED!\n";
+    cout<<"\tInitialAltitude           Integer     Altitude of progenitor species. Must be a valid bin number.\n";
     return -1;
   }
 
-  std::ifstream fparam(argv[1]);
-  out_summary       = Input_Filename(fparam,"SummaryStatsFilename");
-  out_persist       = Input_Filename(fparam,"PersistenceGraphFilename");
-  out_phylogeny     = Input_Filename(fparam,"PhylogenyFilename");
-  out_species_stats = Input_Filename(fparam,"SpeciesStatsFilename");
+  Params params(argv[1]);
 
-  vary_height = Input_YesNo(fparam,"VaryHeight");
-  vary_temp   = Input_YesNo(fparam,"VaryTemp");
-  run_once    = Input_YesNo(fparam,"RunOnce");
+  seed_rand(params.getRandomSeed());
 
-  mprob     = Input_Double(fparam, "MutationProb");
-  tdrift    = Input_Double(fparam, "TemperatureDrift");
-  simthresh = Input_Double(fparam, "SpeciesSimilarity");
-  timestep  = Input_Double(fparam, "timestep");
+  //TODO: Incorporate dispersal_prob, dispersal_type, initial_altitude
 
-  maxiter = Input_Integer(fparam,"maxiter");
-  seed_rand(Input_Integer(fparam,"PRNGseed"));
-
-  temp_series_filename = Input_Filename(fparam,"TempSeries");
-
-  {
-    std::string test_if_file_is_empty;
-    if(fparam>>test_if_file_is_empty){
-      std::cerr<<"File contained unexpected parameters at the end!"<<std::endl;
-      return -1;
-    }
-  }
-
-  Temperature::getInstance().init(temp_series_filename);
-  if(!vary_temp) {
+  Temperature::getInstance().init(params.getTempSeriesFilename());
+  if(!params.pVaryTemp()) {
     Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
   }
 
-  if(run_once){
-    Simulation sim(0.001, 0.01, 0.96, 1, timestep, vary_height);
+  if(params.pRunOnce()){
+    Simulation sim(0.001, 0.01, 0.96, 1, params.getTimestep(), params.pVaryHeight());
     sim.runSimulation();
 
-    out_persist   += ".csv";
-    out_phylogeny += ".tre";
-
-    std::ofstream f_persist  (out_persist.c_str());
-    std::ofstream f_phylogeny(out_phylogeny.c_str());
-    std::ofstream f_summary  (out_summary.c_str());
+    std::ofstream f_persist  ((params.getOutPersistFilename()+".csv"));
+    std::ofstream f_phylogeny((params.getOutPhylogenyFilename()+".tre"));
+    std::ofstream f_summary  (params.getOutSummaryFilename());
     f_summary<<SimulationSummaryHeader()<<endl;
     printSimulationSummary(f_summary, 0, sim);
     sim.phylos.persistGraph(f_persist);
@@ -178,18 +98,18 @@ int main(int argc, char **argv){
   //means that the output is a series of 'maxiter' runs all of which have
   //identical parameters, but will vary because of random factors. The bounds of
   //the loops below could be altered to sweep the parameter space.
-  for(int iterationnumber=0; iterationnumber<maxiter; iterationnumber++)
-  for(double mutation_probability=mprob; mutation_probability<=mprob; mutation_probability+=5e-3)
-  for(double temperature_drift_sd=tdrift; temperature_drift_sd<=tdrift; temperature_drift_sd++)
-  for(double sim_thresh=simthresh; sim_thresh<=simthresh; sim_thresh++)
+  for(int iterationnumber=0; iterationnumber<params.getMaxiter(); iterationnumber++)
+  for(double mutation_probability=params.getMutationProb(); mutation_probability<=params.getMutationProb(); mutation_probability+=5e-3)
+  for(double temperature_drift_sd=params.getTempDrift(); temperature_drift_sd<=params.getTempDrift(); temperature_drift_sd++)
+  for(double sim_thresh=params.getSimthresh(); sim_thresh<=params.getSimthresh(); sim_thresh++)
   for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor++){
     Simulation temp(
       mutation_probability,
       temperature_drift_sd,
       sim_thresh,
       tempdeathfactor,
-      timestep,
-      vary_height
+      params.getTimestep(),
+      params.pVaryHeight()
     );
     runs.push_back(temp);
   }
@@ -204,8 +124,8 @@ int main(int argc, char **argv){
   }
 
   //Print out the summary statistics of all of the runs
-  cerr<<"Printing summaries to: "<<out_summary<<endl;
-  std::ofstream f_summary(out_summary.c_str());
+  cerr<<"Printing summaries to: "<<params.getOutSummaryFilename()<<endl;
+  std::ofstream f_summary(params.getOutSummaryFilename());
   f_summary<<SimulationSummaryHeader()<<endl;
   for(unsigned int r=0;r<runs.size();++r)
     printSimulationSummary(f_summary, r, runs[r]);
@@ -214,18 +134,18 @@ int main(int argc, char **argv){
   //the phylogeny of Kozak and Wiens (2010)
   for(unsigned int i=0;i<runs.size();++i){
     //Output persistence table for each run within the boundaries
-    string fname_persist=std::string(out_persist)+"_run_"+std::to_string(i)+".csv";
+    string fname_persist=params.getOutPersistFilename()+"_run_"+std::to_string(i)+".csv";
     std::ofstream f_persist(fname_persist);
     runs[i].phylos.persistGraph(f_persist);
 
     //Output phylogeny for each run within the boundaries
-    string fname_phylo=std::string(out_phylogeny)+"_run_"+std::to_string(i)+".tre";
+    string fname_phylo=params.getOutPhylogenyFilename()+"_run_"+std::to_string(i)+".tre";
     std::ofstream f_phylogeny(fname_phylo);
     f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
 
     //Output summaries of the distribution of species properties at each point
     //in time
-    string fname_species_stats = std::string(out_species_stats)+"_run_"+std::to_string(i)+".csv";
+    string fname_species_stats = params.getOutSpeciesStatsFilename()+"_run_"+std::to_string(i)+".csv";
     std::ofstream f_species_stats(fname_species_stats);
     runs[i].phylos.speciesSummaries(f_species_stats);
   }
