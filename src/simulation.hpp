@@ -6,6 +6,7 @@
 #include "mtbin.hpp"
 #include "phylo.hpp"
 #include "params.hpp"
+#include <stdexcept>
 
 //This class will hold the parameters used to control a simulation. Running the
 //simulation will result in the creation of a phylogeny and the setting of
