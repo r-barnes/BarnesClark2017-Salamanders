@@ -97,8 +97,10 @@ int main(int argc, char **argv){
   //means that the output is a series of 'maxiter' runs all of which have
   //identical parameters, but will vary because of random factors. The bounds of
   //the loops below could be altered to sweep the parameter space.
-  Simulation temp(params);
-  runs.push_back(temp);
+  for(int i=0;i<params.getMaxiter();i++){
+    Simulation temp(params);
+    runs.push_back(temp);
+  }
 
   //Run the simulations in parallel using OpenMP
   #pragma omp parallel for
