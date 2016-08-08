@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include "params.hpp"
 
+Params::Params(){}
+
 Params::Params(std::string filename){
   std::ifstream fparam(filename);
 
@@ -15,10 +17,10 @@ Params::Params(std::string filename){
   vary_temp   = Input_YesNo(fparam,"VaryTemp");
   run_once    = Input_YesNo(fparam,"RunOnce");
 
-  mortality_prob = Input_Double(fparam, "MutationProb");
-  temp_drift     = Input_Double(fparam, "TemperatureDrift");
-  simthresh      = Input_Double(fparam, "SpeciesSimilarity");
-  timestep       = Input_Double(fparam, "timestep");
+  mutation_probability = Input_Double(fparam, "MutationProb");
+  temperature_drift_sd = Input_Double(fparam, "TemperatureDrift");
+  species_sim_thresh   = Input_Double(fparam, "SpeciesSimilarity");
+  timestep             = Input_Double(fparam, "timestep");
 
   dispersal_prob = Input_Double(fparam, "DispersalProb");
   dispersal_type = Input_Filename(fparam,"DispersalType");
@@ -29,6 +31,8 @@ Params::Params(std::string filename){
   std::string temp_series_filename = Input_Filename(fparam,"TempSeries");
 
   initial_altitude = Input_Integer(fparam,"InitialAltitude");
+
+  temp_death_factor = Input_Integer(fparam,"TempDeathFactor");
 
   {
     std::string test_if_file_is_empty;
@@ -90,9 +94,9 @@ std::string Params::getOutSpeciesStatsFilename () const {return out_species_stat
 bool        Params::pVaryHeight                () const {return vary_height;          }
 bool        Params::pVaryTemp                  () const {return vary_temp;            }
 bool        Params::pRunOnce                   () const {return run_once;             }
-double      Params::getMutationProb            () const {return mortality_prob;       }
-double      Params::getTempDrift               () const {return temp_drift;           }
-double      Params::getSimthresh               () const {return simthresh;            }
+double      Params::getMutationProb            () const {return mutation_probability; }
+double      Params::getTempDrift               () const {return temperature_drift_sd; }
+double      Params::getSpeciesSimthresh        () const {return species_sim_thresh;   }
 double      Params::getTimestep                () const {return timestep;             }
 int         Params::getMaxiter                 () const {return maxiter;              }
 double      Params::getDispersalProb           () const {return dispersal_prob;       }
@@ -100,3 +104,4 @@ std::string Params::getDispersalType           () const {return dispersal_type; 
 std::string Params::getTempSeriesFilename      () const {return temp_series_filename; }
 int         Params::getInitialAltitude         () const {return initial_altitude;     }
 int         Params::getRandomSeed              () const {return random_seed;          }
+double      Params::getTempDeathFactor         () const {return temp_death_factor;    }

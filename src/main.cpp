@@ -24,9 +24,9 @@ std::string SimulationSummaryHeader() {
 
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<r;
-  out<<", " << sim.mutation_probability;
-  out<<", " << sim.temperature_drift_sd;
-  out<<", " << sim.species_sim_thresh;
+  out<<", " << sim.params.getMutationProb();
+  out<<", " << sim.params.getTempDrift();
+  out<<", " << sim.params.getSpeciesSimthresh();
   out<<", " << sim.nspecies;
   out<<", " << sim.ecdf;
   out<<", " << sim.avg_otempdegC;
@@ -58,6 +58,7 @@ int main(int argc, char **argv){
     cout<<"\tPRNGseed                  Integer     Use 0 for true entropy; otherwise, seed engine to given value.\n";
     cout<<"\tTempSeries                Filename    If not specified, a default time series is used. NO SPACES ALLOWED!\n";
     cout<<"\tInitialAltitude           Integer     Altitude of progenitor species. Must be a valid bin number.\n";
+    cout<<"\tTempDeathFactor           Double      Adjusts how salamander mortality relates to temperature.\n";
     return -1;
   }
 
@@ -73,7 +74,7 @@ int main(int argc, char **argv){
   }
 
   if(params.pRunOnce()){
-    Simulation sim(0.001, 0.01, 0.96, 1, params.getTimestep(), params.pVaryHeight());
+    Simulation sim(params);
     sim.runSimulation();
 
     std::ofstream f_persist  ((params.getOutPersistFilename()+".csv"));
@@ -98,21 +99,8 @@ int main(int argc, char **argv){
   //means that the output is a series of 'maxiter' runs all of which have
   //identical parameters, but will vary because of random factors. The bounds of
   //the loops below could be altered to sweep the parameter space.
-  for(int iterationnumber=0; iterationnumber<params.getMaxiter(); iterationnumber++)
-  for(double mutation_probability=params.getMutationProb(); mutation_probability<=params.getMutationProb(); mutation_probability+=5e-3)
-  for(double temperature_drift_sd=params.getTempDrift(); temperature_drift_sd<=params.getTempDrift(); temperature_drift_sd++)
-  for(double sim_thresh=params.getSimthresh(); sim_thresh<=params.getSimthresh(); sim_thresh++)
-  for(double tempdeathfactor=1; tempdeathfactor<=1; tempdeathfactor++){
-    Simulation temp(
-      mutation_probability,
-      temperature_drift_sd,
-      sim_thresh,
-      tempdeathfactor,
-      params.getTimestep(),
-      params.pVaryHeight()
-    );
-    runs.push_back(temp);
-  }
+  Simulation temp(params);
+  runs.push_back(temp);
 
   //Run the simulations in parallel using OpenMP
   #pragma omp parallel for

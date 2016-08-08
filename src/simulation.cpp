@@ -1,27 +1,11 @@
 #include "simulation.hpp"
+#include "params.hpp"
 #include <iostream>
 #include <limits>
 
 //Used to instantiate this particular simulation
-Simulation::Simulation(
-  double mutation_probability0,
-  double temperature_drift_sd0,
-  double species_sim_thresh0,
-  double tempdeathfactor0,
-  double timestep0,
-  bool vary_height0
-){
-  mutation_probability = mutation_probability0;
-  temperature_drift_sd = temperature_drift_sd0;
-  species_sim_thresh   = species_sim_thresh0;
-  avg_otempdegC        = 0;
-  salive               = 0;
-  nspecies             = 0;
-  timestep             = timestep0;
-  endtime              = 0;
-  avg_elevation        = 0;
-  tempdeathfactor      = tempdeathfactor0;
-  vary_height          = vary_height0;
+Simulation::Simulation(const Params& params){
+  this->params    = params;  
 }
 
 
@@ -30,7 +14,7 @@ void Simulation::runSimulation(){
   //point to its given elevation band.
   mts.reserve(numbins);
   for(int m=0;m<numbins;m++)
-    mts.push_back(MtBin(m*2.8/numbins, vary_height));
+    mts.push_back(MtBin(m*2.8/numbins, params.pVaryHeight()));
 
 
   ////////////////////////////////////
@@ -60,12 +44,12 @@ void Simulation::runSimulation(){
   //deviation specified by the run. All of Eve's children inherit these
   //properties without modification. This is an easy way to control the rate of
   //evolution of the salamanders.
-  Eve.mutation_probability = mutation_probability;
-  Eve.temperature_drift_sd = temperature_drift_sd;
+  Eve.mutation_probability = params.getMutationProb();
+  Eve.temperature_drift_sd = params.getTempDrift();
 
   //Eve gets this simulations setting for how her mortality should respond to
   //temperature. All of her children inherit this.
-  Eve.tempdeathfactor = tempdeathfactor;
+  Eve.tempdeathfactor = params.getTempDeathFactor();
 
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a
@@ -83,7 +67,7 @@ void Simulation::runSimulation(){
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
   double tMyrs=0;
-  for(tMyrs=0;tMyrs<65.000;tMyrs+=timestep){
+  for(tMyrs=0;tMyrs<65.000;tMyrs+=params.getTimestep()){
     //This requires a linear walk of all the bins on the mountain. Hence, it's a
     //little expensive. But it prevents many walks below if all the salamanders
     //go extinct early on. Therefore, in a parameter space where many
@@ -96,7 +80,7 @@ void Simulation::runSimulation(){
 
     //Let the salamanders in each bin be fruitful, and multiply
     for(auto &m: mts)
-      m.breed(tMyrs, species_sim_thresh);
+      m.breed(tMyrs, params.getSpeciesSimthresh());
 
     //For each bin, offer some salamanders therein the opportunity to migrate up
     //or down the mountain. NOTE: Another way of doing this would be to visit
@@ -112,11 +96,11 @@ void Simulation::runSimulation(){
 
     //Updates the phylogeny based on the current time, living salamanders, and
     //species similarity threshold
-    phylos.UpdatePhylogeny(tMyrs, timestep, mts, species_sim_thresh);
+    phylos.UpdatePhylogeny(tMyrs, params.getTimestep(), mts, params.getSpeciesSimthresh());
   }
 
   //Records the time at which the simulation ended
-  if(tMyrs>=65) tMyrs-=timestep; //Since the last step goes past the end of time
+  if(tMyrs>=65) tMyrs-=params.getTimestep(); //Since the last step goes past the end of time
   endtime = tMyrs;
 
   //Records the average optimal temperature of the salamanders alive at present

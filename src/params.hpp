@@ -16,14 +16,24 @@ class Params {
   std::string out_phylogeny;
   std::string out_species_stats;
 
+  //Determines whether the mountains erode over time
   bool vary_height;
   bool vary_temp;
   bool run_once;
 
-  double mortality_prob;
-  double temp_drift;
-  double simthresh;
-  
+  //A value [0,1] indicating the probability of mutation (see salamander.hpp)
+  double    mutation_probability;
+  //A value [0, Inf] dictating the standard deviation of the random, normal
+  //change in temperature tolerance that occurs between parents and offspring.
+  double    temperature_drift_sd;
+  //A value [0,1] indicating how similar to salamanders must be to be the same species
+  double    species_sim_thresh;
+
+  //Adjusts how salamander mortality relates to temperature. See
+  //Salamander::pDie() for details.
+  double    temp_death_factor;
+
+  //Length of a timestep in the simulation
   double timestep;
   int maxiter;
   int random_seed;
@@ -35,6 +45,7 @@ class Params {
   int initial_altitude;
 
  public:
+  Params();
   Params(std::string filename);
 
   // void setVaryHeight         (std::ifstream &fparam);
@@ -59,7 +70,7 @@ class Params {
   bool        pRunOnce                   () const;
   double      getMutationProb            () const;
   double      getTempDrift               () const;
-  double      getSimthresh               () const;
+  double      getSpeciesSimthresh        () const;
   double      getTimestep                () const;
   int         getMaxiter                 () const;
   double      getDispersalProb           () const;
@@ -67,6 +78,7 @@ class Params {
   std::string getTempSeriesFilename      () const;
   int         getInitialAltitude         () const;
   int         getRandomSeed              () const;
+  double      getTempDeathFactor         () const;
 };
 
 #endif
