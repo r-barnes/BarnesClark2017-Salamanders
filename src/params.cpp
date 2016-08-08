@@ -48,11 +48,12 @@ Params::Params(std::string filename){
   temp_death_factor = Input_Integer(fparam,"TempDeathFactor");
 
   {
-    std::string test_if_file_is_empty;
-    if(fparam>>test_if_file_is_empty){
-      std::cerr<<"File contained unexpected parameters at the end!"<<std::endl;
-      throw std::runtime_error("Unexpected parameters in parameter file!");
-    }
+    //std::string test_if_file_is_empty;
+    //if(fparam>>test_if_file_is_empty){
+    //  std::cerr<<fparam<<std::endl;
+    //  std::cerr<<"File contained unexpected parameters at the end!"<<std::endl;
+    //  throw std::runtime_error("Unexpected parameters in parameter file!");
+    //}
   }
 }
 
