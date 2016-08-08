@@ -16,8 +16,6 @@ void Simulation::runSimulation(){
   for(int m=0;m<numbins;m++)
     mts.push_back(MtBin(m*2.8/numbins, params.pVaryHeight()));
 
-//TODO: Incorporate initial_altitude
-
   ////////////////////////////////////
   //INITIALIZE
   ////////////////////////////////////
@@ -52,11 +50,16 @@ void Simulation::runSimulation(){
   //temperature. All of her children inherit this.
   Eve.tempdeathfactor = params.getTempDeathFactor();
 
+  if(params.getInitialAltitude()<0 || (int)mts.size()<=params.getInitialAltitude()){
+    std::cerr<<"Initial bin was outside of range. Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
+    throw std::runtime_error("Initial bin outside of range.");
+  }
+
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a
   //temperature close to the global average which is optimal for Eve (see above).
   for(unsigned int s=0;s<10;++s)
-    mts[0].addSalamander(Eve);
+    mts[params.getInitialAltitude()].addSalamander(Eve);
 
   //Begin a new phylogeny with Eve as the root
   phylos=Phylogeny(Eve, 0);
