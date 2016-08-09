@@ -225,18 +225,21 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
     //Higher bins are cooler. If the salamander's optimal temperature is cooler
     //than the current bin and closer to the upper neighbour than the current
     //bin, the salamander tries to migrate up the mountain.
-    if( upper && 
-        s->otempdegC<temp(tMyrs) &&
-        std::abs( s->otempdegC - upper->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+    if( upper
+        && s->otempdegC<temp(tMyrs)
+        && std::abs( s->otempdegC - upper->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+        && upper->heightkm()<heightMaxKm(tMyrs)
     ){
       moveSalamanderTo(s,*upper);
       --s;
     //Lower bins are warmer. If the salamander's optimal temperature is warmer
     //than the current bin and closer to the lower neighbour than the current
     //bin, the salamander tries to migrate down the mountain.
-    } else if(lower && 
-              s->otempdegC>temp(tMyrs) && 
-              std::abs( s->otempdegC - lower->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+    } else if(
+        lower
+        && s->otempdegC>temp(tMyrs)
+        && std::abs( s->otempdegC - lower->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+        && lower->heightkm()<heightMaxKm(tMyrs)
     ){
       moveSalamanderTo(s,*lower);
       --s;
@@ -260,12 +263,12 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
       continue;
 
     if(uniform_rand_real(0,1)>0.5){
-      if(upper){
+      if(upper && upper->heightkm()<heightMaxKm(tMyrs)){
         moveSalamanderTo(s,*upper);
         --s;
       }
     } else {
-      if(lower){
+      if(lower && lower->heightkm()<heightMaxKm(tMyrs)){
         moveSalamanderTo(s,*lower);
         --s;
       }
@@ -290,7 +293,10 @@ void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
     if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
       continue;
 
-    int to_bin = uniform_rand_int(0,mts.size()-1);
+    int to_bin = -1;
+    while(to_bin==-1 || mts[to_bin].heightkm() >= heightMaxKm(tMyrs))
+      to_bin = uniform_rand_int(0,mts.size()-1);
+
     moveSalamanderTo(s,mts[to_bin]);
     --s;
   }
