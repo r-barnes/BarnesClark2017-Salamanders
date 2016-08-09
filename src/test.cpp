@@ -13,8 +13,15 @@
 #include <string>
 using namespace std;
 
-int main(){
+int main(int argc, char **argv){
   Temperature::getInstance().init("../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
+
+  if(argc!=2){
+    cerr<<"Syntax: "<<argv[0]<<" <Parameters File>"<<endl;
+    return -1;
+  }
+
+  TheParams::get().load(argv[1]);
 
   seed_rand(0);
 
@@ -32,10 +39,14 @@ int main(){
   //Test quality of random number generator using
   // ./test.exe  | grep -i Rand | sed 's/.*://' | tr " " "\n" | sort | uniq -c | awk '{print $0" "($1/100000*100)}'
 
-  cout<<"1000000 random integers in the range [0,9] from Mersenne: ";
-  for(int i=0;i<1000000;i++)
+  cout<<"100000 random integers in the range [0,9] from Mersenne: ";
+  for(int i=0;i<100000;i++)
     cout<<uniform_rand_int(0,9)<<" ";
   cout<<endl;
+
+  cout<<"Maximum height over time: \n";
+  for(double tMyrs;tMyrs<65;tMyrs+=0.5)
+    cout<<"Maximum elevation at "<<setw(4)<<tMyrs<<"\t=\t"<<MtBin::heightMaxKm(tMyrs)<<endl;
 
   MtBinUnitTest mtbintest;
   mtbintest.run();
