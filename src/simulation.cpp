@@ -3,18 +3,12 @@
 #include <iostream>
 #include <limits>
 
-//Used to instantiate this particular simulation
-Simulation::Simulation(const Params& params){
-  this->params    = params;  
-}
-
-
 void Simulation::runSimulation(){
   //65Mya the Appalachian Mountains were 2.8km tall. Initialize each bin to
   //point to its given elevation band.
   mts.reserve(numbins);
   for(int m=0;m<numbins;m++)
-    mts.push_back(MtBin(m*2.8/numbins, params.pVaryHeight()));
+    mts.push_back(MtBin(m*2.8/numbins, TheParams::get().pVaryHeight()));
 
   ////////////////////////////////////
   //INITIALIZE
@@ -39,18 +33,7 @@ void Simulation::runSimulation(){
   //any starting value could be used with equal validity.
   Eve.genes = (Salamander::genetype)0;
 
-  //Eve inherits the mutation probability and optimal temperature drift standard
-  //deviation specified by the run. All of Eve's children inherit these
-  //properties without modification. This is an easy way to control the rate of
-  //evolution of the salamanders.
-  Eve.mutation_probability = params.getMutationProb();
-  Eve.temperature_drift_sd = params.getTempDrift();
-
-  //Eve gets this simulations setting for how her mortality should respond to
-  //temperature. All of her children inherit this.
-  Eve.tempdeathfactor = params.getTempDeathFactor();
-
-  if(params.getInitialAltitude()<0 || (int)mts.size()<=params.getInitialAltitude()){
+  if(TheParams::get().initialAltitude()<0 || (int)mts.size()<=TheParams::get().initialAltitude()){
     std::cerr<<"Initial bin was outside of range. Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
     throw std::runtime_error("Initial bin outside of range.");
   }
@@ -59,7 +42,7 @@ void Simulation::runSimulation(){
   //populate only the lowest mountain bin because that mountain bin will have a
   //temperature close to the global average which is optimal for Eve (see above).
   for(unsigned int s=0;s<10;++s)
-    mts[params.getInitialAltitude()].addSalamander(Eve);
+    mts[TheParams::get().initialAltitude()].addSalamander(Eve);
 
   //Begin a new phylogeny with Eve as the root
   phylos=Phylogeny(Eve, 0);
@@ -71,7 +54,7 @@ void Simulation::runSimulation(){
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
   double tMyrs=0;
-  for(tMyrs=0;tMyrs<65.000;tMyrs+=params.getTimestep()){
+  for(tMyrs=0;tMyrs<65.000;tMyrs+=TheParams::get().timestep()){
     //This requires a linear walk of all the bins on the mountain. Hence, it's a
     //little expensive. But it prevents many walks below if all the salamanders
     //go extinct early on. Therefore, in a parameter space where many
@@ -84,7 +67,7 @@ void Simulation::runSimulation(){
 
     //Let the salamanders in each bin be fruitful, and multiply
     for(auto &m: mts)
-      m.breed(tMyrs, params.getSpeciesSimthresh());
+      m.breed(tMyrs);
 
     //For each bin, offer some salamanders therein the opportunity to migrate up
     //or down the mountain. NOTE: Another way of doing this would be to visit
@@ -92,30 +75,30 @@ void Simulation::runSimulation(){
     //success, it is easy to move up the mountain than down. However, this would
     //be true anyway becaues the bottom of the mountain typically has larger
     //populations.
-    if(params.getDispersalType()==DISPERSAL_BETTER){
+    if(TheParams::get().dispersalType()==DISPERSAL_BETTER){
       for(unsigned int m=0;m<mts.size();++m){
-        if(m==0)                 mts[m].diffuseToBetter(tMyrs, params.getDispersalProb(), nullptr,   &mts[m+1]);
-        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, params.getDispersalProb(), &mts[m-1], nullptr  );
-        else                     mts[m].diffuseToBetter(tMyrs, params.getDispersalProb(), &mts[m-1], &mts[m+1]);
+        if(m==0)                 mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), nullptr,   &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], nullptr  );
+        else                     mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], &mts[m+1]);
       }
-    } else if(params.getDispersalType()==DISPERSAL_MAYBE_WORSE) {
+    } else if(TheParams::get().dispersalType()==DISPERSAL_MAYBE_WORSE) {
       for(unsigned int m=0;m<mts.size();++m){
-        if(m==0)                 mts[m].diffuseLocal(tMyrs, params.getDispersalProb(), nullptr,   &mts[m+1]);
-        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, params.getDispersalProb(), &mts[m-1], nullptr  );
-        else                     mts[m].diffuseLocal(tMyrs, params.getDispersalProb(), &mts[m-1], &mts[m+1]);
+        if(m==0)                 mts[m].diffuseLocal(tMyrs, TheParams::get().dispersalProb(), nullptr,   &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], nullptr  );
+        else                     mts[m].diffuseLocal(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], &mts[m+1]);
       }
-    } else if(params.getDispersalType()==DISPERSAL_GLOBAL) {
+    } else if(TheParams::get().dispersalType()==DISPERSAL_GLOBAL) {
       for(auto &m: mts)
-        m.diffuseGlobal(tMyrs, params.getDispersalProb(), mts);
+        m.diffuseGlobal(tMyrs, TheParams::get().dispersalProb(), mts);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and
     //species similarity threshold
-    phylos.UpdatePhylogeny(tMyrs, params.getTimestep(), mts, params.getSpeciesSimthresh());
+    phylos.UpdatePhylogeny(tMyrs, TheParams::get().timestep(), mts, TheParams::get().speciesSimthresh());
   }
 
   //Records the time at which the simulation ended
-  if(tMyrs>=65) tMyrs-=params.getTimestep(); //Since the last step goes past the end of time
+  if(tMyrs>=65) tMyrs-=TheParams::get().timestep(); //Since the last step goes past the end of time
   endtime = tMyrs;
 
   //Records the average optimal temperature of the salamanders alive at present

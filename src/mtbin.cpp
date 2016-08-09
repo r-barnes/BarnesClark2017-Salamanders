@@ -61,9 +61,12 @@ void MtBin::mortaliate(double tMyrs) {
   while(alive()>maxalive)
     killSalamander(randomSalamander());
 
+  const double conspecific_abundance    = 0; //TODO
+  const double heterospecific_abundance = 0; //TODO
+
   //For each salamander, check to see if it dies
   for(auto s=bin.begin();s!=bin.end();s++)
-    if(s->pDie(mytemp)){
+    if(s->pDie(mytemp, conspecific_abundance, heterospecific_abundance)){
       killSalamander(s);
       //If we kill a salamander, we swap the last living salamander in the list
       //with the salamander we just killed. Therefore, we need to make sure that
@@ -127,7 +130,7 @@ unsigned int MtBin::alive() const {
 
 
 //Give salamanders in this bin the opportunity to breed
-void MtBin::breed(double t, double species_sim_thresh){
+void MtBin::breed(double t){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
   unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
@@ -146,7 +149,7 @@ void MtBin::breed(double t, double species_sim_thresh){
     auto parentb=randomSalamander();
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
-    if(parenta->pSimilar(*parentb, species_sim_thresh)){
+    if(parenta->pSimilar(*parentb, TheParams::get().speciesSimthresh())){
       addSalamander(parenta->breed(*parentb));
       max_babies--;
     }
@@ -460,7 +463,7 @@ void MtBinUnitTest::run() const {
     std::cerr<<"Breeding a sea-level bin at t=0 with "<<100<<" salamanders leaves ";
     for(unsigned int i=0;i<100;i++)
       bin.addSalamander(Salamander());
-    bin.breed(0,0);
+    bin.breed(0);
     std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
   }
 
@@ -470,7 +473,7 @@ void MtBinUnitTest::run() const {
     std::cerr<<"Breeding a sea-level bin at t=0 with "<<200<<" salamanders leaves ";
     for(unsigned int i=0;i<200;i++)
       bin.addSalamander(Salamander());
-    bin.breed(0,0);
+    bin.breed(0);
     std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
   }
 
@@ -480,7 +483,7 @@ void MtBinUnitTest::run() const {
     std::cerr<<"Breeding a sea-level bin at t=0 with "<<5<<" salamanders leaves ";
     for(unsigned int i=0;i<5;i++)
       bin.addSalamander(Salamander());
-    bin.breed(0,0);
+    bin.breed(0);
     std::cerr<<bin.alive()<<" salamanders afterwards."<<std::endl;
   }
 

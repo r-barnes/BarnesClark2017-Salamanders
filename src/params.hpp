@@ -33,13 +33,18 @@ class Params {
   //A value [0,1] indicating how similar to salamanders must be to be the same species
   double    species_sim_thresh;
 
-  //Adjusts how salamander mortality relates to temperature. See
-  //Salamander::pDie() for details.
-  double    temp_death_factor;
+
+  ///This variable adjusts how the the salamander's probability of death is
+  ///affected by temperature. For further details, please look at
+  ///Salamander::pDie()
+  double logit_temp_weight;
+  double logit_offset;     
+  double logit_ca_weight;  
+  double logit_ha_weight;  
 
   //Length of a timestep in the simulation
-  double timestep;
-  int maxiter;
+  double timestep_val;
+  int maxiter_val;
   int random_seed;
 
   double dispersal_prob;
@@ -50,7 +55,7 @@ class Params {
 
  public:
   Params();
-  Params(std::string filename);
+  void load(std::string filename);
 
   // void setVaryHeight         (std::ifstream &fparam);
   // void setVaryTemp           (std::ifstream &fparam);
@@ -65,24 +70,39 @@ class Params {
   // void setTempSeriesFilename (std::ifstream &fparam);
   // void setInitialAltitude    (std::ifstream &fparam);
 
-  std::string getOutSummaryFilename      () const;
-  std::string getOutPersistFilename      () const;
-  std::string getOutPhylogenyFilename    () const;
-  std::string getOutSpeciesStatsFilename () const;
-  bool        pVaryHeight                () const;
-  bool        pVaryTemp                  () const;
-  bool        pRunOnce                   () const;
-  double      getMutationProb            () const;
-  double      getTempDrift               () const;
-  double      getSpeciesSimthresh        () const;
-  double      getTimestep                () const;
-  int         getMaxiter                 () const;
-  double      getDispersalProb           () const;
-  int         getDispersalType           () const;
-  std::string getTempSeriesFilename      () const;
-  int         getInitialAltitude         () const;
-  int         getRandomSeed              () const;
-  double      getTempDeathFactor         () const;
+  std::string outSummaryFilename      () const;
+  std::string outPersistFilename      () const;
+  std::string outPhylogenyFilename    () const;
+  std::string outSpeciesStatsFilename () const;
+  bool        pVaryHeight             () const;
+  bool        pVaryTemp               () const;
+  bool        pRunOnce                () const;
+  double      mutationProb            () const;
+  double      tempDrift               () const;
+  double      speciesSimthresh        () const;
+  double      timestep                () const;
+  int         maxiter                 () const;
+  double      dispersalProb           () const;
+  int         dispersalType           () const;
+  std::string tempSeriesFilename      () const;
+  int         initialAltitude         () const;
+  int         randomSeed              () const;
+  double      tempDeathFactor         () const;
+  double      logitTempWeight         () const;
+  double      logitOffset             () const;
+  double      logitCAweight           () const;
+  double      logitHAweight           () const;
+};
+
+
+class TheParams {
+ private:
+  TheParams(){}
+ public: 
+  static Params& get(){
+    static Params instance;     // This object is not created until the first
+    return instance;                  // time getInstance() is called.
+  }
 };
 
 #endif

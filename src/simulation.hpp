@@ -17,9 +17,6 @@ class Simulation {
    std::vector<MtBin> mts;
 
  public:
-  Simulation(const Params& params);
-  //All the simulation's parameters
-  Params    params;
   //We use this many elevation bins to represent the mountain
   static const int numbins = 10;
   //Runs the simulations described by the following properties

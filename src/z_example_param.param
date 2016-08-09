@@ -15,4 +15,7 @@ maxiter                   10
 PRNGseed                  0
 TempSeries                ../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv
 InitialAltitude           0
-TempDeathFactor           0.1
+LogitTempWeight           0.1
+LogitOffset               -2.197225
+LogitCAweight             1
+LogitHAweight             1

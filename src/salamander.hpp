@@ -1,6 +1,8 @@
 #ifndef _salamander
 #define _salamander
 
+#include "params.hpp"
+
 class Salamander {
  public:
   ///Gene Type - used for storing genetic information that is used to
@@ -44,7 +46,7 @@ class Salamander {
   ///its optimum temperature, and with ~90% probability if it is more than 12
   ///degrees from its optimum temperature. Returns TRUE if the salamander
   ///dies.
-  bool pDie(double temp) const;
+  bool pDie(const double tempdegC, const double conspecific_abundance, const double heterospecific_abundance) const;
 
   ///Neutral genes. Determined by the parents of the salamander and used to
   ///determine if the salamander is of the same species as another salamander.
@@ -77,11 +79,6 @@ class Salamander {
   ///("Eve"), which is its own parent, set at 0. Note: This is more of a
   ///"speciesid"
   int parent;
-
-  ///This variable adjusts how the the salamander's probability of death is
-  ///affected by temperature. For further details, please look at the pDie()
-  ///method
-  double tempdeathfactor;    
 };
 
 #endif

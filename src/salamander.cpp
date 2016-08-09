@@ -1,5 +1,6 @@
 #include "salamander.hpp"
 #include "random.hpp"
+#include "params.hpp"
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -25,10 +26,6 @@ Salamander::Salamander(){
   parent               = -1;
   mutation_probability = 1e-4;
   temperature_drift_sd = 1e-3;
-  //We are using infinity as a default value to ensure that everything dies
-  //always if a salamander is not initialized. This should provide a cue that
-  //something is amiss if it occurs.
-  tempdeathfactor      = std::numeric_limits<double>::infinity();
 }
 
 
@@ -75,7 +72,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(uniform_rand_real(0,1)<=mutation_probability)
+    if(uniform_rand_real(0,1)<=TheParams::get().mutationProb())
       genes^=mutator;
     mutator=mutator<<1;
   }
@@ -101,12 +98,15 @@ bool Salamander::pSimilar(const Salamander &b, double species_sim_thresh) const 
 
 //Calculate probability of death given square distance between temperature at
 //time t, and topt for this salamander. Return TRUE if salamander dies.
-bool Salamander::pDie(double tempdegC) const {
+bool Salamander::pDie(
+  const double tempdegC,
+  const double conspecific_abundance,
+  const double heterospecific_abundance
+) const {
   //Parameters for a logit curve, that kills a salamander with ~50% probability
   //if it is more than 8 degrees C from its optimum temperature, and with ~90%
   //probability if it is more than 12 degrees from its optimum temperature.
-  const double logitslope =  0.03051701;
-  const double logitint   = -2.197225;
+  //TODO: Or it did!
 
   //For temperatures outside of these limits, the salamander always dies
   if(!(0<=tempdegC && tempdegC<=50))
@@ -114,10 +114,16 @@ bool Salamander::pDie(double tempdegC) const {
 
   //Find probability of death if bounds are not exceeded
   //Squared difference between salamander's optimal temp and input temp
-  double dtemp = pow(otempdegC-tempdegC, 2);
+  const double dtemp = pow(otempdegC-tempdegC, 2);
 
   //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
-  double pdeath = 1/(1+exp(-(dtemp*logitslope*tempdeathfactor+logitint)));
+  const double pdeath = 1/(1+exp(-
+    (
+      TheParams::get().logitOffset()+dtemp*TheParams::get().logitTempWeight()
+      +conspecific_abundance   *TheParams::get().logitCAweight()
+      +heterospecific_abundance*TheParams::get().logitHAweight()
+    )
+  ));
 
   //Kill individual with probability pdeath
   return uniform_rand_real(0,1)<pdeath; //If true, salamander dies

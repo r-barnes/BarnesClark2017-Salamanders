@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "salamander.hpp"
+#include "params.hpp"
 
 class MtBin {
  public:
@@ -56,7 +57,7 @@ class MtBin {
 	///band described by a particular mountain bin. Child is a new species if it
 	///differs from its similarity to its parents is less than
 	///species_sim_thresh, which takes values [0,1].
-	void breed(double tMyrs, double species_sim_thresh);
+	void breed(double tMyrs);
 
 	///Salamanders have the opportunity to move up or down the mountain if advantageous
 	void diffuseToBetter(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper);
