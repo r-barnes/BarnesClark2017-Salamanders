@@ -1,14 +1,22 @@
 #include "simulation.hpp"
 #include "params.hpp"
+#include "random.hpp"
 #include <iostream>
 #include <limits>
+#include <cassert>
 
 void Simulation::runSimulation(){
   //65Mya the Appalachian Mountains were 2.8km tall. Initialize each bin to
   //point to its given elevation band.
-  mts.reserve(numbins);
-  for(int m=0;m<numbins;m++)
-    mts.push_back(MtBin(m*2.8/numbins));
+  mts.reserve(TheParams::get().numBins());
+  for(int m=0;m<TheParams::get().numBins();m++)
+    mts.push_back(MtBin(m*2.8/TheParams::get().numBins()));
+
+  //This vector is shuffled before each dispersion event to ensure that there is
+  //no bias towards upwards or downards movement on the mountain
+  std::vector<unsigned int> mtbin_order;
+  for(unsigned int i=0;i<mts.size();i++)
+    mtbin_order.push_back(i);
 
   ////////////////////////////////////
   //INITIALIZE
@@ -45,7 +53,7 @@ void Simulation::runSimulation(){
     mts[TheParams::get().initialAltitude()].addSalamander(Eve);
 
   //Begin a new phylogeny with Eve as the root
-  phylos=Phylogeny(Eve, 0);
+  phylos = Phylogeny(Eve, 0);
 
   ////////////////////////////////////
   //MAIN LOOP
@@ -69,25 +77,38 @@ void Simulation::runSimulation(){
     for(auto &m: mts)
       m.breed(tMyrs);
 
+    //Randomize the order in which we visit bins so there is no upwards or
+    //downwards bias to movement. Such a bias could arise, say, by always
+    //considering bins from bottom to top. In this case, a salamander at the
+    //bottom would have an opportunity to move up several bins whereas no
+    //salamander would be able to move downwards more than one bin.
+    //std::random_shuffle() is not thread safe, so we use the Fisher-Yates-
+    //Durstenfeld-Knuth algorithm.
+    assert(mtbin_order.size()>2);
+    for(unsigned int i=0;i<mtbin_order.size()-2;i++){
+      unsigned int j = uniform_rand_int(i,mtbin_order.size()-1);
+      std::swap(mtbin_order[i],mtbin_order[j]);
+    }
+
     //For each bin, offer some salamanders therein the opportunity to migrate up
-    //or down the mountain. NOTE: Another way of doing this would be to visit
-    //bins in a random order. Since carrying capacities determine migration
-    //success, it is easier to move up the mountain than down. However, this
-    //would be true anyway becaues the bottom of the mountain typically has
-    //larger populations. (TODO: Update)
+    //or down the mountain.
     if(TheParams::get().dispersalType()==DISPERSAL_BETTER){
-      for(unsigned int m=0;m<mts.size();++m){
+      for(unsigned int mo=0;mo<mtbin_order.size();++mo){
+        unsigned int m = mtbin_order[mo];
         if(m==0)                 mts[m].diffuseToBetter(tMyrs, nullptr,   &mts[m+1]);
         else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, &mts[m-1], nullptr  );
         else                     mts[m].diffuseToBetter(tMyrs, &mts[m-1], &mts[m+1]);
       }
     } else if(TheParams::get().dispersalType()==DISPERSAL_MAYBE_WORSE) {
-      for(unsigned int m=0;m<mts.size();++m){
+      for(unsigned int mo=0;mo<mtbin_order.size();++mo){
+        unsigned int m = mtbin_order[mo];
         if(m==0)                 mts[m].diffuseLocal(tMyrs, nullptr,   &mts[m+1]);
         else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, &mts[m-1], nullptr  );
         else                     mts[m].diffuseLocal(tMyrs, &mts[m-1], &mts[m+1]);
       }
     } else if(TheParams::get().dispersalType()==DISPERSAL_GLOBAL) {
+      //We don't need to randomize the order for global dispersion since it
+      //contains no bias.
       for(auto &m: mts)
         m.diffuseGlobal(tMyrs, mts);
     }
@@ -163,7 +184,7 @@ double Simulation::AvgElevation() const {
   double weighted_elevation = 0;
   for(const auto &m: mts){
     salamander_count   += m.alive();
-    weighted_elevation += m.alive()*m.height();
+    weighted_elevation += m.alive()*m.heightkm();
   }
   return weighted_elevation/salamander_count;
 }

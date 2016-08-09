@@ -17,8 +17,6 @@ class Simulation {
    std::vector<MtBin> mts;
 
  public:
-  //We use this many elevation bins to represent the mountain
-  static const int numbins = 10;
   //Runs the simulations described by the following properties
   void      runSimulation();
   //Number of living salamanders

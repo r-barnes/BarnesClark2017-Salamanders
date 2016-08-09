@@ -48,6 +48,7 @@ int main(int argc, char **argv){
     cout<<"\tVaryHeight                YES/NO                 \n";
     cout<<"\tVaryTemp                  YES/NO                 \n";
     cout<<"\tRunOnce                   YES/NO                 \n";
+    cout<<"\tNumBins                   Integer     Number of elevation bins which comprise the mountain.\n";
     cout<<"\tMutationProb              Double                 \n";
     cout<<"\tTemperatureDrift          Double                 \n";
     cout<<"\tSpeciesSimilarity         Double                 \n";
