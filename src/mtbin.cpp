@@ -85,6 +85,7 @@ void MtBin::mortaliate(double tMyrs) {
     //Don't count yourself, little salamander
     conspecific_abundance -= 1;
 
+    //Turn counts into abundances, as promised
     conspecific_abundance    /= area(heightkm(), tMyrs);
     heterospecific_abundance /= area(heightkm(), tMyrs);
 
@@ -172,8 +173,8 @@ void MtBin::breed(double t){
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
   while(max_babies>0 && maxtries-->0){
-    auto parenta=randomSalamander();
-    auto parentb=randomSalamander();
+    auto parenta = randomSalamander();
+    auto parentb = randomSalamander();
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
     if(parenta->pSimilar(*parentb)){
@@ -211,7 +212,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
     //bin, the salamander tries to migrate up the mountain.
     if( upper && 
         s->otempdegC<temp(tMyrs) &&
-        std::abs(s->otempdegC-upper->temp(tMyrs)) < std::abs(s->otempdegC-temp(tMyrs))
+        std::abs( s->otempdegC - upper->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
     ){
       moveSalamanderTo(s,*upper);
       --s;
@@ -220,7 +221,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
     //bin, the salamander tries to migrate down the mountain.
     } else if(lower && 
               s->otempdegC>temp(tMyrs) && 
-              std::abs(s->otempdegC-lower->temp(tMyrs)) < std::abs(s->otempdegC-temp(tMyrs))
+              std::abs( s->otempdegC - lower->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
     ){
       moveSalamanderTo(s,*lower);
       --s;

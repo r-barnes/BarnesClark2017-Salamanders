@@ -11,7 +11,7 @@ SpeciesSimilarity         0.95
 timestep                  0.5
 DispersalProb             0.5
 DispersalType             Global
-maxiter                   10
+maxiter                   1000
 PRNGseed                  0
 TempSeries                ../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv
 InitialAltitude           0
