@@ -6,20 +6,6 @@
 #include <iostream>
 using namespace std;
 
-//Counts the number of bits that are "on"
-//This is a method developed by Peter Wegner.
-//See: Communications of the ACM, Vol. 3 No. 5, Page 322
-//doi: 10.1145/367236.367286
-//URL: http://dx.doi.org/10.1145/367236.367286
-template<class T>
-T countbits(T a){
-  unsigned int c; // c accumulates the total bits set in combined
-  for (c = 0; a; ++c)
-    a &= a - 1;   // clear the least significant bit set
-  return c;
-}
-
-
 Salamander::Salamander(){
   genes                = 0;
   otempdegC            = 0;
@@ -82,8 +68,8 @@ void Salamander::mutate(){
 //Determine whether the genomes of two salamanders are more similar than the
 //given threshold.
 bool Salamander::pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const {
-  Salamander::genetype combined=(genes & b) | (~genes & ~b);
-  unsigned int shared_genes=countbits(combined);
+  Salamander::genetype combined=(genes & b) | (~genes & ~b); //TODO: What does this do?
+  unsigned int shared_genes=__builtin_popcountll(combined);  //Counts the number of 1 bits NOTE: Ensure that the popcount type matches the genetype
   return shared_genes > species_sim_thresh*8*sizeof(Salamander::genetype);
 }
 
