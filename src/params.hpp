@@ -57,6 +57,8 @@ class Params {
 
   int max_tries_to_breed;
 
+  int initial_pop_size;
+
   //We use this many elevation bins to represent the mountain (TODO)
   int numbins_val;
 
@@ -94,6 +96,7 @@ class Params {
   int         dispersalType           () const;
   std::string tempSeriesFilename      () const;
   int         initialAltitude         () const;
+  int         initialPopSize          () const;
   int         randomSeed              () const;
   double      tempDeathFactor         () const;
   double      logitTempWeight         () const;

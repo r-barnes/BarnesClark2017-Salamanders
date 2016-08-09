@@ -46,6 +46,7 @@ void Params::load(std::string filename){
   temp_series_filename = Input_Filename(fparam,"TempSeries");
 
   initial_altitude = Input_Integer(fparam,"InitialAltitude");
+  initial_pop_size = Input_Integer(fparam,"InitialPopSize");
 
   logit_temp_weight = Input_Double(fparam,"LogitTempWeight");
   logit_offset      = Input_Double(fparam,"LogitOffset");
@@ -124,3 +125,4 @@ double      Params::logitHAweight           () const {return logit_ha_weight;   
 int         Params::maxOffspringPerBinPerDt () const {return max_offspring_per_bin_per_dt; }
 int         Params::maxTriesToBreed         () const {return max_tries_to_breed;           }
 int         Params::numBins                 () const {return numbins_val;                  }
+int         Params::initialPopSize          () const {return initial_pop_size;             }

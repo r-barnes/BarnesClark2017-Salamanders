@@ -50,7 +50,7 @@ void Simulation::runSimulation(){
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a
   //temperature close to the global average which is optimal for Eve (see above).
-  for(unsigned int s=0;s<10;++s)
+  for(unsigned int s=0;s<TheParams::get().initialPopSize();++s)
     mts[TheParams::get().initialAltitude()].addSalamander(Eve);
 
   //Begin a new phylogeny with Eve as the root

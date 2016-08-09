@@ -59,6 +59,7 @@ int main(int argc, char **argv){
     cout<<"\tPRNGseed                  Integer     Use 0 for true entropy; otherwise, seed engine to given value.\n";
     cout<<"\tTempSeries                Filename    If not specified, a default time series is used. NO SPACES ALLOWED!\n";
     cout<<"\tInitialAltitude           Integer     Altitude of progenitor species. Must be a valid bin number.\n";
+    cout<<"\tInitialPopSize            Integer     How many salamanders to put in the initial bin.\n";
     cout<<"\tLogitTempWeight           Double      Adjusts how salamander mortality relates to temperature.\n";
     cout<<"\tLogitOffset               Double      \n";
     cout<<"\tLogitCAweight             Double      Conspecific abundance weighting in mortality.\n";
