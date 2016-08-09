@@ -51,7 +51,7 @@ void MtBin::mortaliate(double tMyrs) {
   ///If there are no living salamanders, then don't do anything
   if(bin.empty()) return;
 
-  double       mytemp   = temp(tMyrs);  //Current temperature of bin
+  double mytemp = temp(tMyrs);  //Current temperature of bin
 
   //TODO: Cut carrying capacity enforcement
 //  unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
