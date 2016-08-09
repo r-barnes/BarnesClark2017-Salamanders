@@ -20,8 +20,7 @@ class Params {
   std::string out_phylogeny;
   std::string out_species_stats;
 
-  //Determines whether the mountains erode over time
-  bool vary_height;
+  bool vary_height; ///If this is set to true, the mountains erode over time.
   bool vary_temp;
   bool run_once;
 

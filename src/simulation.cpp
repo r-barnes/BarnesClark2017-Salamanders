@@ -8,7 +8,7 @@ void Simulation::runSimulation(){
   //point to its given elevation band.
   mts.reserve(numbins);
   for(int m=0;m<numbins;m++)
-    mts.push_back(MtBin(m*2.8/numbins, TheParams::get().pVaryHeight()));
+    mts.push_back(MtBin(m*2.8/numbins));
 
   ////////////////////////////////////
   //INITIALIZE
@@ -72,9 +72,9 @@ void Simulation::runSimulation(){
     //For each bin, offer some salamanders therein the opportunity to migrate up
     //or down the mountain. NOTE: Another way of doing this would be to visit
     //bins in a random order. Since carrying capacities determine migration
-    //success, it is easy to move up the mountain than down. However, this would
-    //be true anyway becaues the bottom of the mountain typically has larger
-    //populations.
+    //success, it is easier to move up the mountain than down. However, this
+    //would be true anyway becaues the bottom of the mountain typically has
+    //larger populations. (TODO: Update)
     if(TheParams::get().dispersalType()==DISPERSAL_BETTER){
       for(unsigned int m=0;m<mts.size();++m){
         if(m==0)                 mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), nullptr,   &mts[m+1]);

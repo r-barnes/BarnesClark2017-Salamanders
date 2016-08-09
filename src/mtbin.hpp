@@ -13,9 +13,6 @@ class MtBin {
 	///Maximum salamander populations per mountain bin
 	double const binmax = 1000;
 
-	///If this is set to true, the mountains erode over time.
-	bool vary_height;
-
 	///Alias for the type of container we are using to store the salamanders
 	///used in this bin
 	typedef std::vector<Salamander> container;
@@ -24,7 +21,7 @@ class MtBin {
 	container bin;
 
 	///Initializes this bin with elevation specified by heightkm0
-	MtBin(double heightkm0, bool vary_height0);
+	MtBin(double heightkm);
 
 	///Returns the height of this bin IN KILOMETERS
 	double height() const;

@@ -16,9 +16,8 @@ double Gaussian(double x, double mean, double sigma){
 }
 
 
-MtBin::MtBin(double heightkm0, bool vary_height0){
-  heightkm    = heightkm0;
-  vary_height = vary_height0;
+MtBin::MtBin(double heightkm0){
+  this->heightkm = heightkm;
   //Reserve enough space to hold the maximum population. This keeps things
   //running fast by reducing the need to dynamically reallocate memory.
   bin.reserve(binmax); 
@@ -53,19 +52,43 @@ void MtBin::mortaliate(double tMyrs) {
   if(bin.empty()) return;
 
   double       mytemp   = temp(tMyrs);  //Current temperature of bin
-  unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
 
+  //TODO: Cut carrying capacity enforcement
+//  unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
   //Since the carrying capacity of the bin may have been reduced or exceeded
   //since we last mortaliated, kill individuals at random until we are within
   //carrying capacity.
-  while(alive()>maxalive)
-    killSalamander(randomSalamander());
+//  while(alive()>maxalive)
+//    killSalamander(randomSalamander());
 
-  const double conspecific_abundance    = 0; //TODO
-  const double heterospecific_abundance = 0; //TODO
+  if(alive()>30000){
+    std::cerr<<"Uh oh, 30ksals were found in a bin. Killing the simulation."<<std::endl;
+    throw std::runtime_error("Uh oh, 30ksals were found in a bin. Killing the simulation.");
+  }
 
   //For each salamander, check to see if it dies
-  for(auto s=bin.begin();s!=bin.end();s++)
+  for(auto s=bin.begin();s!=bin.end();s++){
+    //These are both initially used to count individuals. Then area is divided
+    //to produce abundance. This cannot be easily cached because no salamander
+    //carries with it a "species id". Species membership can only be calculated
+    //by comparing genomes.
+    double conspecific_abundance    = 0;
+    double heterospecific_abundance = 0;
+
+    for(auto so=bin.begin();so!=bin.end();so++){
+      if(so==s) //Don't count yourself, little salamander
+        continue;
+      else if(s->pSimilar(*so, TheParams::get().speciesSimthresh()))
+        conspecific_abundance+=1;
+      else
+        heterospecific_abundance+=1;
+    }
+
+    conspecific_abundance    /= area(heightkm, tMyrs);
+    heterospecific_abundance /= area(heightkm, tMyrs);
+
+    //Now that we've calculated CA and HA, see if the salamander is affected by
+    //it.
     if(s->pDie(mytemp, conspecific_abundance, heterospecific_abundance)){
       killSalamander(s);
       //If we kill a salamander, we swap the last living salamander in the list
@@ -74,6 +97,7 @@ void MtBin::mortaliate(double tMyrs) {
       //inhabits the spot that we just filled.
       s--;
     }
+  }
 }
 
 
@@ -89,7 +113,7 @@ double MtBin::temp(double tMyrs) const {
 
 //Get the carrying capacity of this bin, taking into account its elevation.
 unsigned int MtBin::kkap(double tMyrs) const {
-  if(!vary_height) tMyrs=65;
+  if(!TheParams::get().pVaryHeight()) tMyrs=65;
 
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
@@ -258,7 +282,7 @@ void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin
 ///Given a time tMyrs in millions of years ago returns area at that elevation
 ///IN SQUARE KILOMETERS
 double MtBin::area(double elevationkm, double tMyrs) const {
-  if(!vary_height) tMyrs=65;
+  if(!TheParams::get().pVaryHeight()) tMyrs=65;
 
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Parameters are fit to
@@ -308,6 +332,7 @@ MtBin::container::iterator MtBin::randomSalamander(){
 //This runs a series of tests designed to ensure that the simulation is behaving
 //as we expect.
 void MtBinUnitTest::run() const {
+/*
   unsigned int num_to_test=100;
 
   {
@@ -517,5 +542,5 @@ void MtBinUnitTest::run() const {
     for(double tMyrs=0;tMyrs<65.000;tMyrs+=1)
       std::cerr<<std::setw(10)<<bin_vary.kkap(tMyrs)<<" "<<std::setw(10)
                <<bin_vary.area(2.8, tMyrs)<<std::endl;
-  }
+  }*/
 }
