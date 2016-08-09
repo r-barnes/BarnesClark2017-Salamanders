@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall --std=c++11 -fopenmp -ffast-math -march=native #-DNDEBUG
+CFLAGS=-Wall --std=c++11 -ffast-math -march=native -fopenmp  #-DNDEBUG
 
 ODIR=obj
 PRE_FLAGS=-O3 -g
