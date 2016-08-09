@@ -16,6 +16,8 @@ using namespace std;
 int main(){
   Temperature::getInstance().init("../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
 
+  seed_rand(0);
+
   cout<<"Verifying temperatures"<<endl;
   for(double tMyrs=0;tMyrs<65;tMyrs+=0.5)
     cout<<"Temperature at "<<tMyrs<<"\t=\t"<<Temperature::getInstance().getTemp(tMyrs)<<endl;
@@ -29,9 +31,10 @@ int main(){
 
   //Test quality of random number generator using
   // ./test.exe  | grep -i Rand | sed 's/.*://' | tr " " "\n" | sort | uniq -c | awk '{print $0" "($1/100000*100)}'
-  cout<<"100000 random integers in the range [0,10]: ";
-  for(int i=0;i<100000;i++)
-    cout<<uniform_rand_int(0,10)<<" ";
+
+  cout<<"1000000 random integers in the range [0,9] from Mersenne: ";
+  for(int i=0;i<1000000;i++)
+    cout<<uniform_rand_int(0,9)<<" ";
   cout<<endl;
 
   MtBinUnitTest mtbintest;

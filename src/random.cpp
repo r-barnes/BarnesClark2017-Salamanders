@@ -1,6 +1,8 @@
 #include "random.hpp"
+#include "randutil.hpp"
 #include <cassert>
 #include <random>
+#include <cstdint>
 
 #ifdef _OPENMP
 	#include <omp.h>
@@ -10,20 +12,19 @@
 	#define omp_get_max_threads()	1
 #endif
 
-
-std::default_random_engine& rand_engine(){
-  static std::default_random_engine e[PRNG_THREAD_MAX];
+our_random_engine& rand_engine(){
+  static our_random_engine e[PRNG_THREAD_MAX];
   return e[omp_get_thread_num()];
 }
 
 
+//Be sure to read: http://www.pcg-random.org/posts/cpp-seeding-surprises.html
+//and http://www.pcg-random.org/posts/cpps-random_device.html
 void seed_rand(unsigned long seed){
-  static std::random_device rd{};
-  #pragma omp parallel
+  #pragma omp critical
   {
-    #pragma omp critical
     if(seed==0)
-      rand_engine().seed( rd() );
+      rand_engine().seed( randutils::auto_seed_128{}.base() );
     else
       rand_engine().seed( seed*omp_get_thread_num() );
   }
