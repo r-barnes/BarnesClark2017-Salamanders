@@ -54,15 +54,6 @@ void Params::load(std::string filename){
 
   max_offspring_per_bin_per_dt = Input_Integer(fparam,"MaxOffspringPerBinPerDt");
   max_tries_to_breed           = Input_Integer(fparam,"MaxTriesToBreed");
-
-  {
-    //std::string test_if_file_is_empty;
-    //if(fparam>>test_if_file_is_empty){
-    //  std::cerr<<fparam<<std::endl;
-    //  std::cerr<<"File contained unexpected parameters at the end!"<<std::endl;
-    //  throw std::runtime_error("Unexpected parameters in parameter file!");
-    //}
-  }
 }
 
 
