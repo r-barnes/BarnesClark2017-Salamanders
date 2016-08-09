@@ -57,6 +57,9 @@ class Params {
 
   int max_tries_to_breed;
 
+  //We use this many elevation bins to represent the mountain (TODO)
+  int numbins_val;
+
  public:
   Params();
   void load(std::string filename);
@@ -81,6 +84,7 @@ class Params {
   bool        pVaryHeight             () const;
   bool        pVaryTemp               () const;
   bool        pRunOnce                () const;
+  int         numBins                 () const;
   double      mutationProb            () const;
   double      tempDrift               () const;
   double      speciesSimthresh        () const;

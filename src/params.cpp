@@ -17,6 +17,8 @@ void Params::load(std::string filename){
   vary_temp   = Input_YesNo(fparam,"VaryTemp");
   run_once    = Input_YesNo(fparam,"RunOnce");
 
+  numbins_val = Input_Integer(fparam,"NumBins");
+
   mutation_probability = Input_Double(fparam, "MutationProb");
   temperature_drift_sd = Input_Double(fparam, "TemperatureDrift");
   species_sim_thresh   = Input_Double(fparam, "SpeciesSimilarity");
@@ -130,3 +132,4 @@ double      Params::logitCAweight           () const {return logit_ca_weight;   
 double      Params::logitHAweight           () const {return logit_ha_weight;              }
 int         Params::maxOffspringPerBinPerDt () const {return max_offspring_per_bin_per_dt; }
 int         Params::maxTriesToBreed         () const {return max_tries_to_breed;           }
+int         Params::numBins                 () const {return numbins_val;                  }

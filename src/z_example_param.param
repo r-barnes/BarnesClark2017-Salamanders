@@ -5,6 +5,7 @@ SpeciesStatsFilename      /z/species_stats
 VaryHeight                YES
 VaryTemp                  YES
 RunOnce                   NO
+NumBins                   50
 MutationProb              1e-3                 
 TemperatureDrift          0.1
 SpeciesSimilarity         0.95                 

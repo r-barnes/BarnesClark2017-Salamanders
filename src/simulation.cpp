@@ -6,9 +6,9 @@
 void Simulation::runSimulation(){
   //65Mya the Appalachian Mountains were 2.8km tall. Initialize each bin to
   //point to its given elevation band.
-  mts.reserve(numbins);
-  for(int m=0;m<numbins;m++)
-    mts.push_back(MtBin(m*2.8/numbins));
+  mts.reserve(TheParams::get().numBins());
+  for(int m=0;m<TheParams::get().numBins();m++)
+    mts.push_back(MtBin(m*2.8/TheParams::get().numBins()));
 
   ////////////////////////////////////
   //INITIALIZE
