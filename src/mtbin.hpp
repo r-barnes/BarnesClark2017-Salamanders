@@ -66,7 +66,7 @@ class MtBin {
 	///Fetch an iterator to a random salamander from this bin
 	container::iterator randomSalamander();
 
-  private:
+ private:
 	///Kills the indicated salamander by swapping it to the end of bin and then
 	///popping the back of bin. When used with an iterator, the iterator MUST
 	///decrement itself and then advance so that the swapped salamander is
