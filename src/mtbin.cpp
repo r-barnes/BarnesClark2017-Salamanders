@@ -16,8 +16,8 @@ double Gaussian(double x, double mean, double sigma){
 }
 
 
-MtBin::MtBin(double heightkm){
-  this->heightkm = heightkm;
+MtBin::MtBin(double heightkm_val){
+  this->heightkm_val = heightkm_val;
   //Reserve enough space to hold the maximum population. This keeps things
   //running fast by reducing the need to dynamically reallocate memory.
   bin.reserve(2000);
@@ -25,8 +25,8 @@ MtBin::MtBin(double heightkm){
 
 
 //Returns the nominal height of the bin.
-double MtBin::height() const {
-  return heightkm;
+double MtBin::heightkm() const {
+  return heightkm_val;
 }
 
 
@@ -84,8 +84,8 @@ void MtBin::mortaliate(double tMyrs) {
         heterospecific_abundance+=1;
     }
 
-    conspecific_abundance    /= area(heightkm, tMyrs);
-    heterospecific_abundance /= area(heightkm, tMyrs);
+    conspecific_abundance    /= area(heightkm(), tMyrs);
+    heterospecific_abundance /= area(heightkm(), tMyrs);
 
     //Now that we've calculated CA and HA, see if the salamander is affected by
     //it.
@@ -105,7 +105,7 @@ void MtBin::mortaliate(double tMyrs) {
 double MtBin::temp(double tMyrs) const {
   //Find out the temperature adjustment for that height assuming a dry air
   //adiabatic lapse rate of 9.8 degC per vertical kilometer
-  double altitude_temp_adjust = -9.8*heightkm;
+  double altitude_temp_adjust = -9.8*heightkm();
 
   return Temperature::getInstance().getTemp(tMyrs) + altitude_temp_adjust;
 }

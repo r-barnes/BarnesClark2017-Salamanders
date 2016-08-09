@@ -21,7 +21,7 @@ class MtBin {
 	MtBin(double heightkm);
 
 	///Returns the height of this bin IN KILOMETERS
-	double height() const;
+	double heightkm() const;
 
 	///Apply mortality to salamander within this bin based on how far they
 	///differ from optimal temperature and also on the the carrying capacity of
@@ -77,7 +77,7 @@ class MtBin {
 	void moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b);
 
 	///Height of this bin above sealevel across all times IN KILOMETERS
-	double heightkm;
+	double heightkm_val;
 
 	friend class MtBinUnitTest;
 };

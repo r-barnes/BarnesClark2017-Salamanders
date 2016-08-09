@@ -46,7 +46,7 @@ void PhyloNode::updateWithSal(const MtBin &mt, const Salamander &s, double t){
     lastchild = t;
     stats.emplace_back(SpeciesStats(t));
   }
-  stats.back().update(mt.height(),s.otempdegC);
+  stats.back().update(mt.heightkm(),s.otempdegC);
 }
 
 
