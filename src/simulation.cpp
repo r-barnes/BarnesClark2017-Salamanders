@@ -1,6 +1,7 @@
 #include "simulation.hpp"
 #include "params.hpp"
 #include "random.hpp"
+#include "temp.hpp"
 #include <iostream>
 #include <limits>
 #include <cassert>
@@ -18,6 +19,11 @@ void Simulation::runSimulation(){
   for(unsigned int i=0;i<mts.size();i++)
     mtbin_order.push_back(i);
 
+  if(TheParams::get().initialAltitude()<0 || (int)mts.size()<=TheParams::get().initialAltitude()){
+    std::cerr<<"Initial bin was outside of range. Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
+    throw std::runtime_error("Initial bin outside of range.");
+  }
+
   ////////////////////////////////////
   //INITIALIZE
   ////////////////////////////////////
@@ -29,22 +35,17 @@ void Simulation::runSimulation(){
   //relationship
   Eve.parent = 0;
 
-  //This is the mean summer diurnal temperature at sea level 65 million years
-  //ago in Greensboro, NC. Today, the optimal temperature for salamanders is
-  //12.804279 degC. We assume that Eve is well-adapted for her time by setting
-  //her optimal temperature to be this global average sea level temperature.
-  Eve.otempdegC = 33.5618604122814; //degC
+  //The simulation assumes that it is given a time series of mean summer diurnal
+  //temperatures corresponding to the  temperatures at the base of the
+  //mountains. We ensure that Eve is well-adapted for her time by setting her
+  //optimal temperature to be equal to the temperature of the bin she starts in.
+  Eve.otempdegC = Temperature::getInstance().getTemp(0)-9.8*mts[TheParams::get().initialAltitude()].heightkm();
 
   //We set Eve initially to have a genome in which all of the bits are off.
   //Since the genomes are used solely to determine speciation and speciation is
   //determined by the number of bits which are different between two genomes,
   //any starting value could be used with equal validity.
   Eve.genes = (Salamander::genetype)0;
-
-  if(TheParams::get().initialAltitude()<0 || (int)mts.size()<=TheParams::get().initialAltitude()){
-    std::cerr<<"Initial bin was outside of range. Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
-    throw std::runtime_error("Initial bin outside of range.");
-  }
 
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a
