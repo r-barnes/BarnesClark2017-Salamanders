@@ -52,6 +52,9 @@ class Params {
   std::string temp_series_filename;
   int initial_altitude;
 
+  //Maximum number of new offspring per bin per unit time
+  int max_offspring_per_bin_per_dt;
+
  public:
   Params();
   void load(std::string filename);
@@ -91,6 +94,7 @@ class Params {
   double      logitOffset             () const;
   double      logitCAweight           () const;
   double      logitHAweight           () const;
+  int         maxOffspringPerBinPerDt () const;
 };
 
 

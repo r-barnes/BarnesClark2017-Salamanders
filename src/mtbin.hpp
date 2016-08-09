@@ -10,9 +10,6 @@
 
 class MtBin {
  public:
-	///Maximum salamander populations per mountain bin
-	double const binmax = 1000;
-
 	///Alias for the type of container we are using to store the salamanders
 	///used in this bin
 	typedef std::vector<Salamander> container;
@@ -39,9 +36,10 @@ class MtBin {
 	///millions of years.
 	double area(double elevationkm, double tMyrs) const;
 
+	//TODO: Cut?
 	///Karrying Kapacity of the bin given its area at a given time tMyrs.
 	///Returns a number [0, binmax].
-	unsigned int kkap(double tMyrs) const;
+	//unsigned int kkap(double tMyrs) const;
 
 	///Add a salamander to the bin. Fail silently if there's no room.
 	void addSalamander(const Salamander &s);

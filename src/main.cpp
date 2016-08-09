@@ -62,6 +62,7 @@ int main(int argc, char **argv){
     cout<<"\tLogitOffset               Double      \n";
     cout<<"\tLogitCAweight             Double      Conspecific abundance weighting in mortality.\n";
     cout<<"\tLogitHAweight             Double      Heterospecific abundance weighting in mortality.\n";
+    cout<<"\tMaxOffspringPerBinPerDt   Integer     \n";
 
     return -1;
   }

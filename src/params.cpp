@@ -45,10 +45,12 @@ void Params::load(std::string filename){
 
   initial_altitude = Input_Integer(fparam,"InitialAltitude");
 
-  logit_temp_weight = Input_Integer(fparam,"LogitTempWeight");
-  logit_offset      = Input_Integer(fparam,"LogitOffset");
-  logit_ca_weight   = Input_Integer(fparam,"LogitCAweight");
-  logit_ha_weight   = Input_Integer(fparam,"LogitHAweight");  
+  logit_temp_weight = Input_Double(fparam,"LogitTempWeight");
+  logit_offset      = Input_Double(fparam,"LogitOffset");
+  logit_ca_weight   = Input_Double(fparam,"LogitCAweight");
+  logit_ha_weight   = Input_Double(fparam,"LogitHAweight");  
+
+  max_offspring_per_bin_per_dt = Input_Integer(fparam,"MaxOffspringPerBinPerDt");
 
   {
     //std::string test_if_file_is_empty;
@@ -104,24 +106,25 @@ int Params::Input_Integer(std::ifstream &fparam, const std::string &param_name) 
   return temp;
 }
 
-std::string Params::outSummaryFilename      () const {return out_summary;          }
-std::string Params::outPersistFilename      () const {return out_persist;          }
-std::string Params::outPhylogenyFilename    () const {return out_phylogeny;        }
-std::string Params::outSpeciesStatsFilename () const {return out_species_stats;    }
-bool        Params::pVaryHeight             () const {return vary_height;          }
-bool        Params::pVaryTemp               () const {return vary_temp;            }
-bool        Params::pRunOnce                () const {return run_once;             }
-double      Params::mutationProb            () const {return mutation_probability; }
-double      Params::tempDrift               () const {return temperature_drift_sd; }
-double      Params::speciesSimthresh        () const {return species_sim_thresh;   }
-double      Params::timestep                () const {return timestep_val;         }
-int         Params::maxiter                 () const {return maxiter_val;          }
-double      Params::dispersalProb           () const {return dispersal_prob;       }
-int         Params::dispersalType           () const {return dispersal_type;       }
-std::string Params::tempSeriesFilename      () const {return temp_series_filename; }
-int         Params::initialAltitude         () const {return initial_altitude;     }
-int         Params::randomSeed              () const {return random_seed;          }
-double      Params::logitTempWeight         () const {return logit_temp_weight;    }
-double      Params::logitOffset             () const {return logit_offset;         }
-double      Params::logitCAweight           () const {return logit_ca_weight;      }
-double      Params::logitHAweight           () const {return logit_ha_weight;      }
+std::string Params::outSummaryFilename      () const {return out_summary;                  }
+std::string Params::outPersistFilename      () const {return out_persist;                  }
+std::string Params::outPhylogenyFilename    () const {return out_phylogeny;                }
+std::string Params::outSpeciesStatsFilename () const {return out_species_stats;            }
+bool        Params::pVaryHeight             () const {return vary_height;                  }
+bool        Params::pVaryTemp               () const {return vary_temp;                    }
+bool        Params::pRunOnce                () const {return run_once;                     }
+double      Params::mutationProb            () const {return mutation_probability;         }
+double      Params::tempDrift               () const {return temperature_drift_sd;         }
+double      Params::speciesSimthresh        () const {return species_sim_thresh;           }
+double      Params::timestep                () const {return timestep_val;                 }
+int         Params::maxiter                 () const {return maxiter_val;                  }
+double      Params::dispersalProb           () const {return dispersal_prob;               }
+int         Params::dispersalType           () const {return dispersal_type;               }
+std::string Params::tempSeriesFilename      () const {return temp_series_filename;         }
+int         Params::initialAltitude         () const {return initial_altitude;             }
+int         Params::randomSeed              () const {return random_seed;                  }
+double      Params::logitTempWeight         () const {return logit_temp_weight;            }
+double      Params::logitOffset             () const {return logit_offset;                 }
+double      Params::logitCAweight           () const {return logit_ca_weight;              }
+double      Params::logitHAweight           () const {return logit_ha_weight;              }
+int         Params::maxOffspringPerBinPerDt () const {return max_offspring_per_bin_per_dt; }

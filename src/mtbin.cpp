@@ -20,7 +20,7 @@ MtBin::MtBin(double heightkm0){
   this->heightkm = heightkm;
   //Reserve enough space to hold the maximum population. This keeps things
   //running fast by reducing the need to dynamically reallocate memory.
-  bin.reserve(binmax); 
+  bin.reserve(2000);
 }
 
 
@@ -112,6 +112,7 @@ double MtBin::temp(double tMyrs) const {
 
 
 //Get the carrying capacity of this bin, taking into account its elevation.
+/* TODO
 unsigned int MtBin::kkap(double tMyrs) const {
   if(!TheParams::get().pVaryHeight()) tMyrs=65;
 
@@ -136,7 +137,7 @@ unsigned int MtBin::kkap(double tMyrs) const {
   //will always have a carrying capacity of at least 1 salamander and all other
   //bins are scaled to this bin's size.
   return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
-}
+} */
 
 
 //Add the indicated salamander to the bin
@@ -157,18 +158,19 @@ unsigned int MtBin::alive() const {
 void MtBin::breed(double t){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
-  unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
-  if(alive()>=maxalive) return;    //The bin is too full for us to breed
+  //TODO: Cut?
+  //unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
+  //if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
   //Maximum number of tries to find a pair to mate; prevents infinite loops.
-  int maxtries=40*(maxalive-alive());
+  int maxtries=1000;
 
   //Maximum number of new offspring per bin per unit time
-  int max_babies=10;
+  int max_babies=TheParams::get().maxOffspringPerBinPerDt();
 
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
-  while(alive()<maxalive && max_babies>0 && maxtries-->0){
+  while(max_babies>0 && maxtries-->0){
     auto parenta=randomSalamander();
     auto parentb=randomSalamander();
     //If parents are genetically similar enough to be classed as the same
