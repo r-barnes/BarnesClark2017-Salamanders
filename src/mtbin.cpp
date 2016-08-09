@@ -76,13 +76,14 @@ void MtBin::mortaliate(double tMyrs) {
     double heterospecific_abundance = 0;
 
     for(auto so=bin.begin();so!=bin.end();so++){
-      if(so==s) //Don't count yourself, little salamander
-        continue;
-      else if(s->pSimilar(*so))
-        conspecific_abundance+=1;
+      if(s->pSimilar(*so))
+        conspecific_abundance    += 1;
       else
-        heterospecific_abundance+=1;
+        heterospecific_abundance += 1;
     }
+
+    //Don't count yourself, little salamander
+    conspecific_abundance -= 1;
 
     conspecific_abundance    /= area(heightkm(), tMyrs);
     heterospecific_abundance /= area(heightkm(), tMyrs);
