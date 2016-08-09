@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-Wall --std=c++11 -fopenmp -ffast-math -march=native #-DNDEBUG
 
 ODIR=obj
-PRE_FLAGS=-O3
+PRE_FLAGS=-O3 -g
 
 _OBJ = salamander.o mtbin.o temp.o phylo.o random.o simulation.o params.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
