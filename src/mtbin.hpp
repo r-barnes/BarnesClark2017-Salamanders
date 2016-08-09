@@ -23,6 +23,9 @@ class MtBin {
 	///Returns the height of this bin IN KILOMETERS
 	double heightkm() const;
 
+	///Returns the maximum height of the mountain range at the given time
+	static double heightMaxKm(double tMyrs);
+
 	///Apply mortality to salamander within this bin based on how far they
 	///differ from optimal temperature and also on the the carrying capacity of
 	///the bin.

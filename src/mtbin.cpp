@@ -30,6 +30,21 @@ double MtBin::heightkm() const {
 }
 
 
+///Returns the maximum height of the mountain range at the given time
+double MtBin::heightMaxKm(double tMyrs) {
+  if(!TheParams::get().pVaryHeight()) tMyrs=65;
+
+  //Maximum elevation of the mountain range over time
+  //Based on linear shrinking of mountain height from 2.8km at 65Mya (according
+  //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
+  //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
+  const double height_65mya = 2.8; //km
+  const double height_0mya  = 1.6; //km
+  const double erosion_rate = (height_65mya-height_0mya)/65.0; //Erosion rate per 1Myr
+  return 2.8-erosion_rate*tMyrs;   //km
+}
+
+
 //Removes a salamander from this bin. The removed salamander ceases to exist,
 //which, for our purposes, is the same as killing it.
 void MtBin::killSalamander(MtBin::container::iterator s) {
