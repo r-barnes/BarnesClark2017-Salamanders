@@ -51,6 +51,7 @@ void Params::load(std::string filename){
   logit_ha_weight   = Input_Double(fparam,"LogitHAweight");  
 
   max_offspring_per_bin_per_dt = Input_Integer(fparam,"MaxOffspringPerBinPerDt");
+  max_tries_to_breed           = Input_Integer(fparam,"MaxTriesToBreed");
 
   {
     //std::string test_if_file_is_empty;
@@ -128,3 +129,4 @@ double      Params::logitOffset             () const {return logit_offset;      
 double      Params::logitCAweight           () const {return logit_ca_weight;              }
 double      Params::logitHAweight           () const {return logit_ha_weight;              }
 int         Params::maxOffspringPerBinPerDt () const {return max_offspring_per_bin_per_dt; }
+int         Params::maxTriesToBreed         () const {return max_tries_to_breed;           }

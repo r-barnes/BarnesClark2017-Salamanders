@@ -163,10 +163,10 @@ void MtBin::breed(double t){
   //if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
   //Maximum number of tries to find a pair to mate; prevents infinite loops.
-  int maxtries=1000;
+  int maxtries = TheParams::get().maxTriesToBreed();
 
   //Maximum number of new offspring per bin per unit time
-  int max_babies=TheParams::get().maxOffspringPerBinPerDt();
+  int max_babies = TheParams::get().maxOffspringPerBinPerDt();
 
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.

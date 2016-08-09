@@ -55,6 +55,8 @@ class Params {
   //Maximum number of new offspring per bin per unit time
   int max_offspring_per_bin_per_dt;
 
+  int max_tries_to_breed;
+
  public:
   Params();
   void load(std::string filename);
@@ -95,6 +97,7 @@ class Params {
   double      logitCAweight           () const;
   double      logitHAweight           () const;
   int         maxOffspringPerBinPerDt () const;
+  int         maxTriesToBreed         () const;
 };
 
 

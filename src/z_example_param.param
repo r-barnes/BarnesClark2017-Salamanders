@@ -20,3 +20,4 @@ LogitOffset               -2.197225
 LogitCAweight             1
 LogitHAweight             1
 MaxOffspringPerBinPerDt   10
+MaxTriesToBreed           100
