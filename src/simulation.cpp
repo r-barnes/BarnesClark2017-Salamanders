@@ -45,7 +45,7 @@ void Simulation::runSimulation(){
     mts[TheParams::get().initialAltitude()].addSalamander(Eve);
 
   //Begin a new phylogeny with Eve as the root
-  phylos=Phylogeny(Eve, 0);
+  phylos = Phylogeny(Eve, 0);
 
   ////////////////////////////////////
   //MAIN LOOP
