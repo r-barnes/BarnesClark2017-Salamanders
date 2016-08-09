@@ -78,9 +78,7 @@ void Phylogeny::addNode(const Salamander &s, double t){
 //This method loops through all existent salamanders and updates the
 //phylogenetic tree to reflect which species have gone extinct, been born, or
 //survived.
-void Phylogeny::UpdatePhylogeny(
-  double t, double dt, std::vector<MtBin> &mts, double species_sim_thresh
-){
+void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
     //If I have no parent, skip me
@@ -89,7 +87,7 @@ void Phylogeny::UpdatePhylogeny(
 
     //I am similar to my parent, so mark my parent (species) as having survived
     //this long
-    if(s.pSimilarGenome(nodes.at(s.parent).genes, species_sim_thresh)) {
+    if(s.pSimilarGenome(nodes.at(s.parent).genes)) {
       nodes.at(s.parent).updateWithSal(m,s,t);
       continue;
     }
@@ -117,7 +115,7 @@ void Phylogeny::UpdatePhylogeny(
       //will consider myself this salamander's child, since its genome is
       //already stored in the phylogeny
       if( s.parent==nodes.at(p).parent && 
-          s.pSimilarGenome(nodes.at(p).genes, species_sim_thresh)
+          s.pSimilarGenome(nodes.at(p).genes)
       ){
         s.parent   = p;
         has_parent = true;

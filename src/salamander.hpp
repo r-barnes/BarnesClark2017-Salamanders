@@ -27,14 +27,14 @@ class Salamander {
   ///species. species_sim_thresh is a number in [0,1] describing how similar
   ///two genomes must be before salamanders are deemed to be of the same
   ///species. Returns TRUE if salamanders are of the same species.
-  bool pSimilar(const Salamander &b, double species_sim_thresh) const;
+  bool pSimilar(const Salamander &b) const;
 
   ///Comparison of the similarity between two genomes. Used to compare genetic
   ///similarity and determine whether genes come from members of the same
   ///species. species_sim_thresh is a number in [0,1] describing how similar
   ///two genomes must be before salamanders are deemed to be of the same
   ///species. Returns TRUE if genes are of the same species.
-  bool pSimilarGenome(const Salamander::genetype &b, double species_sim_thresh) const;
+  bool pSimilarGenome(const Salamander::genetype &b) const;
 
   ///Mutate this salamander's genome. Flips each element of the bit field with
   ///probability mutation_probability.

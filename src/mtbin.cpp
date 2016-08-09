@@ -78,7 +78,7 @@ void MtBin::mortaliate(double tMyrs) {
     for(auto so=bin.begin();so!=bin.end();so++){
       if(so==s) //Don't count yourself, little salamander
         continue;
-      else if(s->pSimilar(*so, TheParams::get().speciesSimthresh()))
+      else if(s->pSimilar(*so))
         conspecific_abundance+=1;
       else
         heterospecific_abundance+=1;
@@ -175,7 +175,7 @@ void MtBin::breed(double t){
     auto parentb=randomSalamander();
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
-    if(parenta->pSimilar(*parentb, TheParams::get().speciesSimthresh())){
+    if(parenta->pSimilar(*parentb)){
       addSalamander(parenta->breed(*parentb));
       max_babies--;
     }

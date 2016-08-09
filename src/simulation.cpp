@@ -94,7 +94,7 @@ void Simulation::runSimulation(){
 
     //Updates the phylogeny based on the current time, living salamanders, and
     //species similarity threshold
-    phylos.UpdatePhylogeny(tMyrs, TheParams::get().timestep(), mts, TheParams::get().speciesSimthresh());
+    phylos.UpdatePhylogeny(tMyrs, TheParams::get().timestep(), mts);
   }
 
   //Records the time at which the simulation ended
