@@ -16,7 +16,7 @@ double Gaussian(double x, double mean, double sigma){
 }
 
 
-MtBin::MtBin(double heightkm0){
+MtBin::MtBin(double heightkm){
   this->heightkm = heightkm;
   //Reserve enough space to hold the maximum population. This keeps things
   //running fast by reducing the need to dynamically reallocate memory.
