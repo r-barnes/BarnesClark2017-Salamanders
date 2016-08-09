@@ -191,7 +191,7 @@ void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
 
 
 //Give salamanders in this bin the opportunity to move to neighbouring bins if advantageous
-void MtBin::diffuseToBetter(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper) {
+void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -202,7 +202,7 @@ void MtBin::diffuseToBetter(double tMyrs, double dispersal_prob, MtBin *lower, M
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=dispersal_prob)
+    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
       continue;
 
     //Higher bins are cooler. If the salamander's optimal temperature is cooler
@@ -228,7 +228,7 @@ void MtBin::diffuseToBetter(double tMyrs, double dispersal_prob, MtBin *lower, M
 }
 
 //Give salamanders in this bin the opportunity to move to neighbouring bins
-void MtBin::diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBin *upper) {
+void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -239,7 +239,7 @@ void MtBin::diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBi
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=dispersal_prob)
+    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
       continue;
 
     if(uniform_rand_real(0,1)>0.5){
@@ -259,7 +259,7 @@ void MtBin::diffuseLocal(double tMyrs, double dispersal_prob, MtBin *lower, MtBi
 
 
 //Give salamanders in this bin the opportunity to move all over
-void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin> &mts) {
+void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
   if(bin.empty()) return;
 
   //The following code allows salamanders to move into neighbouring bins in a
@@ -270,7 +270,7 @@ void MtBin::diffuseGlobal(double tMyrs, double dispersal_prob, std::vector<MtBin
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=dispersal_prob)
+    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
       continue;
 
     int to_bin = uniform_rand_int(0,mts.size()-1);

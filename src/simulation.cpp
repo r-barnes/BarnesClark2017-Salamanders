@@ -77,19 +77,19 @@ void Simulation::runSimulation(){
     //larger populations. (TODO: Update)
     if(TheParams::get().dispersalType()==DISPERSAL_BETTER){
       for(unsigned int m=0;m<mts.size();++m){
-        if(m==0)                 mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), nullptr,   &mts[m+1]);
-        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], nullptr  );
-        else                     mts[m].diffuseToBetter(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], &mts[m+1]);
+        if(m==0)                 mts[m].diffuseToBetter(tMyrs, nullptr,   &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, &mts[m-1], nullptr  );
+        else                     mts[m].diffuseToBetter(tMyrs, &mts[m-1], &mts[m+1]);
       }
     } else if(TheParams::get().dispersalType()==DISPERSAL_MAYBE_WORSE) {
       for(unsigned int m=0;m<mts.size();++m){
-        if(m==0)                 mts[m].diffuseLocal(tMyrs, TheParams::get().dispersalProb(), nullptr,   &mts[m+1]);
-        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], nullptr  );
-        else                     mts[m].diffuseLocal(tMyrs, TheParams::get().dispersalProb(), &mts[m-1], &mts[m+1]);
+        if(m==0)                 mts[m].diffuseLocal(tMyrs, nullptr,   &mts[m+1]);
+        else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, &mts[m-1], nullptr  );
+        else                     mts[m].diffuseLocal(tMyrs, &mts[m-1], &mts[m+1]);
       }
     } else if(TheParams::get().dispersalType()==DISPERSAL_GLOBAL) {
       for(auto &m: mts)
-        m.diffuseGlobal(tMyrs, TheParams::get().dispersalProb(), mts);
+        m.diffuseGlobal(tMyrs, mts);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and
