@@ -247,7 +247,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
   }
 }
 
-//Give salamanders in this bin the opportunity to move to neighbouring bins
+//Give salamanders in this bin the opportunity to move to neighbouring bins.
 void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
