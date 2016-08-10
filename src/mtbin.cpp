@@ -15,6 +15,7 @@ double Gaussian(double x, double mean, double sigma){
   return 1/sigma/std::sqrt(2*PI)*std::exp(-std::pow(x-mean,2)/2/std::pow(sigma,2));
 }
 
+MtBin::MtBin(){}
 
 MtBin::MtBin(double heightkm_val){
   this->heightkm_val = heightkm_val;
@@ -30,24 +31,39 @@ double MtBin::heightkm() const {
 }
 
 
+///Returns the maximum height of the mountain range at the given time
+double MtBin::heightMaxKm(double tMyrs) {
+  if(!TheParams.pVaryHeight()) tMyrs=65;
+
+  //Maximum elevation of the mountain range over time
+  //Based on linear shrinking of mountain height from 2.8km at 65Mya (according
+  //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
+  //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
+  const double height_65mya = 2.8; //km
+  const double height_0mya  = 1.6; //km
+  const double erosion_rate = (height_65mya-height_0mya)/65.0; //Erosion rate per 1Myr
+  return 2.8-erosion_rate*tMyrs;   //km
+}
+
+
 //Removes a salamander from this bin. The removed salamander ceases to exist,
 //which, for our purposes, is the same as killing it.
 void MtBin::killSalamander(MtBin::container::iterator s) {
   assert(!bin.empty());
 
-  //We swap the indicated salamander, which is now dead, with the salamander at
-  //the back of the bin, which is still alive. If this method is called by an
-  //iterator the iterator must decrement and then advance so that the swapped
-  //salamander is still considered
-  std::swap(*s,bin.back());
+  //We overwrite the indicated salamander, which is now dead, with the
+  //salamander at the back of the bin, which is still alive. If this method is
+  //called by an iterator the iterator must decrement and then advance so that
+  //the swapped salamander is still considered
+  *s = bin.back();
 
-  //Pop the dead salamander out of the container, so that it can never be
-  //accessed.
+  //Pop the salamander at the back of the container, because it is now a
+  //duplicate and should never be accessed.
   bin.pop_back();
 }
 
 
-void MtBin::mortaliate(double tMyrs) {
+void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
   ///If there are no living salamanders, then don't do anything
   if(bin.empty()) return;
 
@@ -66,24 +82,18 @@ void MtBin::mortaliate(double tMyrs) {
     throw std::runtime_error("Uh oh, 30ksals were found in a bin. Killing the simulation.");
   }
 
+  //If individuals have the same parent species they are part of the same
+  //species. Cache this here to maintain O(N) operation
+  std::vector<int> species_abundance(5000,0);
+  for(const auto &s: bin)
+    species_abundance.at(s.parent)++;
+
   //For each salamander, check to see if it dies
   for(auto s=bin.begin();s!=bin.end();s++){
     //These are both initially used to count individuals. Then area is divided
-    //to produce abundance. This cannot be easily cached because no salamander
-    //carries with it a "species id". Species membership can only be calculated
-    //by comparing genomes.
-    double conspecific_abundance    = 0;
-    double heterospecific_abundance = 0;
-
-    for(auto so=bin.begin();so!=bin.end();so++){
-      if(s->pSimilar(*so))
-        conspecific_abundance    += 1;
-      else
-        heterospecific_abundance += 1;
-    }
-
-    //Don't count yourself, little salamander
-    conspecific_abundance -= 1;
+    //to produce abundance.
+    double conspecific_abundance    = species_abundance[s->parent]-1;
+    double heterospecific_abundance = bin.size()-species_abundance[s->parent];
 
     //Turn counts into abundances, as promised
     conspecific_abundance    /= area(heightkm(), tMyrs);
@@ -109,14 +119,14 @@ double MtBin::temp(double tMyrs) const {
   //adiabatic lapse rate of 9.8 degC per vertical kilometer
   double altitude_temp_adjust = -9.8*heightkm();
 
-  return Temperature::getInstance().getTemp(tMyrs) + altitude_temp_adjust;
+  return Temperature.getTemp(tMyrs) + altitude_temp_adjust;
 }
 
 
 //Get the carrying capacity of this bin, taking into account its elevation.
 /* TODO
 unsigned int MtBin::kkap(double tMyrs) const {
-  if(!TheParams::get().pVaryHeight()) tMyrs=65;
+  if(!TheParams.pVaryHeight()) tMyrs=65;
 
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
@@ -157,7 +167,7 @@ unsigned int MtBin::alive() const {
 
 
 //Give salamanders in this bin the opportunity to breed
-void MtBin::breed(double t){
+void MtBin::breed(double tMyrs, int species_sim_thresh){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
   //TODO: Cut?
@@ -165,10 +175,10 @@ void MtBin::breed(double t){
   //if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
   //Maximum number of tries to find a pair to mate; prevents infinite loops.
-  int maxtries = TheParams::get().maxTriesToBreed();
+  int maxtries = TheParams.maxTriesToBreed();
 
   //Maximum number of new offspring per bin per unit time
-  int max_babies = TheParams::get().maxOffspringPerBinPerDt();
+  int max_babies = TheParams.maxOffspringPerBinPerDt();
 
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
@@ -177,7 +187,7 @@ void MtBin::breed(double t){
     auto parentb = randomSalamander();
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
-    if(parenta->pSimilar(*parentb)){
+    if(parenta->pSimilar(*parentb, species_sim_thresh)){
       addSalamander(parenta->breed(*parentb));
       max_babies--;
     }
@@ -204,24 +214,27 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
+    if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
     //Higher bins are cooler. If the salamander's optimal temperature is cooler
     //than the current bin and closer to the upper neighbour than the current
     //bin, the salamander tries to migrate up the mountain.
-    if( upper && 
-        s->otempdegC<temp(tMyrs) &&
-        std::abs( s->otempdegC - upper->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+    if( upper
+        && s->otempdegC<temp(tMyrs)
+        && std::abs( s->otempdegC - upper->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+        && upper->heightkm()<heightMaxKm(tMyrs)
     ){
       moveSalamanderTo(s,*upper);
       --s;
     //Lower bins are warmer. If the salamander's optimal temperature is warmer
     //than the current bin and closer to the lower neighbour than the current
     //bin, the salamander tries to migrate down the mountain.
-    } else if(lower && 
-              s->otempdegC>temp(tMyrs) && 
-              std::abs( s->otempdegC - lower->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+    } else if(
+        lower
+        && s->otempdegC>temp(tMyrs)
+        && std::abs( s->otempdegC - lower->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+        && lower->heightkm()<heightMaxKm(tMyrs)
     ){
       moveSalamanderTo(s,*lower);
       --s;
@@ -229,7 +242,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
   }
 }
 
-//Give salamanders in this bin the opportunity to move to neighbouring bins
+//Give salamanders in this bin the opportunity to move to neighbouring bins.
 void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
@@ -237,24 +250,52 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
   //way which may exceed their carrying capacity; however, in the Mortaliate()
   //step, random salamanders are killed until the bin is back at the carrying
   //capacity. Salamanders move without respecting carrying capacities and nature
-  //does not choose who wins and loses in this process.
+  //does not choose who wins and loses in this process. TODO
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
+    if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
     if(uniform_rand_real(0,1)>0.5){
-      if(upper){
+      if(upper && upper->heightkm()<heightMaxKm(tMyrs)){
         moveSalamanderTo(s,*upper);
         --s;
       }
     } else {
-      if(lower){
+      if(lower && lower->heightkm()<heightMaxKm(tMyrs)){
         moveSalamanderTo(s,*lower);
         --s;
       }
     }
+  }
+}
+
+
+//Method for moving salamanders into a special separate bin representing the
+//surrounding lowlands.
+void MtBin::diffuseToLowlands(MtBin &lowlands){
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=TheParams.toLowlandsProb())
+      continue;
+
+    moveSalamanderTo(s,lowlands);
+    --s;
+  }
+}
+
+
+//Method to be used by the surrounding lowlands to move salamanders back into
+//the active simulation.
+void MtBin::diffuseFromLowlands(MtBin &frontrange){
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=TheParams.fromLowlandsProb())
+      continue;
+
+    moveSalamanderTo(s,frontrange);
+    --s;
   }
 }
 
@@ -272,10 +313,13 @@ void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
+    if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
-    int to_bin = uniform_rand_int(0,mts.size()-1);
+    int to_bin = -1;
+    while(to_bin==-1 || mts[to_bin].heightkm() >= heightMaxKm(tMyrs))
+      to_bin = uniform_rand_int(0,mts.size()-1);
+
     moveSalamanderTo(s,mts[to_bin]);
     --s;
   }
@@ -286,7 +330,7 @@ void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
 ///Given a time tMyrs in millions of years ago returns area at that elevation
 ///IN SQUARE KILOMETERS
 double MtBin::area(double elevationkm, double tMyrs) const {
-  if(!TheParams::get().pVaryHeight()) tMyrs=65;
+  if(!TheParams.pVaryHeight()) tMyrs=65;
 
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Parameters are fit to
@@ -315,6 +359,17 @@ double MtBin::area(double elevationkm, double tMyrs) const {
   double area = elek * Gaussian(elevationkm, elemu, elesigma-timeKyrs*deltasd);
 
   return area;
+}
+
+void MtBin::killAll() {
+  for(auto s=bin.begin();s!=bin.end();s++){
+    killSalamander(s);
+    //If we kill a salamander, we swap the last living salamander in the list
+    //with the salamander we just killed. Therefore, we need to make sure that
+    //we still run the mortaliate function for the living salamander that now
+    //inhabits the spot that we just filled.
+    s--;
+  }
 }
 
 
@@ -436,7 +491,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander freezing death response"<<std::endl;
-    Temperature::getInstance().testOn(-10);
+    Temperature.testOn(-10);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
     bin.mortaliate(0);
@@ -448,7 +503,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response"<<std::endl;
-    Temperature::getInstance().testOn(100);
+    Temperature.testOn(100);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
     bin.mortaliate(0);
@@ -460,7 +515,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C.\n";
-    Temperature::getInstance().testOn(33);
+    Temperature.testOn(33);
     for(unsigned int i=0;i<num_to_test;i++){
       Salamander temp;
       temp.otempdegC=25;
@@ -475,7 +530,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C.\n";
-    Temperature::getInstance().testOn(25);
+    Temperature.testOn(25);
     for(unsigned int i=0;i<num_to_test;i++){
       Salamander temp;
       temp.otempdegC=33;
@@ -519,7 +574,7 @@ void MtBinUnitTest::run() const {
   {
     //Construct bins at 0km, 1.6km, and 2.8km
     MtBin bin0(0, true), bin1(1.6, true), bin2(2.8, true);
-    Temperature::getInstance().testOff();
+    Temperature.testOff();
     std::cerr<<std::endl;
     std::cerr<<"Temperature at 0Myr at: "<<std::endl;
     std::cerr<<"  0.0km="<<bin0.temp(0)<<std::endl;

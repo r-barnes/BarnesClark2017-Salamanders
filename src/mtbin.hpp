@@ -17,16 +17,21 @@ class MtBin {
 	///Define the bin used to store the salamanders
 	container bin;
 
+	MtBin();
+
 	///Initializes this bin with elevation specified by heightkm0
 	MtBin(double heightkm);
 
 	///Returns the height of this bin IN KILOMETERS
 	double heightkm() const;
 
+	///Returns the maximum height of the mountain range at the given time
+	static double heightMaxKm(double tMyrs);
+
 	///Apply mortality to salamander within this bin based on how far they
 	///differ from optimal temperature and also on the the carrying capacity of
 	///the bin.
-	void mortaliate(double tMyrs);
+	void mortaliate(double tMyrs, int species_sim_thresh);
 
 	///Return the temperature of the bin at a given time, based on conditions at
 	///time tMyrs, in millions of year
@@ -52,7 +57,7 @@ class MtBin {
 	///band described by a particular mountain bin. Child is a new species if it
 	///differs from its similarity to its parents is less than
 	///species_sim_thresh, which takes values [0,1].
-	void breed(double tMyrs);
+	void breed(double tMyrs, int species_sim_thresh);
 
 	///Salamanders have the opportunity to move up or down the mountain if advantageous
 	void diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper);
@@ -63,10 +68,21 @@ class MtBin {
 	///Salamanders have the opportunity to move all over the mountain
 	void diffuseGlobal(double tMyrs, std::vector<MtBin> &mts);
 
+	///Kills all of the salamanders in the bin
+	void killAll();
+
+	//Method for moving salamanders into a special separate bin representing the
+	//surrounding lowlands.
+	void diffuseToLowlands(MtBin &lowlands);
+
+	//Method to be used by the surrounding lowlands to move salamanders back into
+	//the active simulation.
+	void diffuseFromLowlands(MtBin &frontrange);
+
 	///Fetch an iterator to a random salamander from this bin
 	container::iterator randomSalamander();
 
-  private:
+ private:
 	///Kills the indicated salamander by swapping it to the end of bin and then
 	///popping the back of bin. When used with an iterator, the iterator MUST
 	///decrement itself and then advance so that the swapped salamander is

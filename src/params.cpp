@@ -13,6 +13,7 @@ void Params::load(std::string filename){
   out_phylogeny     = Input_Filename(fparam,"PhylogenyFilename");
   out_species_stats = Input_Filename(fparam,"SpeciesStatsFilename");
 
+  debug_val   = Input_YesNo(fparam,"Debug");
   vary_height = Input_YesNo(fparam,"VaryHeight");
   vary_temp   = Input_YesNo(fparam,"VaryTemp");
   run_once    = Input_YesNo(fparam,"RunOnce");
@@ -21,8 +22,12 @@ void Params::load(std::string filename){
 
   mutation_probability = Input_Double(fparam, "MutationProb");
   temperature_drift_sd = Input_Double(fparam, "TemperatureDrift");
-  species_sim_thresh   = Input_Double(fparam, "SpeciesSimilarity");
+  species_sim_thresh   = Input_Integer(fparam, "SpeciesSimilarity");
   timestep_val         = Input_Double(fparam, "timestep");
+  if(timestep_val<0.001){
+    std::cerr<<"Timestep too small!"<<std::endl;
+    throw std::runtime_error("Timestep too small!");
+  }
 
   dispersal_prob = Input_Double(fparam, "DispersalProb");
 
@@ -46,6 +51,7 @@ void Params::load(std::string filename){
   temp_series_filename = Input_Filename(fparam,"TempSeries");
 
   initial_altitude = Input_Integer(fparam,"InitialAltitude");
+  initial_pop_size = Input_Integer(fparam,"InitialPopSize");
 
   logit_temp_weight = Input_Double(fparam,"LogitTempWeight");
   logit_offset      = Input_Double(fparam,"LogitOffset");
@@ -54,6 +60,9 @@ void Params::load(std::string filename){
 
   max_offspring_per_bin_per_dt = Input_Integer(fparam,"MaxOffspringPerBinPerDt");
   max_tries_to_breed           = Input_Integer(fparam,"MaxTriesToBreed");
+
+  to_lowlands_prob   = Input_Double(fparam,"ToLowlandsProb");
+  from_lowlands_prob = Input_Double(fparam,"FromLowlandsProb");
 }
 
 
@@ -109,7 +118,7 @@ bool        Params::pVaryTemp               () const {return vary_temp;         
 bool        Params::pRunOnce                () const {return run_once;                     }
 double      Params::mutationProb            () const {return mutation_probability;         }
 double      Params::tempDrift               () const {return temperature_drift_sd;         }
-double      Params::speciesSimthresh        () const {return species_sim_thresh;           }
+int         Params::speciesSimthresh        () const {return species_sim_thresh;           }
 double      Params::timestep                () const {return timestep_val;                 }
 int         Params::maxiter                 () const {return maxiter_val;                  }
 double      Params::dispersalProb           () const {return dispersal_prob;               }
@@ -124,3 +133,10 @@ double      Params::logitHAweight           () const {return logit_ha_weight;   
 int         Params::maxOffspringPerBinPerDt () const {return max_offspring_per_bin_per_dt; }
 int         Params::maxTriesToBreed         () const {return max_tries_to_breed;           }
 int         Params::numBins                 () const {return numbins_val;                  }
+int         Params::initialPopSize          () const {return initial_pop_size;             }
+double      Params::toLowlandsProb          () const {return to_lowlands_prob;             }
+double      Params::fromLowlandsProb        () const {return from_lowlands_prob;           }
+bool        Params::debug                   () const {return debug_val;                    }
+
+
+Params TheParams;

@@ -14,7 +14,11 @@
 //class, it is simple to parallelize the program.
 class Simulation {
  private:
-   std::vector<MtBin> mts;
+  //Elevational bins which represent the mountains
+  std::vector<MtBin> mts;
+  MtBin surrounding_lowlands;
+
+  void printMt(double tMyrs) const;
 
  public:
   //Runs the simulations described by the following properties

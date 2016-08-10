@@ -6,7 +6,7 @@
 
 //Define a singleton class for Temperatures which loads them, stores them, and
 //interpolates between them as necessary.
-class Temperature {
+class TemperatureClass {
  private:
   //The temperature series
   std::vector<double> temps;
@@ -19,16 +19,11 @@ class Temperature {
   double testTemp;
 
   //The following ensure that this class is a singleton
-  Temperature();                               ///Prevent construction
-  Temperature(const Temperature&);             ///Prevent copying
-  Temperature& operator=(const Temperature&);  ///Prevent assignment
+  TemperatureClass(const TemperatureClass&);             ///Prevent copying
+  TemperatureClass& operator=(const TemperatureClass&);  ///Prevent assignment
  public:
-  ///Return the singleton instance
-  static Temperature& getInstance() {
-    static Temperature instance;
-    return instance;
-  }
-  
+  TemperatureClass();
+
   ///Load temperature data from the filename
   void init(const std::string filename);
 
@@ -43,5 +38,7 @@ class Temperature {
   ///Turn test mode off.
   void testOff();
 };
+
+extern TemperatureClass Temperature;
 
 #endif

@@ -23,6 +23,7 @@ class Params {
   bool vary_height; ///If this is set to true, the mountains erode over time.
   bool vary_temp;
   bool run_once;
+  bool debug_val;   ///Shows real-time stats about simulation state
 
   //A value [0,1] indicating the probability of mutation (see salamander.hpp)
   double    mutation_probability;
@@ -30,7 +31,7 @@ class Params {
   //change in temperature tolerance that occurs between parents and offspring.
   double    temperature_drift_sd;
   //A value [0,1] indicating how similar to salamanders must be to be the same species
-  double    species_sim_thresh;
+  int       species_sim_thresh;
 
 
   ///This variable adjusts how the the salamander's probability of death is
@@ -57,8 +58,13 @@ class Params {
 
   int max_tries_to_breed;
 
+  int initial_pop_size;
+
   //We use this many elevation bins to represent the mountain (TODO)
   int numbins_val;
+
+  double to_lowlands_prob;
+  double from_lowlands_prob;
 
  public:
   Params();
@@ -87,13 +93,14 @@ class Params {
   int         numBins                 () const;
   double      mutationProb            () const;
   double      tempDrift               () const;
-  double      speciesSimthresh        () const;
+  int         speciesSimthresh        () const;
   double      timestep                () const;
   int         maxiter                 () const;
   double      dispersalProb           () const;
   int         dispersalType           () const;
   std::string tempSeriesFilename      () const;
   int         initialAltitude         () const;
+  int         initialPopSize          () const;
   int         randomSeed              () const;
   double      tempDeathFactor         () const;
   double      logitTempWeight         () const;
@@ -102,17 +109,11 @@ class Params {
   double      logitHAweight           () const;
   int         maxOffspringPerBinPerDt () const;
   int         maxTriesToBreed         () const;
+  double      toLowlandsProb          () const;
+  double      fromLowlandsProb        () const;
+  bool        debug                   () const;
 };
 
-
-class TheParams {
- private:
-  TheParams(){}
- public: 
-  static Params& get(){
-    static Params instance;     // This object is not created until the first
-    return instance;                  // time getInstance() is called.
-  }
-};
+extern Params TheParams;
 
 #endif

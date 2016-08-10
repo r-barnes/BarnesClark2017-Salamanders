@@ -104,7 +104,7 @@ class PhyloNode {
 class Phylogeny {
  private:
   ///Adds a new node to the phylogeny
-  void addNode(const Salamander &s, double t);
+  int addNode(const Salamander &s, double t);
 
   ///Calculate the mean branch distance for the phylogeny. Finds the
   //distance between each species and the last common ancestor of that species
