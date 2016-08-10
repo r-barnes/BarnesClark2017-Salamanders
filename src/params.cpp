@@ -13,6 +13,7 @@ void Params::load(std::string filename){
   out_phylogeny     = Input_Filename(fparam,"PhylogenyFilename");
   out_species_stats = Input_Filename(fparam,"SpeciesStatsFilename");
 
+  debug_val   = Input_YesNo(fparam,"Debug");
   vary_height = Input_YesNo(fparam,"VaryHeight");
   vary_temp   = Input_YesNo(fparam,"VaryTemp");
   run_once    = Input_YesNo(fparam,"RunOnce");
@@ -131,3 +132,4 @@ int         Params::numBins                 () const {return numbins_val;       
 int         Params::initialPopSize          () const {return initial_pop_size;             }
 double      Params::toLowlandsProb          () const {return to_lowlands_prob;             }
 double      Params::fromLowlandsProb        () const {return from_lowlands_prob;           }
+bool        Params::debug                   () const {return debug_val;                    }

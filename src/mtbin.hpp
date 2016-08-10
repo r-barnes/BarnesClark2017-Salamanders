@@ -17,6 +17,8 @@ class MtBin {
 	///Define the bin used to store the salamanders
 	container bin;
 
+	MtBin();
+
 	///Initializes this bin with elevation specified by heightkm0
 	MtBin(double heightkm);
 

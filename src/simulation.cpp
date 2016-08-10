@@ -3,6 +3,7 @@
 #include "random.hpp"
 #include "temp.hpp"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <cassert>
 
@@ -69,6 +70,9 @@ void Simulation::runSimulation(){
     //go extinct early on. Therefore, in a parameter space where many
     //populations won't make it, this is a worthwhile thing to do.
     if(alive()+surrounding_lowlands.alive()==0) break;
+
+    if(TheParams::get().debug())
+      printMt(tMyrs);
 
     //Visit death upon each bin
     for(auto &m: mts)
@@ -204,4 +208,26 @@ double Simulation::AvgElevation() const {
     weighted_elevation += m.alive()*m.heightkm();
   }
   return weighted_elevation/salamander_count;
+}
+
+void Simulation::printMt(double tMyrs) const {
+  unsigned int nalive   = alive();
+  unsigned int maxalive = 0;
+  for(const auto &m: mts)
+    maxalive = std::max(maxalive,m.alive());
+  std::cout<<"##########################\n";
+  std::cout<<"t:           "<<tMyrs<<"\n";
+  std::cout<<"Total Pop:   "<<alive()+surrounding_lowlands.alive()<<"\n";
+  std::cout<<"Lowland Pop: "<<surrounding_lowlands.alive()<<"\n";
+  std::cout<<std::setw(2)<<"i"<<" "<<std::setw(5)<<"elev"<<"  "<<std::setw(20)<<"Dist"<<"  "<<"       %  Count\n";
+  std::cout<<std::setw(2)<<"-"<<" "<<std::setw(5)<<"LOW" <<" |"<<std::setw(20)<<" "<<"| "<<"         "<<std::setw(6)<<surrounding_lowlands.alive()<<"\n";
+  for(unsigned int i=0;i<mts.size();i++){
+    std::cout<<std::setw(2)<<i<<" "<<std::setw(5);
+    if(mts[i].heightkm()<MtBin::heightMaxKm(tMyrs))
+      std::cout<<mts[i].heightkm()<<" |"<<std::setw(20)<<std::string(20*mts[i].alive()/maxalive,'#')<<"| "<<std::setw(7)<<std::setprecision(4)<<(mts[i].alive()/(double)nalive*100.0)<<"% "<<std::setw(6)<<mts[i].alive();
+    else
+      std::cout<<"XXXXX"<<" |"<<std::setw(20)<<std::string(20,'-')<<"|";
+    std::cout<<"\n";
+  }
+  std::cout<<"\n\n";
 }

@@ -15,6 +15,7 @@ double Gaussian(double x, double mean, double sigma){
   return 1/sigma/std::sqrt(2*PI)*std::exp(-std::pow(x-mean,2)/2/std::pow(sigma,2));
 }
 
+MtBin::MtBin(){}
 
 MtBin::MtBin(double heightkm_val){
   this->heightkm_val = heightkm_val;
@@ -255,7 +256,7 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
   //way which may exceed their carrying capacity; however, in the Mortaliate()
   //step, random salamanders are killed until the bin is back at the carrying
   //capacity. Salamanders move without respecting carrying capacities and nature
-  //does not choose who wins and loses in this process.
+  //does not choose who wins and loses in this process. TODO
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate

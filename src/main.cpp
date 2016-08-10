@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <string>
 #include <stdexcept>
+#include "omp.h"
 using namespace std;
 
 std::string SimulationSummaryHeader() {
@@ -45,6 +46,7 @@ int main(int argc, char **argv){
     cout<<"\tPersistenceGraphFilename  Filename               \n";
     cout<<"\tPhylogenyFilename         Filename               \n";
     cout<<"\tSpeciesStatsFilename      Filename               \n";
+    cout<<"\tDebug                     YES/NO      Print real-time stats about simulation.\n";
     cout<<"\tVaryHeight                YES/NO                 \n";
     cout<<"\tVaryTemp                  YES/NO                 \n";
     cout<<"\tRunOnce                   YES/NO                 \n";
@@ -110,6 +112,13 @@ int main(int argc, char **argv){
   //the loops below could be altered to sweep the parameter space.
   for(int i=0;i<TheParams::get().maxiter();i++)
     runs.emplace_back();
+
+  //Used to show more detailed, real-time info about simulation
+  if(TheParams::get().debug()){
+    omp_set_num_threads(1);
+    runs.clear();
+    runs.emplace_back();
+  }
 
   //Run the simulations in parallel using OpenMP
   #pragma omp parallel for

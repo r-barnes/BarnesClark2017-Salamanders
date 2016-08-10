@@ -2,6 +2,7 @@ SummaryStatsFilename      /z/summary
 PersistenceGraphFilename  /z/persist
 PhylogenyFilename         /z/phylo
 SpeciesStatsFilename      /z/species_stats
+Debug                     YES
 VaryHeight                YES
 VaryTemp                  YES
 RunOnce                   NO

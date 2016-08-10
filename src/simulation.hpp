@@ -18,6 +18,8 @@ class Simulation {
   std::vector<MtBin> mts;
   MtBin surrounding_lowlands;
 
+  void printMt(double tMyrs) const;
+
  public:
   //Runs the simulations described by the following properties
   void      runSimulation();
