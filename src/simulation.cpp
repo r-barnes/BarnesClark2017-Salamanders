@@ -89,6 +89,8 @@ void Simulation::runSimulation(){
     for(auto &m: mts)
       m.breed(tMyrs);
 
+    surrounding_lowlands.breed(tMyrs);
+
     //Randomize the order in which we visit bins so there is no upwards or
     //downwards bias to movement. Such a bias could arise, say, by always
     //considering bins from bottom to top. In this case, a salamander at the
