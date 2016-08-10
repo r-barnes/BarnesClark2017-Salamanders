@@ -26,7 +26,7 @@ int main(int argc, char **argv){
   seed_rand(0);
 
   cout<<"Verifying temperatures"<<endl;
-  for(double tMyrs=0;tMyrs<65;tMyrs+=0.5)
+  for(double tMyrs=0;tMyrs<65.0001;tMyrs+=0.5)
     cout<<"Temperature at "<<tMyrs<<"\t=\t"<<Temperature::getInstance().getTemp(tMyrs)<<endl;
 
   // cerr<<endl<<"Carrying Capacity"<<endl;
@@ -45,7 +45,7 @@ int main(int argc, char **argv){
   cout<<endl;
 
   cout<<"Maximum height over time: \n";
-  for(double tMyrs;tMyrs<65;tMyrs+=0.5)
+  for(double tMyrs;tMyrs<65.001;tMyrs+=0.5)
     cout<<"Maximum elevation at "<<setw(4)<<tMyrs<<"\t=\t"<<MtBin::heightMaxKm(tMyrs)<<endl;
 
   MtBinUnitTest mtbintest;

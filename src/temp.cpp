@@ -58,7 +58,7 @@ double Temperature::getTemp(double tMyrs) const {
   //temps.size()-1 is that last element. But we have copied the last element so
   //that there are two instances of it. This means that temps.size()-2 is the
   //last temperature period for which we can perform an interpolation.
-  assert(t0 < temps.size()-2);
+  assert(t0 <= temps.size()-2);
 
   //The following performs the interpolation
   double ta    = temps[t0];        //Temperature of this 1kyr bin
