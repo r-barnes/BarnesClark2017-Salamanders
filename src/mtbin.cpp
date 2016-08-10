@@ -173,7 +173,7 @@ unsigned int MtBin::alive() const {
 
 
 //Give salamanders in this bin the opportunity to breed
-void MtBin::breed(double t){
+void MtBin::breed(double tMyrs){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
   //TODO: Cut?
