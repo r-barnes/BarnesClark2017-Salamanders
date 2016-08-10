@@ -24,6 +24,10 @@ void Params::load(std::string filename){
   temperature_drift_sd = Input_Double(fparam, "TemperatureDrift");
   species_sim_thresh   = Input_Double(fparam, "SpeciesSimilarity");
   timestep_val         = Input_Double(fparam, "timestep");
+  if(timestep_val<0.001){
+    std::cerr<<"Timestep too small!"<<std::endl;
+    throw std::runtime_error("Timestep too small!");
+  }
 
   dispersal_prob = Input_Double(fparam, "DispersalProb");
 
