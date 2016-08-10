@@ -10,9 +10,9 @@
 void Simulation::runSimulation(){
   //65Mya the Appalachian Mountains were 2.8km tall. Initialize each bin to
   //point to its given elevation band.
-  mts.reserve(TheParams::get().numBins());
-  for(int m=0;m<TheParams::get().numBins();m++)
-    mts.push_back(MtBin(m*2.8/TheParams::get().numBins()));
+  mts.reserve(TheParams.numBins());
+  for(int m=0;m<TheParams.numBins();m++)
+    mts.push_back(MtBin(m*2.8/TheParams.numBins()));
 
   //This vector is shuffled before each dispersion event to ensure that there is
   //no bias towards upwards or downards movement on the mountain
@@ -20,7 +20,7 @@ void Simulation::runSimulation(){
   for(unsigned int i=0;i<mts.size();i++)
     mtbin_order.push_back(i);
 
-  if(TheParams::get().initialAltitude()<0 || (int)mts.size()<=TheParams::get().initialAltitude()){
+  if(TheParams.initialAltitude()<0 || (int)mts.size()<=TheParams.initialAltitude()){
     std::cerr<<"Initial bin was outside of range. Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
     throw std::runtime_error("Initial bin outside of range.");
   }
@@ -40,7 +40,7 @@ void Simulation::runSimulation(){
   //temperatures corresponding to the  temperatures at the base of the
   //mountains. We ensure that Eve is well-adapted for her time by setting her
   //optimal temperature to be equal to the temperature of the bin she starts in.
-  Eve.otempdegC = Temperature::getInstance().getTemp(0)-9.8*mts[TheParams::get().initialAltitude()].heightkm();
+  Eve.otempdegC = Temperature::getInstance().getTemp(0)-9.8*mts[TheParams.initialAltitude()].heightkm();
 
   //We set Eve initially to have a genome in which all of the bits are off.
   //Since the genomes are used solely to determine speciation and speciation is
@@ -51,8 +51,8 @@ void Simulation::runSimulation(){
   //We populate the first (lowest) mountain bin with some Eve-clones. We
   //populate only the lowest mountain bin because that mountain bin will have a
   //temperature close to the global average which is optimal for Eve (see above).
-  for(int s=0;s<TheParams::get().initialPopSize();++s)
-    mts[TheParams::get().initialAltitude()].addSalamander(Eve);
+  for(int s=0;s<TheParams.initialPopSize();++s)
+    mts[TheParams.initialAltitude()].addSalamander(Eve);
 
   //Begin a new phylogeny with Eve as the root
   phylos = Phylogeny(Eve, 0);
@@ -64,14 +64,14 @@ void Simulation::runSimulation(){
   //Loop over years, starting at t=0, which corresponds to 65 million years ago.
   //tMyrs is in units of millions of years
   double tMyrs=0;
-  for(tMyrs=0;tMyrs<65.001;tMyrs+=TheParams::get().timestep()){
+  for(tMyrs=0;tMyrs<65.001;tMyrs+=TheParams.timestep()){
     //This requires a linear walk of all the bins on the mountain. Hence, it's a
     //little expensive. But it prevents many walks below if all the salamanders
     //go extinct early on. Therefore, in a parameter space where many
     //populations won't make it, this is a worthwhile thing to do.
     if(alive()+surrounding_lowlands.alive()==0) break;
 
-    if(TheParams::get().debug())
+    if(TheParams.debug())
       printMt(tMyrs);
 
     //Visit death upon each bin
@@ -106,21 +106,21 @@ void Simulation::runSimulation(){
 
     //For each bin, offer some salamanders therein the opportunity to migrate up
     //or down the mountain.
-    if(TheParams::get().dispersalType()==DISPERSAL_BETTER){
+    if(TheParams.dispersalType()==DISPERSAL_BETTER){
       for(unsigned int mo=0;mo<mtbin_order.size();++mo){
         unsigned int m = mtbin_order[mo];
         if(m==0)                 mts[m].diffuseToBetter(tMyrs, nullptr,   &mts[m+1]);
         else if(m==mts.size()-1) mts[m].diffuseToBetter(tMyrs, &mts[m-1], nullptr  );
         else                     mts[m].diffuseToBetter(tMyrs, &mts[m-1], &mts[m+1]);
       }
-    } else if(TheParams::get().dispersalType()==DISPERSAL_MAYBE_WORSE) {
+    } else if(TheParams.dispersalType()==DISPERSAL_MAYBE_WORSE) {
       for(unsigned int mo=0;mo<mtbin_order.size();++mo){
         unsigned int m = mtbin_order[mo];
         if(m==0)                 mts[m].diffuseLocal(tMyrs, nullptr,   &mts[m+1]);
         else if(m==mts.size()-1) mts[m].diffuseLocal(tMyrs, &mts[m-1], nullptr  );
         else                     mts[m].diffuseLocal(tMyrs, &mts[m-1], &mts[m+1]);
       }
-    } else if(TheParams::get().dispersalType()==DISPERSAL_GLOBAL) {
+    } else if(TheParams.dispersalType()==DISPERSAL_GLOBAL) {
       //We don't need to randomize the order for global dispersion since it
       //contains no bias.
       for(auto &m: mts)
@@ -138,11 +138,11 @@ void Simulation::runSimulation(){
 
     //Updates the phylogeny based on the current time, living salamanders, and
     //species similarity threshold
-    phylos.UpdatePhylogeny(tMyrs, TheParams::get().timestep(), mts);
+    phylos.UpdatePhylogeny(tMyrs, TheParams.timestep(), mts);
   }
 
   //Records the time at which the simulation ended
-  if(tMyrs>=65.001) tMyrs-=TheParams::get().timestep(); //Since the last step goes past the end of time
+  if(tMyrs>=65.001) tMyrs-=TheParams.timestep(); //Since the last step goes past the end of time
   endtime = tMyrs;
 
   //Records the average optimal temperature of the salamanders alive at present

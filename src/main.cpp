@@ -25,9 +25,9 @@ std::string SimulationSummaryHeader() {
 
 void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
   out<<r;
-  out<<", " << TheParams::get().mutationProb();
-  out<<", " << TheParams::get().tempDrift();
-  out<<", " << TheParams::get().speciesSimthresh();
+  out<<", " << TheParams.mutationProb();
+  out<<", " << TheParams.tempDrift();
+  out<<", " << TheParams.speciesSimthresh();
   out<<", " << sim.nspecies;
   out<<", " << sim.ecdf;
   out<<", " << sim.avg_otempdegC;
@@ -74,23 +74,23 @@ int main(int argc, char **argv){
     return -1;
   }
 
-  TheParams::get().load(argv[1]);
+  TheParams.load(argv[1]);
 
-  seed_rand(TheParams::get().randomSeed());
+  seed_rand(TheParams.randomSeed());
 
-  Temperature::getInstance().init(TheParams::get().tempSeriesFilename());
-  if(!TheParams::get().pVaryTemp()) {
+  Temperature::getInstance().init(TheParams.tempSeriesFilename());
+  if(!TheParams.pVaryTemp()) {
     Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
   }
 
-  if(TheParams::get().pRunOnce()){
+  if(TheParams.pRunOnce()){
     std::cerr<<"Feature deprecated!"<<std::endl;
     // Simulation sim();
     // sim.runSimulation();
 
-    // std::ofstream f_persist  ((TheParams::get().outPersistFilename()+".csv"));
-    // std::ofstream f_phylogeny((TheParams::get().outPhylogenyFilename()+".tre"));
-    // std::ofstream f_summary  (TheParams::get().outSummaryFilename());
+    // std::ofstream f_persist  ((TheParams.outPersistFilename()+".csv"));
+    // std::ofstream f_phylogeny((TheParams.outPhylogenyFilename()+".tre"));
+    // std::ofstream f_summary  (TheParams.outSummaryFilename());
     // f_summary<<SimulationSummaryHeader()<<endl;
     // printSimulationSummary(f_summary, 0, sim);
     // sim.phylos.persistGraph(f_persist);
@@ -110,11 +110,11 @@ int main(int argc, char **argv){
   //means that the output is a series of 'maxiter' runs all of which have
   //identical parameters, but will vary because of random factors. The bounds of
   //the loops below could be altered to sweep the parameter space.
-  for(int i=0;i<TheParams::get().maxiter();i++)
+  for(int i=0;i<TheParams.maxiter();i++)
     runs.emplace_back();
 
   //Used to show more detailed, real-time info about simulation
-  if(TheParams::get().debug()){
+  if(TheParams.debug()){
     omp_set_num_threads(1);
     runs.clear();
     runs.emplace_back();
@@ -130,8 +130,8 @@ int main(int argc, char **argv){
   }
 
   //Print out the summary statistics of all of the runs
-  cerr<<"Printing summaries to: "<<TheParams::get().outSummaryFilename()<<endl;
-  std::ofstream f_summary(TheParams::get().outSummaryFilename());
+  cerr<<"Printing summaries to: "<<TheParams.outSummaryFilename()<<endl;
+  std::ofstream f_summary(TheParams.outSummaryFilename());
   f_summary<<SimulationSummaryHeader()<<endl;
   for(unsigned int r=0;r<runs.size();++r)
     printSimulationSummary(f_summary, r, runs[r]);
@@ -140,18 +140,18 @@ int main(int argc, char **argv){
   //the phylogeny of Kozak and Wiens (2010)
   for(unsigned int i=0;i<runs.size();++i){
     //Output persistence table for each run within the boundaries
-    string fname_persist=TheParams::get().outPersistFilename()+"_run_"+std::to_string(i)+".csv";
+    string fname_persist=TheParams.outPersistFilename()+"_run_"+std::to_string(i)+".csv";
     std::ofstream f_persist(fname_persist);
     runs[i].phylos.persistGraph(f_persist);
 
     //Output phylogeny for each run within the boundaries
-    string fname_phylo=TheParams::get().outPhylogenyFilename()+"_run_"+std::to_string(i)+".tre";
+    string fname_phylo=TheParams.outPhylogenyFilename()+"_run_"+std::to_string(i)+".tre";
     std::ofstream f_phylogeny(fname_phylo);
     f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
 
     //Output summaries of the distribution of species properties at each point
     //in time
-    string fname_species_stats = TheParams::get().outSpeciesStatsFilename()+"_run_"+std::to_string(i)+".csv";
+    string fname_species_stats = TheParams.outSpeciesStatsFilename()+"_run_"+std::to_string(i)+".csv";
     std::ofstream f_species_stats(fname_species_stats);
     runs[i].phylos.speciesSummaries(f_species_stats);
   }

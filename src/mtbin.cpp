@@ -33,7 +33,7 @@ double MtBin::heightkm() const {
 
 ///Returns the maximum height of the mountain range at the given time
 double MtBin::heightMaxKm(double tMyrs) {
-  if(!TheParams::get().pVaryHeight()) tMyrs=65;
+  if(!TheParams.pVaryHeight()) tMyrs=65;
 
   //Maximum elevation of the mountain range over time
   //Based on linear shrinking of mountain height from 2.8km at 65Mya (according
@@ -132,7 +132,7 @@ double MtBin::temp(double tMyrs) const {
 //Get the carrying capacity of this bin, taking into account its elevation.
 /* TODO
 unsigned int MtBin::kkap(double tMyrs) const {
-  if(!TheParams::get().pVaryHeight()) tMyrs=65;
+  if(!TheParams.pVaryHeight()) tMyrs=65;
 
   //Input "t" is in millions of years - transform this into thousands of years
   double timeKyrs = tMyrs*1000;
@@ -181,10 +181,10 @@ void MtBin::breed(double tMyrs){
   //if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
   //Maximum number of tries to find a pair to mate; prevents infinite loops.
-  int maxtries = TheParams::get().maxTriesToBreed();
+  int maxtries = TheParams.maxTriesToBreed();
 
   //Maximum number of new offspring per bin per unit time
-  int max_babies = TheParams::get().maxOffspringPerBinPerDt();
+  int max_babies = TheParams.maxOffspringPerBinPerDt();
 
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
@@ -220,7 +220,7 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
+    if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
     //Higher bins are cooler. If the salamander's optimal temperature is cooler
@@ -260,7 +260,7 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
+    if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
     if(uniform_rand_real(0,1)>0.5){
@@ -283,7 +283,7 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
 void MtBin::diffuseToLowlands(MtBin &lowlands){
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().toLowlandsProb())
+    if(uniform_rand_real(0,1)>=TheParams.toLowlandsProb())
       continue;
 
     moveSalamanderTo(s,lowlands);
@@ -297,7 +297,7 @@ void MtBin::diffuseToLowlands(MtBin &lowlands){
 void MtBin::diffuseFromLowlands(MtBin &frontrange){
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().fromLowlandsProb())
+    if(uniform_rand_real(0,1)>=TheParams.fromLowlandsProb())
       continue;
 
     moveSalamanderTo(s,frontrange);
@@ -319,7 +319,7 @@ void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
 
   for(container::iterator s=bin.begin();s!=bin.end();s++){
     //10% chance of wanting to migrate
-    if(uniform_rand_real(0,1)>=TheParams::get().dispersalProb())
+    if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
     int to_bin = -1;
@@ -336,7 +336,7 @@ void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
 ///Given a time tMyrs in millions of years ago returns area at that elevation
 ///IN SQUARE KILOMETERS
 double MtBin::area(double elevationkm, double tMyrs) const {
-  if(!TheParams::get().pVaryHeight()) tMyrs=65;
+  if(!TheParams.pVaryHeight()) tMyrs=65;
 
   ///Constants defining a normal distribution that describes area available at
   ///different height bands in the Appalachian mountains. Parameters are fit to

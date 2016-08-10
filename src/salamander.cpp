@@ -58,7 +58,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 void Salamander::mutate(){
   Salamander::genetype mutator=1;
   for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(uniform_rand_real(0,1)<=TheParams::get().mutationProb())
+    if(uniform_rand_real(0,1)<=TheParams.mutationProb())
       genes^=mutator;
     mutator=mutator<<1;
   }
@@ -70,7 +70,7 @@ void Salamander::mutate(){
 bool Salamander::pSimilarGenome(const Salamander::genetype &b) const {
   Salamander::genetype combined=~(genes ^ b);                //Create genetype where only the bits which match in genes and b are on
   int shared_genes=__builtin_popcountll(combined);           //Counts the number of 1 bits NOTE: Ensure that the popcount type matches the genetype
-  return shared_genes >= TheParams::get().speciesSimthresh();
+  return shared_genes >= TheParams.speciesSimthresh();
 }
 
 
@@ -105,9 +105,9 @@ bool Salamander::pDie(
   //Logit function, centered at f(dtemp=0)=0.1; f(dtemp=12**2)=0.9
   const double pdeath = 1/(1+exp(-
     (
-      TheParams::get().logitOffset()+dtemp*TheParams::get().logitTempWeight()
-      +conspecific_abundance   *TheParams::get().logitCAweight()
-      +heterospecific_abundance*TheParams::get().logitHAweight()
+      TheParams.logitOffset()+dtemp*TheParams.logitTempWeight()
+      +conspecific_abundance   *TheParams.logitCAweight()
+      +heterospecific_abundance*TheParams.logitHAweight()
     )
   ));
 

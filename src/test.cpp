@@ -21,7 +21,7 @@ int main(int argc, char **argv){
     return -1;
   }
 
-  TheParams::get().load(argv[1]);
+  TheParams.load(argv[1]);
 
   seed_rand(0);
 

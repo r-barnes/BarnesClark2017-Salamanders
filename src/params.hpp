@@ -114,15 +114,6 @@ class Params {
   bool        debug                   () const;
 };
 
-
-class TheParams {
- private:
-  TheParams(){}
- public: 
-  static Params& get(){
-    static Params instance;     // This object is not created until the first
-    return instance;                  // time getInstance() is called.
-  }
-};
+extern Params TheParams;
 
 #endif

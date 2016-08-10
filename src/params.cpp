@@ -137,3 +137,6 @@ int         Params::initialPopSize          () const {return initial_pop_size;  
 double      Params::toLowlandsProb          () const {return to_lowlands_prob;             }
 double      Params::fromLowlandsProb        () const {return from_lowlands_prob;           }
 bool        Params::debug                   () const {return debug_val;                    }
+
+
+Params TheParams;
