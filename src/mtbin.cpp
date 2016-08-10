@@ -82,22 +82,18 @@ void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
     throw std::runtime_error("Uh oh, 30ksals were found in a bin. Killing the simulation.");
   }
 
+  //If individuals have the same parent species they are part of the same
+  //species. Cache this here to maintain O(N) operation
+  std::vector<int> species_abundance(5000,0);
+  for(const auto &s: bin)
+    species_abundance.at(s.parent)++;
+
   //For each salamander, check to see if it dies
   for(auto s=bin.begin();s!=bin.end();s++){
     //These are both initially used to count individuals. Then area is divided
     //to produce abundance.
-    double conspecific_abundance    = 0;
-    double heterospecific_abundance = 0;
-
-    //If individuals have the same parent species they are part of the same
-    //species
-    for(const auto &so: bin)
-      if(s->parent == so.parent)
-        conspecific_abundance += 1;
-
-    //Don't count yourself, little salamander
-    heterospecific_abundance = bin.size()-conspecific_abundance;
-    conspecific_abundance   -= 1;
+    double conspecific_abundance    = species_abundance[s->parent]-1;
+    double heterospecific_abundance = bin.size()-species_abundance[s->parent];
 
     //Turn counts into abundances, as promised
     conspecific_abundance    /= area(heightkm(), tMyrs);
