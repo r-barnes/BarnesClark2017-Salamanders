@@ -87,7 +87,7 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
 
     //I am similar to my parent, so mark my parent (species) as having survived
     //this long
-    if(s.pSimilarGenome(nodes.at(s.parent).genes)) {
+    if(s.pSimilarGenome(nodes.at(s.parent).genes, TheParams.speciesSimthresh())) {
       nodes.at(s.parent).updateWithSal(m,s,t);
       continue;
     }
@@ -115,7 +115,7 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
       //will consider myself this salamander's child, since its genome is
       //already stored in the phylogeny
       if( s.parent==nodes.at(p).parent && 
-          s.pSimilarGenome(nodes.at(p).genes)
+          s.pSimilarGenome(nodes.at(p).genes, TheParams.speciesSimthresh())
       ){
         s.parent   = p;
         has_parent = true;

@@ -51,19 +51,19 @@ double MtBin::heightMaxKm(double tMyrs) {
 void MtBin::killSalamander(MtBin::container::iterator s) {
   assert(!bin.empty());
 
-  //We swap the indicated salamander, which is now dead, with the salamander at
-  //the back of the bin, which is still alive. If this method is called by an
-  //iterator the iterator must decrement and then advance so that the swapped
-  //salamander is still considered
-  std::swap(*s,bin.back());
+  //We overwrite the indicated salamander, which is now dead, with the
+  //salamander at the back of the bin, which is still alive. If this method is
+  //called by an iterator the iterator must decrement and then advance so that
+  //the swapped salamander is still considered
+  *s = bin.back();
 
-  //Pop the dead salamander out of the container, so that it can never be
-  //accessed.
+  //Pop the salamander at the back of the container, because it is now a
+  //duplicate and should never be accessed.
   bin.pop_back();
 }
 
 
-void MtBin::mortaliate(double tMyrs) {
+void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
   ///If there are no living salamanders, then don't do anything
   if(bin.empty()) return;
 
@@ -91,15 +91,13 @@ void MtBin::mortaliate(double tMyrs) {
     double conspecific_abundance    = 0;
     double heterospecific_abundance = 0;
 
-    for(auto so=bin.begin();so!=bin.end();so++){
-      if(s->pSimilar(*so))
-        conspecific_abundance    += 1;
-      else
-        heterospecific_abundance += 1;
-    }
+    for(auto so=bin.begin();so!=bin.end();so++)
+      if(s->pSimilar(*so, species_sim_thresh))
+        conspecific_abundance += 1;
 
     //Don't count yourself, little salamander
-    conspecific_abundance -= 1;
+    heterospecific_abundance = bin.size()-conspecific_abundance;
+    conspecific_abundance   -= 1;
 
     //Turn counts into abundances, as promised
     conspecific_abundance    /= area(heightkm(), tMyrs);
@@ -173,7 +171,7 @@ unsigned int MtBin::alive() const {
 
 
 //Give salamanders in this bin the opportunity to breed
-void MtBin::breed(double tMyrs){
+void MtBin::breed(double tMyrs, int species_sim_thresh){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
 
   //TODO: Cut?
@@ -193,7 +191,7 @@ void MtBin::breed(double tMyrs){
     auto parentb = randomSalamander();
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
-    if(parenta->pSimilar(*parentb)){
+    if(parenta->pSimilar(*parentb, species_sim_thresh)){
       addSalamander(parenta->breed(*parentb));
       max_babies--;
     }

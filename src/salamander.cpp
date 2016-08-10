@@ -67,18 +67,18 @@ void Salamander::mutate(){
 
 //Determine whether the genomes of two salamanders are more similar than the
 //given threshold.
-bool Salamander::pSimilarGenome(const Salamander::genetype &b) const {
+bool Salamander::pSimilarGenome(const Salamander::genetype &b, int species_sim_thresh) const {
   Salamander::genetype combined=~(genes ^ b);                //Create genetype where only the bits which match in genes and b are on
   int shared_genes=__builtin_popcountll(combined);           //Counts the number of 1 bits NOTE: Ensure that the popcount type matches the genetype
-  return shared_genes >= TheParams.speciesSimthresh();
+  return shared_genes >= species_sim_thresh;
 }
 
 
 //Determine whether two salamanders are similar. This only takes genomes into
 //account right now, but could, presumably, include other properties of the
 //salamanders.
-bool Salamander::pSimilar(const Salamander &b) const {
-  return pSimilarGenome(b.genes);
+bool Salamander::pSimilar(const Salamander &b, int species_sim_thresh) const {
+  return pSimilarGenome(b.genes, species_sim_thresh);
 }
 
 

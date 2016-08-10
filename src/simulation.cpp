@@ -14,6 +14,9 @@ void Simulation::runSimulation(){
   for(int m=0;m<TheParams.numBins();m++)
     mts.push_back(MtBin(m*2.8/TheParams.numBins()));
 
+  //Cache species_sim_thresh for speed
+  const int species_sim_thresh = TheParams.speciesSimthresh();
+
   //This vector is shuffled before each dispersion event to ensure that there is
   //no bias towards upwards or downards movement on the mountain
   std::vector<unsigned int> mtbin_order;
@@ -76,7 +79,7 @@ void Simulation::runSimulation(){
 
     //Visit death upon each bin
     for(auto &m: mts)
-      m.mortaliate(tMyrs);
+      m.mortaliate(tMyrs, species_sim_thresh);
 
     //Ensure that there are no Sky Salamanders in the simulation. Mountains
     //erode over time, the bins which are above the mountains' actual heights
@@ -87,9 +90,9 @@ void Simulation::runSimulation(){
 
     //Let the salamanders in each bin be fruitful, and multiply
     for(auto &m: mts)
-      m.breed(tMyrs);
+      m.breed(tMyrs, species_sim_thresh);
 
-    surrounding_lowlands.breed(tMyrs);
+    surrounding_lowlands.breed(tMyrs, species_sim_thresh);
 
     //Randomize the order in which we visit bins so there is no upwards or
     //downwards bias to movement. Such a bias could arise, say, by always

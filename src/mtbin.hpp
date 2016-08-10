@@ -31,7 +31,7 @@ class MtBin {
 	///Apply mortality to salamander within this bin based on how far they
 	///differ from optimal temperature and also on the the carrying capacity of
 	///the bin.
-	void mortaliate(double tMyrs);
+	void mortaliate(double tMyrs, int species_sim_thresh);
 
 	///Return the temperature of the bin at a given time, based on conditions at
 	///time tMyrs, in millions of year
@@ -57,7 +57,7 @@ class MtBin {
 	///band described by a particular mountain bin. Child is a new species if it
 	///differs from its similarity to its parents is less than
 	///species_sim_thresh, which takes values [0,1].
-	void breed(double tMyrs);
+	void breed(double tMyrs, int species_sim_thresh);
 
 	///Salamanders have the opportunity to move up or down the mountain if advantageous
 	void diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper);
