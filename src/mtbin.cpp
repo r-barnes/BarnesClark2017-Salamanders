@@ -85,14 +85,14 @@ void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
   //For each salamander, check to see if it dies
   for(auto s=bin.begin();s!=bin.end();s++){
     //These are both initially used to count individuals. Then area is divided
-    //to produce abundance. This cannot be easily cached because no salamander
-    //carries with it a "species id". Species membership can only be calculated
-    //by comparing genomes.
+    //to produce abundance.
     double conspecific_abundance    = 0;
     double heterospecific_abundance = 0;
 
-    for(auto so=bin.begin();so!=bin.end();so++)
-      if(s->pSimilar(*so, species_sim_thresh))
+    //If individuals have the same parent species they are part of the same
+    //species
+    for(const auto &so: bin)
+      if(s->parent == so.parent)
         conspecific_abundance += 1;
 
     //Don't count yourself, little salamander

@@ -69,9 +69,10 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 
 //Make the indicated salamander the progenitor of a new species which is a
 //descendent species of the salamander's parent species
-void Phylogeny::addNode(const Salamander &s, double t){
+int Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
   nodes[s.parent].addChild(nodes.size()-1);
+  return nodes.size()-1; //Return the new node id
 }
 
 
@@ -122,8 +123,8 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
         break;
       }
     }
-    if(!has_parent)  //No salamander in the phylogeny was similar to me!
-      addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species
+    if(!has_parent)             //No salamander in the phylogeny was similar to me!
+      s.parent = addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species and make sure this salamander's parent is the new species
   }
 }
 
