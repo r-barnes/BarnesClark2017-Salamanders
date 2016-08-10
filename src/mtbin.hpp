@@ -66,6 +66,9 @@ class MtBin {
 	///Salamanders have the opportunity to move all over the mountain
 	void diffuseGlobal(double tMyrs, std::vector<MtBin> &mts);
 
+	///Kills all of the salamanders in the bin
+	void killAll();
+
 	///Fetch an iterator to a random salamander from this bin
 	container::iterator randomSalamander();
 

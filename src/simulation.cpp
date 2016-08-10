@@ -74,6 +74,13 @@ void Simulation::runSimulation(){
     for(auto &m: mts)
       m.mortaliate(tMyrs);
 
+    //Ensure that there are no Sky Salamanders in the simulation. Mountains
+    //erode over time, the bins which are above the mountains' actual heights
+    //must be emptied of their inhabitants.
+    for(auto &m: mts)
+      if(m.heightkm()>=MtBin::heightMaxKm(tMyrs))
+        m.killAll();
+
     //Let the salamanders in each bin be fruitful, and multiply
     for(auto &m: mts)
       m.breed(tMyrs);

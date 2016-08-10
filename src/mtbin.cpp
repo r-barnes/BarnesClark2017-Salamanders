@@ -338,6 +338,17 @@ double MtBin::area(double elevationkm, double tMyrs) const {
   return area;
 }
 
+void MtBin::killAll() {
+  for(auto s=bin.begin();s!=bin.end();s++){
+    killSalamander(s);
+    //If we kill a salamander, we swap the last living salamander in the list
+    //with the salamander we just killed. Therefore, we need to make sure that
+    //we still run the mortaliate function for the living salamander that now
+    //inhabits the spot that we just filled.
+    s--;
+  }
+}
+
 
 //Choose a random salamander from the bin
 MtBin::container::iterator MtBin::randomSalamander(){
