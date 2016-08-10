@@ -66,6 +66,8 @@ int main(int argc, char **argv){
     cout<<"\tLogitHAweight             Double      Heterospecific abundance weighting in mortality.\n";
     cout<<"\tMaxOffspringPerBinPerDt   Integer     \n";
     cout<<"\tMaxTriesToBreed           Integer     \n";
+    cout<<"\tToLowlandsProb            Double      \n";
+    cout<<"\tFromLowlandsProb          Double      \n";
 
     return -1;
   }

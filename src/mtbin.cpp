@@ -277,6 +277,34 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
 }
 
 
+//Method for moving salamanders into a special separate bin representing the
+//surrounding lowlands.
+void MtBin::diffuseToLowlands(MtBin &lowlands){
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=TheParams::get().toLowlandsProb())
+      continue;
+
+    moveSalamanderTo(s,lowlands);
+    --s;
+  }
+}
+
+
+//Method to be used by the surrounding lowlands to move salamanders back into
+//the active simulation.
+void MtBin::diffuseFromLowlands(MtBin &frontrange){
+  for(container::iterator s=bin.begin();s!=bin.end();s++){
+    //10% chance of wanting to migrate
+    if(uniform_rand_real(0,1)>=TheParams::get().fromLowlandsProb())
+      continue;
+
+    moveSalamanderTo(s,frontrange);
+    --s;
+  }
+}
+
+
 
 //Give salamanders in this bin the opportunity to move all over
 void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {

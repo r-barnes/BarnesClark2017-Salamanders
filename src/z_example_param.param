@@ -23,3 +23,5 @@ LogitCAweight             1
 LogitHAweight             1
 MaxOffspringPerBinPerDt   10
 MaxTriesToBreed           100
+ToLowlandsProb            0.05
+FromLowlandsProb          0.05

@@ -69,6 +69,14 @@ class MtBin {
 	///Kills all of the salamanders in the bin
 	void killAll();
 
+	//Method for moving salamanders into a special separate bin representing the
+	//surrounding lowlands.
+	void diffuseToLowlands(MtBin &lowlands);
+
+	//Method to be used by the surrounding lowlands to move salamanders back into
+	//the active simulation.
+	void diffuseFromLowlands(MtBin &frontrange);
+
 	///Fetch an iterator to a random salamander from this bin
 	container::iterator randomSalamander();
 

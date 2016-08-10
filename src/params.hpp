@@ -62,6 +62,9 @@ class Params {
   //We use this many elevation bins to represent the mountain (TODO)
   int numbins_val;
 
+  double to_lowlands_prob;
+  double from_lowlands_prob;
+
  public:
   Params();
   void load(std::string filename);
@@ -105,6 +108,8 @@ class Params {
   double      logitHAweight           () const;
   int         maxOffspringPerBinPerDt () const;
   int         maxTriesToBreed         () const;
+  double      toLowlandsProb          () const;
+  double      fromLowlandsProb        () const;
 };
 
 

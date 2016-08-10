@@ -68,7 +68,7 @@ void Simulation::runSimulation(){
     //little expensive. But it prevents many walks below if all the salamanders
     //go extinct early on. Therefore, in a parameter space where many
     //populations won't make it, this is a worthwhile thing to do.
-    if(alive()==0) break;
+    if(alive()+surrounding_lowlands.alive()==0) break;
 
     //Visit death upon each bin
     for(auto &m: mts)
@@ -119,6 +119,15 @@ void Simulation::runSimulation(){
       //contains no bias.
       for(auto &m: mts)
         m.diffuseGlobal(tMyrs, mts);
+    }
+
+    //Randomize order of execution to smooth biases
+    if(uniform_rand_real(0,1)>=0.5){
+      mts[0].diffuseToLowlands(surrounding_lowlands);
+      surrounding_lowlands.diffuseToLowlands(mts[0]);
+    } else {
+      surrounding_lowlands.diffuseToLowlands(mts[0]);
+      mts[0].diffuseToLowlands(surrounding_lowlands);
     }
 
     //Updates the phylogeny based on the current time, living salamanders, and

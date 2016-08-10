@@ -55,6 +55,9 @@ void Params::load(std::string filename){
 
   max_offspring_per_bin_per_dt = Input_Integer(fparam,"MaxOffspringPerBinPerDt");
   max_tries_to_breed           = Input_Integer(fparam,"MaxTriesToBreed");
+
+  to_lowlands_prob   = Input_Double(fparam,"ToLowlandsProb");
+  from_lowlands_prob = Input_Double(fparam,"FromLowlandsProb");
 }
 
 
@@ -126,3 +129,5 @@ int         Params::maxOffspringPerBinPerDt () const {return max_offspring_per_b
 int         Params::maxTriesToBreed         () const {return max_tries_to_breed;           }
 int         Params::numBins                 () const {return numbins_val;                  }
 int         Params::initialPopSize          () const {return initial_pop_size;             }
+double      Params::toLowlandsProb          () const {return to_lowlands_prob;             }
+double      Params::fromLowlandsProb        () const {return from_lowlands_prob;           }
