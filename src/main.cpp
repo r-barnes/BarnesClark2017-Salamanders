@@ -53,7 +53,7 @@ int main(int argc, char **argv){
     cout<<"\tNumBins                   Integer     Number of elevation bins which comprise the mountain.\n";
     cout<<"\tMutationProb              Double                 \n";
     cout<<"\tTemperatureDrift          Double                 \n";
-    cout<<"\tSpeciesSimilarity         Double                 \n";
+    cout<<"\tSpeciesSimilarity         Integer                \n";
     cout<<"\ttimestep                  Double      Units are in My.\n";
     cout<<"\tDispersalProb             Double      Prob of salamander trying to move between bins.\n";
     cout<<"\tDispersalType             String      Must be: Global, Better, MaybeWorse\n";

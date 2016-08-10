@@ -31,7 +31,7 @@ class Params {
   //change in temperature tolerance that occurs between parents and offspring.
   double    temperature_drift_sd;
   //A value [0,1] indicating how similar to salamanders must be to be the same species
-  double    species_sim_thresh;
+  int       species_sim_thresh;
 
 
   ///This variable adjusts how the the salamander's probability of death is
@@ -93,7 +93,7 @@ class Params {
   int         numBins                 () const;
   double      mutationProb            () const;
   double      tempDrift               () const;
-  double      speciesSimthresh        () const;
+  int         speciesSimthresh        () const;
   double      timestep                () const;
   int         maxiter                 () const;
   double      dispersalProb           () const;

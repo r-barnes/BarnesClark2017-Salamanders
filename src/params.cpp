@@ -22,7 +22,7 @@ void Params::load(std::string filename){
 
   mutation_probability = Input_Double(fparam, "MutationProb");
   temperature_drift_sd = Input_Double(fparam, "TemperatureDrift");
-  species_sim_thresh   = Input_Double(fparam, "SpeciesSimilarity");
+  species_sim_thresh   = Input_Integer(fparam, "SpeciesSimilarity");
   timestep_val         = Input_Double(fparam, "timestep");
   if(timestep_val<0.001){
     std::cerr<<"Timestep too small!"<<std::endl;
@@ -118,7 +118,7 @@ bool        Params::pVaryTemp               () const {return vary_temp;         
 bool        Params::pRunOnce                () const {return run_once;                     }
 double      Params::mutationProb            () const {return mutation_probability;         }
 double      Params::tempDrift               () const {return temperature_drift_sd;         }
-double      Params::speciesSimthresh        () const {return species_sim_thresh;           }
+int         Params::speciesSimthresh        () const {return species_sim_thresh;           }
 double      Params::timestep                () const {return timestep_val;                 }
 int         Params::maxiter                 () const {return maxiter_val;                  }
 double      Params::dispersalProb           () const {return dispersal_prob;               }

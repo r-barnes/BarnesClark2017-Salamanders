@@ -9,7 +9,7 @@ RunOnce                   NO
 NumBins                   50
 MutationProb              1e-3                 
 TemperatureDrift          0.1
-SpeciesSimilarity         0.95                 
+SpeciesSimilarity         60
 timestep                  0.5
 DispersalProb             0.5
 DispersalType             Global
