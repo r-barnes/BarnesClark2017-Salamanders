@@ -7,13 +7,13 @@
 #include <algorithm>
 #include <string>
 
-Temperature::Temperature(){
+TemperatureClass::TemperatureClass(){
   test = false;
 }
 
 
 //Use the RAII pattern. Load a file and read in the temperature data.
-void Temperature::init(const std::string filename) {
+void TemperatureClass::init(const std::string filename) {
   assert(temps.size()==0);
 
   //Read in temperatures
@@ -38,7 +38,7 @@ void Temperature::init(const std::string filename) {
 
 
 //Get the temperature at tMyrs, interpolating if necessary.
-double Temperature::getTemp(double tMyrs) const {
+double TemperatureClass::getTemp(double tMyrs) const {
   //Ensure that we've read temperature data
   assert(temps.size()!=0);
 
@@ -69,7 +69,7 @@ double Temperature::getTemp(double tMyrs) const {
 
 
 //Turn testing mode on
-void Temperature::testOn(double temp){
+void TemperatureClass::testOn(double temp){
   test     = true;
   testTemp = temp;
   std::cerr<<"Temperature test mode on. Temp set to "<<testTemp<<"degC"<<std::endl;
@@ -77,7 +77,9 @@ void Temperature::testOn(double temp){
 
 
 //Turn testing mode off
-void Temperature::testOff(){
+void TemperatureClass::testOff(){
   test = false;
   std::cerr<<"Temperature test mode off."<<std::endl;
 }
+
+TemperatureClass Temperature;

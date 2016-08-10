@@ -14,7 +14,7 @@
 using namespace std;
 
 int main(int argc, char **argv){
-  Temperature::getInstance().init("../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
+  Temperature.init("../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv");
 
   if(argc!=2){
     cerr<<"Syntax: "<<argv[0]<<" <Parameters File>"<<endl;
@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 
   cout<<"Verifying temperatures"<<endl;
   for(double tMyrs=0;tMyrs<65.0001;tMyrs+=0.5)
-    cout<<"Temperature at "<<tMyrs<<"\t=\t"<<Temperature::getInstance().getTemp(tMyrs)<<endl;
+    cout<<"Temperature at "<<tMyrs<<"\t=\t"<<Temperature.getTemp(tMyrs)<<endl;
 
   // cerr<<endl<<"Carrying Capacity"<<endl;
   // cerr<<"Elevation   KKap(0)  KKap(64.9)"<<endl;

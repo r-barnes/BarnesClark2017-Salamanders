@@ -125,7 +125,7 @@ double MtBin::temp(double tMyrs) const {
   //adiabatic lapse rate of 9.8 degC per vertical kilometer
   double altitude_temp_adjust = -9.8*heightkm();
 
-  return Temperature::getInstance().getTemp(tMyrs) + altitude_temp_adjust;
+  return Temperature.getTemp(tMyrs) + altitude_temp_adjust;
 }
 
 
@@ -497,7 +497,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander freezing death response"<<std::endl;
-    Temperature::getInstance().testOn(-10);
+    Temperature.testOn(-10);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
     bin.mortaliate(0);
@@ -509,7 +509,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response"<<std::endl;
-    Temperature::getInstance().testOn(100);
+    Temperature.testOn(100);
     for(unsigned int i=0;i<num_to_test;i++)
       bin.addSalamander(Salamander());
     bin.mortaliate(0);
@@ -521,7 +521,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=33C. Salamander=25C.\n";
-    Temperature::getInstance().testOn(33);
+    Temperature.testOn(33);
     for(unsigned int i=0;i<num_to_test;i++){
       Salamander temp;
       temp.otempdegC=25;
@@ -536,7 +536,7 @@ void MtBinUnitTest::run() const {
     MtBin bin(0, true);
     std::cerr<<std::endl;
     std::cerr<<"Test salamander heat death response. Global temp=25C. Salamander=33C.\n";
-    Temperature::getInstance().testOn(25);
+    Temperature.testOn(25);
     for(unsigned int i=0;i<num_to_test;i++){
       Salamander temp;
       temp.otempdegC=33;
@@ -580,7 +580,7 @@ void MtBinUnitTest::run() const {
   {
     //Construct bins at 0km, 1.6km, and 2.8km
     MtBin bin0(0, true), bin1(1.6, true), bin2(2.8, true);
-    Temperature::getInstance().testOff();
+    Temperature.testOff();
     std::cerr<<std::endl;
     std::cerr<<"Temperature at 0Myr at: "<<std::endl;
     std::cerr<<"  0.0km="<<bin0.temp(0)<<std::endl;

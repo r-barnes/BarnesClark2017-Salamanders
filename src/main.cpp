@@ -78,9 +78,9 @@ int main(int argc, char **argv){
 
   seed_rand(TheParams.randomSeed());
 
-  Temperature::getInstance().init(TheParams.tempSeriesFilename());
+  Temperature.init(TheParams.tempSeriesFilename());
   if(!TheParams.pVaryTemp()) {
-    Temperature::getInstance().testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
+    Temperature.testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
   }
 
   if(TheParams.pRunOnce()){

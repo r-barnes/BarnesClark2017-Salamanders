@@ -40,7 +40,7 @@ void Simulation::runSimulation(){
   //temperatures corresponding to the  temperatures at the base of the
   //mountains. We ensure that Eve is well-adapted for her time by setting her
   //optimal temperature to be equal to the temperature of the bin she starts in.
-  Eve.otempdegC = Temperature::getInstance().getTemp(0)-9.8*mts[TheParams.initialAltitude()].heightkm();
+  Eve.otempdegC = Temperature.getTemp(0)-9.8*mts[TheParams.initialAltitude()].heightkm();
 
   //We set Eve initially to have a genome in which all of the bits are off.
   //Since the genomes are used solely to determine speciation and speciation is
