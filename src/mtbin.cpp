@@ -7,7 +7,7 @@
 #include <iterator>
 #include <iostream>
 #include <iomanip>
-
+#include <stdexcept>
 
 ///Generic Gaussian distribution function
 double Gaussian(double x, double mean, double sigma){
