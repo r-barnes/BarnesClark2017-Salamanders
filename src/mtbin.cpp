@@ -9,7 +9,6 @@
 #include <iomanip>
 #include <stdexcept>
 
-
 ///Generic Gaussian distribution function
 double Gaussian(double x, double mean, double sigma){
   const double PI=3.14159265359;
