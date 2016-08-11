@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <iostream>
+#include <functional>
 
 #ifdef _OPENMP
 	#include <omp.h>
