@@ -31,7 +31,7 @@ class MtBin {
 	///Apply mortality to salamander within this bin based on how far they
 	///differ from optimal temperature and also on the the carrying capacity of
 	///the bin.
-	void mortaliate(double tMyrs, int species_sim_thresh);
+	void mortaliate(double tMyrs, int max_species, int species_sim_thresh);
 
 	///Return the temperature of the bin at a given time, based on conditions at
 	///time tMyrs, in millions of year

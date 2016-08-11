@@ -79,7 +79,7 @@ void Simulation::runSimulation(){
 
     //Visit death upon each bin
     for(auto &m: mts)
-      m.mortaliate(tMyrs, species_sim_thresh);
+      m.mortaliate(tMyrs, phylos.nodes.size(), species_sim_thresh);
 
     //Ensure that there are no Sky Salamanders in the simulation. Mountains
     //erode over time, the bins which are above the mountains' actual heights

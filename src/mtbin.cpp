@@ -63,7 +63,7 @@ void MtBin::killSalamander(MtBin::container::iterator s) {
 }
 
 
-void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
+void MtBin::mortaliate(double tMyrs, int max_species, int species_sim_thresh) {
   ///If there are no living salamanders, then don't do anything
   if(bin.empty()) return;
 
@@ -84,7 +84,7 @@ void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
 
   //If individuals have the same parent species they are part of the same
   //species. Cache this here to maintain O(N) operation
-  std::vector<int> species_abundance(5000,0);
+  std::vector<int> species_abundance(max_species,0);
   for(const auto &s: bin)
     species_abundance.at(s.parent)++;
 

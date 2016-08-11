@@ -104,17 +104,18 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
     //species that was added to the phylogeny before my parent except by random
     //chance; therefore, I stop my search at that point.
     for(int p=nodes.size()-1;p>=s.parent;--p) {
-      //If the last child of this potential parent was born more than one time
+      //If the last child of this potential parent was born more than 1.5 time
       //step ago, then this parent's lineage is dead and I cannot be a part of
       //it. This works because we are stepping by dt-Myr, so 2*dt-Myr is two
-      //time steps.
-      if( (t-nodes.at(p).lastchild)>=dt*2 ) continue;
+      //time steps. We use 1.5 timesteps to avoid issues with floating-point
+      //math.
+      if( (t-nodes.at(p).lastchild)>=1.5*dt ) continue;
 
-      //If my parent is the same as this salamander's parent and my genes are
-      //similar to this salamander's then this salamander and I are both part
-      //of the first generation of a new species of salamander. Therefore, I
-      //will consider myself this salamander's child, since its genome is
-      //already stored in the phylogeny
+      //If my parent species is the same as this species's parent species and my
+      //genes are similar to this salamander's then this salamander and I are
+      //both part of the first generation of a new species of salamander.
+      //Therefore, I will my parent species to be this species, since its genome
+      //is already stored in the phylogeny
       if( s.parent==nodes.at(p).parent && 
           s.pSimilarGenome(nodes.at(p).genes, TheParams.speciesSimthresh())
       ){
@@ -123,8 +124,11 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
         break;
       }
     }
-    if(!has_parent)             //No salamander in the phylogeny was similar to me!
-      s.parent = addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species and make sure this salamander's parent is the new species
+
+    //No salamander in the phylogeny was similar to me! Therefore, I add myself
+    //to the phylogeny as a new species and set my species id accordingly
+    if(!has_parent)             
+      s.parent = addNode(s,t);  
   }
 }
 
