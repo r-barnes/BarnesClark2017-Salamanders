@@ -15,7 +15,7 @@ DispersalProb             0.5
 DispersalType             Global
 maxiter                   1000
 PRNGseed                  0
-TempSeries                ../data/temp_series_degreesC_0_65MYA_by_0.001MY.csv
+TempSeries                data/temp_series_degreesC_0_65MYA_by_0.001MY.csv
 InitialAltitude           0
 InitialPopSize            10
 LogitTempWeight           0.1
