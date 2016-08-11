@@ -270,14 +270,19 @@ double Phylogeny::compareECDF(double t) const {
 
 //Print out a CSV of when each species emerged and died, and the optimal
 //temperature of that species when it emerged.
-void Phylogeny::persistGraph(std::ofstream &out) const {
+void Phylogeny::persistGraph(int run_num, std::ofstream &out) const {
   //NOTE: Printing the species ID twice is done so that the species can be
   //plotted as a line with 'i', the species ID, on the vertical axis and the
   //species emergence and lastchild on the horizontal axis.
-  out<<"#Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
+  if(run_num==0)
+    out<<"RunNum, Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild
-       <<","<<i<<","<<nodes[i].otempdegC<<std::endl;
+    out<<run_num           <<","
+       <<nodes[i].emergence<<","
+       <<i                 <<","
+       <<nodes[i].lastchild<<","
+       <<i                 <<","
+       <<nodes[i].otempdegC<<std::endl;
 }
 
 
@@ -365,11 +370,13 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 
 //For each node in the phylogenetic tree, print the summary statistics of that
 //species throughout the duration of its existence
-void Phylogeny::speciesSummaries(std::ofstream &out) const {
-  out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
+void Phylogeny::speciesSummaries(int run_num, std::ofstream &out) const {
+  if(run_num==0)
+    out<<"RunNum, Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
   for(unsigned int i=0;i<nodes.size();++i)
   for(auto &ss: nodes[i].stats){  //There is a stats record of each time the species was alive
-     out<<i                              <<","
+     out<<run_num                        <<","
+        <<i                              <<","
         <<ss.t                           <<","
         <<ss.num_alive                   <<","
         <<ss.elev_min                    <<","
