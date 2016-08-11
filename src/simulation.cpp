@@ -35,9 +35,8 @@ void Simulation::runSimulation(){
   //Eve is the first salamander species from which all others will emerge
   Salamander Eve;
 
-  //Eve is her own ancestor so that her children have the correct parent
-  //relationship
-  Eve.parent = 0;
+  //Eve is her own ancestor so that her children have the correct species id
+  Eve.species = 0;
 
   //The simulation assumes that it is given a time series of mean summer diurnal
   //temperatures corresponding to the  temperatures at the base of the

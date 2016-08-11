@@ -13,7 +13,7 @@
 PhyloNode::PhyloNode(const Salamander &s, double t){
   //Copy relevant parameters from the Salamander that originates this strain
   genes     = s.genes;
-  parent    = s.parent;
+  parent    = s.species;
   otempdegC = s.otempdegC;
   //Set emergence and last known child to the current time
   emergence = t;
@@ -71,7 +71,7 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 //descendent species of the salamander's parent species
 int Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
-  nodes[s.parent].addChild(nodes.size()-1);
+  nodes[s.species].addChild(nodes.size()-1);
   return nodes.size()-1; //Return the new node id
 }
 
@@ -83,13 +83,13 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
     //If I have no parent, skip me
-    if(s.parent==-1)
+    if(s.species==-1)
       throw "Salamander with bad parent discovered!";
 
     //I am similar to my parent, so mark my parent (species) as having survived
     //this long
-    if(s.pSimilarGenome(nodes.at(s.parent).genes, TheParams.speciesSimthresh())) {
-      nodes.at(s.parent).updateWithSal(m,s,t);
+    if(s.pSimilarGenome(nodes.at(s.species).genes, TheParams.speciesSimthresh())) {
+      nodes.at(s.species).updateWithSal(m,s,t);
       continue;
     }
 
@@ -103,7 +103,7 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
     //recent. If I reach my parent, then I know I can't be related to any
     //species that was added to the phylogeny before my parent except by random
     //chance; therefore, I stop my search at that point.
-    for(int p=nodes.size()-1;p>=s.parent;--p) {
+    for(int p=nodes.size()-1;p>=s.species;--p) {
       //If the last child of this potential parent was born more than 1.5 time
       //step ago, then this parent's lineage is dead and I cannot be a part of
       //it. This works because we are stepping by dt-Myr, so 2*dt-Myr is two
@@ -116,10 +116,10 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
       //both part of the first generation of a new species of salamander.
       //Therefore, I will my parent species to be this species, since its genome
       //is already stored in the phylogeny
-      if( s.parent==nodes.at(p).parent && 
+      if( s.species==nodes.at(p).parent && 
           s.pSimilarGenome(nodes.at(p).genes, TheParams.speciesSimthresh())
       ){
-        s.parent   = p;
+        s.species  = p;
         has_parent = true;
         break;
       }
@@ -128,7 +128,7 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
     //No salamander in the phylogeny was similar to me! Therefore, I add myself
     //to the phylogeny as a new species and set my species id accordingly
     if(!has_parent)             
-      s.parent = addNode(s,t);  
+      s.species = addNode(s,t);  
   }
 }
 

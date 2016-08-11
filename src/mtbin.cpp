@@ -86,14 +86,14 @@ void MtBin::mortaliate(double tMyrs, int max_species, int species_sim_thresh) {
   //species. Cache this here to maintain O(N) operation
   std::vector<int> species_abundance(max_species,0);
   for(const auto &s: bin)
-    species_abundance.at(s.parent)++;
+    species_abundance.at(s.species)++;
 
   //For each salamander, check to see if it dies
   for(auto s=bin.begin();s!=bin.end();s++){
     //These are both initially used to count individuals. Then area is divided
     //to produce abundance.
-    double conspecific_abundance    = species_abundance[s->parent]-1;
-    double heterospecific_abundance = bin.size()-species_abundance[s->parent];
+    double conspecific_abundance    = species_abundance[s->species]-1;
+    double heterospecific_abundance = bin.size()-species_abundance[s->species];
 
     //Turn counts into abundances, as promised
     conspecific_abundance    /= area(heightkm(), tMyrs);
@@ -194,7 +194,7 @@ void MtBin::breed(double tMyrs, int species_sim_thresh){
     auto parentb = randomSalamander(maxsal);
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
-    if(parenta->parent == parentb->parent){
+    if(parenta->species == parentb->species){
       addSalamander(parenta->breed(*parentb));
       max_babies--;
     }
