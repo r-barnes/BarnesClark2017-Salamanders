@@ -127,8 +127,12 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
 
     //No salamander in the phylogeny was similar to me! Therefore, I add myself
     //to the phylogeny as a new species and set my species id accordingly
-    if(!has_parent)             
-      s.species = addNode(s,t);  
+    if(!has_parent){
+      s.species = addNode(s,t);
+
+      //Make sure we have stats for the first timestep of the species' existence
+      nodes.at(s.species).updateWithSal(m,s,t);
+    }
   }
 }
 
