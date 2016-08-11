@@ -9,7 +9,7 @@ using namespace std;
 Salamander::Salamander(){
   genes                = 0;
   otempdegC            = 0;
-  parent               = -1;
+  species              = -1;
   mutation_probability = 1e-4;
   temperature_drift_sd = 1e-3;
 }
@@ -23,7 +23,7 @@ Salamander Salamander::breed(const Salamander &b) const {
   //Set the child's parent species to be the parent species of one of its two
   //parents. Since both of the parents must belong to the same species, just
   //choose one.
-  child.parent = parent;
+  child.species = species;
 
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
@@ -92,7 +92,7 @@ bool Salamander::pDie(
   //Parameters for a logit curve, that kills a salamander with ~50% probability
   //if it is more than 8 degrees C from its optimum temperature, and with ~90%
   //probability if it is more than 12 degrees from its optimum temperature.
-  //TODO: Or it did!
+  //TODO: Improve documentation now that we are using params
 
   //For temperatures outside of these limits, the salamander always dies
   if(!(0<=tempdegC && tempdegC<=50))

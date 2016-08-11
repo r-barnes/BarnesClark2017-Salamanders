@@ -60,7 +60,7 @@ class Params {
 
   int initial_pop_size;
 
-  //We use this many elevation bins to represent the mountain (TODO)
+  //We use this many elevation bins to represent the mountain
   int numbins_val;
 
   double to_lowlands_prob;

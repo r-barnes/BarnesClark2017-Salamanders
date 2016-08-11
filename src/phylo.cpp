@@ -13,7 +13,7 @@
 PhyloNode::PhyloNode(const Salamander &s, double t){
   //Copy relevant parameters from the Salamander that originates this strain
   genes     = s.genes;
-  parent    = s.parent;
+  parent    = s.species;
   otempdegC = s.otempdegC;
   //Set emergence and last known child to the current time
   emergence = t;
@@ -71,7 +71,7 @@ Phylogeny::Phylogeny(const Salamander &s, double t){
 //descendent species of the salamander's parent species
 int Phylogeny::addNode(const Salamander &s, double t){
   nodes.push_back(PhyloNode(s,t));
-  nodes[s.parent].addChild(nodes.size()-1);
+  nodes[s.species].addChild(nodes.size()-1);
   return nodes.size()-1; //Return the new node id
 }
 
@@ -83,13 +83,13 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
   for(auto &m: mts)     //Loop through parts of the mountain
   for(auto &s: m.bin){  //Loop through the salamanders in this mountain bin
     //If I have no parent, skip me
-    if(s.parent==-1)
+    if(s.species==-1)
       throw "Salamander with bad parent discovered!";
 
     //I am similar to my parent, so mark my parent (species) as having survived
     //this long
-    if(s.pSimilarGenome(nodes.at(s.parent).genes, TheParams.speciesSimthresh())) {
-      nodes.at(s.parent).updateWithSal(m,s,t);
+    if(s.pSimilarGenome(nodes.at(s.species).genes, TheParams.speciesSimthresh())) {
+      nodes.at(s.species).updateWithSal(m,s,t);
       continue;
     }
 
@@ -103,28 +103,36 @@ void Phylogeny::UpdatePhylogeny(double t, double dt, std::vector<MtBin> &mts){
     //recent. If I reach my parent, then I know I can't be related to any
     //species that was added to the phylogeny before my parent except by random
     //chance; therefore, I stop my search at that point.
-    for(int p=nodes.size()-1;p>=s.parent;--p) {
-      //If the last child of this potential parent was born more than one time
+    for(int p=nodes.size()-1;p>=s.species;--p) {
+      //If the last child of this potential parent was born more than 1.5 time
       //step ago, then this parent's lineage is dead and I cannot be a part of
       //it. This works because we are stepping by dt-Myr, so 2*dt-Myr is two
-      //time steps.
-      if( (t-nodes.at(p).lastchild)>=dt*2 ) continue;
+      //time steps. We use 1.5 timesteps to avoid issues with floating-point
+      //math.
+      if( (t-nodes.at(p).lastchild)>=1.5*dt ) continue;
 
-      //If my parent is the same as this salamander's parent and my genes are
-      //similar to this salamander's then this salamander and I are both part
-      //of the first generation of a new species of salamander. Therefore, I
-      //will consider myself this salamander's child, since its genome is
-      //already stored in the phylogeny
-      if( s.parent==nodes.at(p).parent && 
+      //If my parent species is the same as this species's parent species and my
+      //genes are similar to this salamander's then this salamander and I are
+      //both part of the first generation of a new species of salamander.
+      //Therefore, I will my parent species to be this species, since its genome
+      //is already stored in the phylogeny
+      if( s.species==nodes.at(p).parent && 
           s.pSimilarGenome(nodes.at(p).genes, TheParams.speciesSimthresh())
       ){
-        s.parent   = p;
+        s.species  = p;
         has_parent = true;
         break;
       }
     }
-    if(!has_parent)             //No salamander in the phylogeny was similar to me!
-      s.parent = addNode(s,t);  //Therefore, I add myself to the phylogeny as a new species and make sure this salamander's parent is the new species
+
+    //No salamander in the phylogeny was similar to me! Therefore, I add myself
+    //to the phylogeny as a new species and set my species id accordingly
+    if(!has_parent){
+      s.species = addNode(s,t);
+
+      //Make sure we have stats for the first timestep of the species' existence
+      nodes.at(s.species).updateWithSal(m,s,t);
+    }
   }
 }
 
@@ -270,14 +278,19 @@ double Phylogeny::compareECDF(double t) const {
 
 //Print out a CSV of when each species emerged and died, and the optimal
 //temperature of that species when it emerged.
-void Phylogeny::persistGraph(std::ofstream &out) const {
+void Phylogeny::persistGraph(int run_num, std::ofstream &out) const {
   //NOTE: Printing the species ID twice is done so that the species can be
   //plotted as a line with 'i', the species ID, on the vertical axis and the
   //species emergence and lastchild on the horizontal axis.
-  out<<"#Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
+  if(run_num==0)
+    out<<"RunNum, Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
   for(unsigned int i=0;i<nodes.size();++i)
-    out<<nodes[i].emergence<<","<<i<<","<<nodes[i].lastchild
-       <<","<<i<<","<<nodes[i].otempdegC<<std::endl;
+    out<<run_num           <<","
+       <<nodes[i].emergence<<","
+       <<i                 <<","
+       <<nodes[i].lastchild<<","
+       <<i                 <<","
+       <<nodes[i].otempdegC<<std::endl;
 }
 
 
@@ -365,11 +378,13 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 
 //For each node in the phylogenetic tree, print the summary statistics of that
 //species throughout the duration of its existence
-void Phylogeny::speciesSummaries(std::ofstream &out) const {
-  out<<"Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
+void Phylogeny::speciesSummaries(int run_num, std::ofstream &out) const {
+  if(run_num==0)
+    out<<"RunNum, Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
   for(unsigned int i=0;i<nodes.size();++i)
   for(auto &ss: nodes[i].stats){  //There is a stats record of each time the species was alive
-     out<<i                              <<","
+     out<<run_num                        <<","
+        <<i                              <<","
         <<ss.t                           <<","
         <<ss.num_alive                   <<","
         <<ss.elev_min                    <<","

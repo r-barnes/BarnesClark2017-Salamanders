@@ -144,14 +144,14 @@ class Phylogeny {
   double compareECDF(double t) const;
 
   ///Print species labels and their persistence to the specified output stream
-  void persistGraph(std::ofstream &out) const;
+  void persistGraph(int run_num, std::ofstream &out) const;
 
   ///Returns a Newick representation of the tree's living members at a given
   ///time. See: https://en.wikipedia.org/wiki/Newick_format
   std::string printNewick(int n=0, int depth=0) const;
 
   ///Prints each species' SpeciesStats vector to the specified file
-  void speciesSummaries(std::ofstream &out) const;
+  void speciesSummaries(int run_num, std::ofstream &out) const;
 };
 
 #endif

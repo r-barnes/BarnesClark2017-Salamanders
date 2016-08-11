@@ -19,7 +19,7 @@
 using namespace std;
 
 std::string SimulationSummaryHeader() {
-  return "Run #, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, "
+  return "RunNum, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, "
          "AvgOtempdegC, Nalive, EndTime, AvgElevation";
 }
 
@@ -129,31 +129,34 @@ int main(int argc, char **argv){
     //runs[i].dumpPhylogeny();
   }
 
+  cerr<<"Printing output information..."<<endl;
+  
   //Print out the summary statistics of all of the runs
-  cerr<<"Printing summaries to: "<<TheParams.outSummaryFilename()<<endl;
   std::ofstream f_summary(TheParams.outSummaryFilename());
   f_summary<<SimulationSummaryHeader()<<endl;
   for(unsigned int r=0;r<runs.size();++r)
     printSimulationSummary(f_summary, r, runs[r]);
 
-  //Print out the phylogenies and persistence graphs of the runs which approximate
-  //the phylogeny of Kozak and Wiens (2010)
-  for(unsigned int i=0;i<runs.size();++i){
-    //Output persistence table for each run within the boundaries
-    string fname_persist=TheParams.outPersistFilename()+"_run_"+std::to_string(i)+".csv";
-    std::ofstream f_persist(fname_persist);
-    runs[i].phylos.persistGraph(f_persist);
+  //Output persistence table for each run within the boundaries
+  {
+    std::ofstream f_persist(TheParams.outPersistFilename());
+    for(unsigned int i=0;i<runs.size();i++)
+      runs[i].phylos.persistGraph(i, f_persist);
+  }
 
-    //Output phylogeny for each run within the boundaries
-    string fname_phylo=TheParams.outPhylogenyFilename()+"_run_"+std::to_string(i)+".tre";
-    std::ofstream f_phylogeny(fname_phylo);
-    f_phylogeny   <<runs[i].phylos.printNewick() <<endl;
+  //Output phylogeny for each run within the boundaries
+  {
+    std::ofstream f_phylogeny(TheParams.outPhylogenyFilename());
+    for(unsigned int i=0;i<runs.size();i++)
+      f_phylogeny<<i<<" "<<runs[i].phylos.printNewick()<<endl;
+  }
 
-    //Output summaries of the distribution of species properties at each point
-    //in time
-    string fname_species_stats = TheParams.outSpeciesStatsFilename()+"_run_"+std::to_string(i)+".csv";
-    std::ofstream f_species_stats(fname_species_stats);
-    runs[i].phylos.speciesSummaries(f_species_stats);
+  //Output summaries of the distribution of species properties at each point
+  //in time
+  {
+    std::ofstream f_species_stats(TheParams.outSpeciesStatsFilename());
+    for(unsigned int i=0;i<runs.size();i++)
+      runs[i].phylos.speciesSummaries(i, f_species_stats);
   }
 
   return 0;

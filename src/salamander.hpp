@@ -72,13 +72,12 @@ class Salamander {
   //influence relatedness, speciation, and ability to breed.
   double temperature_drift_sd;
 
-  ///The phylogeny this salamander is part of (i.e., from what lineage did
-  ///this salamander arise?) Is set to -1 for initialized salamanders, but
+  ///The phylogenetic node this salamander is part of (i.e., from what lineage
+  ///did this salamander arise?) Is set to -1 for uninitialized salamanders, but
   ///should always be set to a positive number indicating the salamander's
   ///parent  species. The only exception to this is the first salamander
-  ///("Eve"), which is its own parent, set at 0. Note: This is more of a
-  ///"speciesid"
-  int parent;
+  ///("Eve"), which is its own parent, set at 0.
+  int species;
 };
 
 #endif

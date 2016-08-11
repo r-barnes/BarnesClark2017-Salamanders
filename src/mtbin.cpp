@@ -63,7 +63,7 @@ void MtBin::killSalamander(MtBin::container::iterator s) {
 }
 
 
-void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
+void MtBin::mortaliate(double tMyrs, int max_species, int species_sim_thresh) {
   ///If there are no living salamanders, then don't do anything
   if(bin.empty()) return;
 
@@ -84,16 +84,16 @@ void MtBin::mortaliate(double tMyrs, int species_sim_thresh) {
 
   //If individuals have the same parent species they are part of the same
   //species. Cache this here to maintain O(N) operation
-  std::vector<int> species_abundance(5000,0);
+  std::vector<int> species_abundance(max_species,0);
   for(const auto &s: bin)
-    species_abundance.at(s.parent)++;
+    species_abundance.at(s.species)++;
 
   //For each salamander, check to see if it dies
   for(auto s=bin.begin();s!=bin.end();s++){
     //These are both initially used to count individuals. Then area is divided
     //to produce abundance.
-    double conspecific_abundance    = species_abundance[s->parent]-1;
-    double heterospecific_abundance = bin.size()-species_abundance[s->parent];
+    double conspecific_abundance    = species_abundance[s->species]-1;
+    double heterospecific_abundance = bin.size()-species_abundance[s->species];
 
     //Turn counts into abundances, as promised
     conspecific_abundance    /= area(heightkm(), tMyrs);
@@ -124,7 +124,7 @@ double MtBin::temp(double tMyrs) const {
 
 
 //Get the carrying capacity of this bin, taking into account its elevation.
-/* TODO
+/* TODO: Cut?
 unsigned int MtBin::kkap(double tMyrs) const {
   if(!TheParams.pVaryHeight()) tMyrs=65;
 
@@ -180,14 +180,21 @@ void MtBin::breed(double tMyrs, int species_sim_thresh){
   //Maximum number of new offspring per bin per unit time
   int max_babies = TheParams.maxOffspringPerBinPerDt();
 
+  //randomSalamaner() chooses a salamander randomly in the range [0,maxsal].
+  //Baby salamanders will be added at maxsal+1, maxsal+2, ... So, by noting
+  //maxsal now, we prevent baby salamanders from breeding in the timestep in
+  //which they are born. This means that the only mating criteria is that two
+  //salamanders be part of the same species at the beginning of the timestep.
+  const int maxsal = bin.size()-1;
+
   //As long as there's room in the bin, and we still have to make babies, and we
   //are not caught in an infinite loop, then try to make more babies.
   while(max_babies>0 && maxtries-->0){
-    auto parenta = randomSalamander();
-    auto parentb = randomSalamander();
+    auto parenta = randomSalamander(maxsal);
+    auto parentb = randomSalamander(maxsal);
     //If parents are genetically similar enough to be classed as the same
     //species based on species_sim_thresh, then they can breed.
-    if(parenta->pSimilar(*parentb, species_sim_thresh)){
+    if(parenta->species == parentb->species){
       addSalamander(parenta->breed(*parentb));
       max_babies--;
     }
@@ -373,14 +380,14 @@ void MtBin::killAll() {
 }
 
 
-//Choose a random salamander from the bin
-MtBin::container::iterator MtBin::randomSalamander(){
+//Choose a random salamander [0,maxsal] from the bin
+MtBin::container::iterator MtBin::randomSalamander(int maxsal){
   //Cannot run this on an empty bin
   assert(!bin.empty());
   //Generate an iterator to the beginning of the bin
   std::vector<Salamander>::iterator temp = bin.begin();
   //Choose a random member of the bin
-  int pos=uniform_rand_int(0, bin.size()-1);
+  int pos=uniform_rand_int(0, maxsal);
   //Advance the iterator so that it points at this member
   std::advance(temp,pos);
   //Return the iterator

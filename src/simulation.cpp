@@ -35,9 +35,8 @@ void Simulation::runSimulation(){
   //Eve is the first salamander species from which all others will emerge
   Salamander Eve;
 
-  //Eve is her own ancestor so that her children have the correct parent
-  //relationship
-  Eve.parent = 0;
+  //Eve is her own ancestor so that her children have the correct species id
+  Eve.species = 0;
 
   //The simulation assumes that it is given a time series of mean summer diurnal
   //temperatures corresponding to the  temperatures at the base of the
@@ -79,7 +78,7 @@ void Simulation::runSimulation(){
 
     //Visit death upon each bin
     for(auto &m: mts)
-      m.mortaliate(tMyrs, species_sim_thresh);
+      m.mortaliate(tMyrs, phylos.nodes.size(), species_sim_thresh);
 
     //Ensure that there are no Sky Salamanders in the simulation. Mountains
     //erode over time, the bins which are above the mountains' actual heights

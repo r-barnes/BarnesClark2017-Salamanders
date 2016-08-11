@@ -1,7 +1,7 @@
-SummaryStatsFilename      z/summary
-PersistenceGraphFilename  z/persist
-PhylogenyFilename         z/phylo
-SpeciesStatsFilename      z/species_stats
+SummaryStatsFilename      /z/summary.csv
+PersistenceGraphFilename  /z/persist.csv
+PhylogenyFilename         /z/phylo.tre
+SpeciesStatsFilename      /z/species_stats.csv
 Debug                     NO
 VaryHeight                YES
 VaryTemp                  YES
