@@ -92,7 +92,7 @@ bool Salamander::pDie(
   //Parameters for a logit curve, that kills a salamander with ~50% probability
   //if it is more than 8 degrees C from its optimum temperature, and with ~90%
   //probability if it is more than 12 degrees from its optimum temperature.
-  //TODO: Or it did!
+  //TODO: Improve documentation now that we are using params
 
   //For temperatures outside of these limits, the salamander always dies
   if(!(0<=tempdegC && tempdegC<=50))

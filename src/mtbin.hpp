@@ -80,7 +80,7 @@ class MtBin {
 	void diffuseFromLowlands(MtBin &frontrange);
 
 	///Fetch an iterator to a random salamander from this bin
-	container::iterator randomSalamander();
+	container::iterator randomSalamander(int maxsal);
 
  private:
 	///Kills the indicated salamander by swapping it to the end of bin and then
