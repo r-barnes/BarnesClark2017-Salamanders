@@ -711,7 +711,7 @@ public:
     template <template <typename> class DistTmpl = uniform_distribution,
               typename Iter,
               typename... Params>
-    void generate(Iter first, Iter last, Params&&... params)
+    void generate(Iter&& first, Iter&& last, Params&&... params)
     {
         using result_type =
            typename std::remove_reference<decltype(*(first))>::type;
