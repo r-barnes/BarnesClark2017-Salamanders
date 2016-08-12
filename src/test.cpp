@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <string>
+#include <bitset>
 using namespace std;
 
 int main(int argc, char **argv){
@@ -47,6 +48,11 @@ int main(int argc, char **argv){
   cout<<"Maximum height over time: \n";
   for(double tMyrs;tMyrs<65.001;tMyrs+=0.5)
     cout<<"Maximum elevation at "<<setw(4)<<tMyrs<<"\t=\t"<<MtBin::heightMaxKm(tMyrs)<<endl;
+
+  cout<<"10000 random uint64 bit fields: ";
+  for(int i=0;i<10000;i++)
+    cout<<std::bitset<64>(uniform_bits<uint64_t>())<<" ";
+  cout<<endl;
 
   MtBinUnitTest mtbintest;
   mtbintest.run();

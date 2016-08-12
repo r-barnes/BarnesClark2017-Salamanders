@@ -30,7 +30,7 @@ Salamander Salamander::breed(const Salamander &b) const {
   child.otempdegC = (otempdegC+b.otempdegC)/2+normal_rand(0,temperature_drift_sd);
 
   //Find those genes the parents do not have in common.
-  Salamander::genetype not_common_genes = ~((genes & b.genes) | (~genes & ~b.genes));
+  Salamander::genetype not_common_genes = (genes ^ b.genes);
 
   //Child gets genes from one parent, but we'll choose some genes from the other
   //parent below.
@@ -39,12 +39,22 @@ Salamander Salamander::breed(const Salamander &b) const {
   //We push the selector along one bit at a time and if that bit is one of the
   //places were the genomes differed, we choose with 50% probability whether to
   //turn it on or off (that is, which parent it should be inherited from).
-  Salamander::genetype selector = 1;
-  for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(not_common_genes&selector && rand()%2==0)
-      child.genes|=selector;
-    selector=selector<<1;
-  }
+
+  //For 64-bit types
+  Salamander::genetype selector = uniform_bits<uint64_t>();
+
+  //For 128-bit types, generate two 64-bit fields;
+  //Salamander::genetype left_selector  = uniform_bits<uint64_t>();
+  //Salamander::genetype right_selector = uniform_bits<uint64_t>();
+  //Generate a 128-bit selector where each bit now has 50% probability
+  //Salamander::genetype selector = (left_selector<<64) | right_selector;
+  
+  //Select the uncommon genes, each with 50% probability
+  Salamander::genetype selected_uncommon = not_common_genes & selector;
+  //We now have a bitfield, selected_uncommon, where each uncommon bit from the
+  //parents is represented by a 1 with 50% probability. Now, flip those bits in
+  //the child.
+  child.genes ^= selected_uncommon;
 
   //Mutate child genome
   child.mutate();
@@ -56,21 +66,21 @@ Salamander Salamander::breed(const Salamander &b) const {
 //Walk through the salamander's genome and with a probability
 //`mutation_probability` flip the gene.
 void Salamander::mutate(){
-  Salamander::genetype mutator=1;
-  for(unsigned int i=0;i<sizeof(Salamander::genetype)*8;++i){
-    if(uniform_rand_real(0,1)<=TheParams.mutationProb())
-      genes^=mutator;
-    mutator=mutator<<1;
-  }
+  std::bernoulli_distribution d(TheParams.mutationProb());
+  for(unsigned int i=0;i<genes.size();i++)
+    if(d(rand_engine()))
+      genes[i].flip();
 }
 
 
 //Determine whether the genomes of two salamanders are more similar than the
 //given threshold.
 bool Salamander::pSimilarGenome(const Salamander::genetype &b, int species_sim_thresh) const {
-  Salamander::genetype combined=~(genes ^ b);                //Create genetype where only the bits which match in genes and b are on
-  int shared_genes=__builtin_popcountll(combined);           //Counts the number of 1 bits NOTE: Ensure that the popcount type matches the genetype
-  return shared_genes >= species_sim_thresh;
+  //Create genetype where only the bits which match in genes and b are on
+  Salamander::genetype combined=~(genes ^ b);
+
+  //Were enough bits shared? 
+  return combined.count() >= (unsigned int)species_sim_thresh;
 }
 
 
