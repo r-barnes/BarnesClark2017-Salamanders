@@ -123,13 +123,13 @@ int main(int argc, char **argv){
   //Run the simulations in parallel using OpenMP
   #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
-    #pragma omp critical
-      cout<<"Run #"<<i<<endl;
+    //#pragma omp critical
+    //  cout<<"Run #"<<i<<endl;
     runs[i].runSimulation();
     //runs[i].dumpPhylogeny();
   }
 
-  cerr<<"Printing output information..."<<endl;
+  //cerr<<"Printing output information..."<<endl;
   
   //Print out the summary statistics of all of the runs
   std::ofstream f_summary(TheParams.outSummaryFilename());
