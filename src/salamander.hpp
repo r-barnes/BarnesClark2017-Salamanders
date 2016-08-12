@@ -2,13 +2,14 @@
 #define _salamander
 
 #include "params.hpp"
+#include <cstdint>
 
 class Salamander {
  public:
   ///Gene Type - used for storing genetic information that is used to
   ///determine whether individuals are of the same species, based on a bitwise
   ///comparison of the binary expression of this number.
-  typedef unsigned long long genetype;
+  typedef uint64_t genetype;
 
   ///Initialize a new salamander. Is initialized as "alive", but with no
   ///parent (=-1), genome = 0, optimum temperature = 0, and
