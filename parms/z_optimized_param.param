@@ -1,13 +1,13 @@
-SummaryStatsFilename      output/summary_0.csv
-PersistenceGraphFilename  output/persist_0.csv
-PhylogenyFilename         output/phylo_0.tre
-SpeciesStatsFilename      output/species_stats_0.csv
+SummaryStatsFilename      output/summary_4F503F1A-3105-4C96-AE2F-ADCAA7AC2CE0.csv
+PersistenceGraphFilename  output/persist_4F503F1A-3105-4C96-AE2F-ADCAA7AC2CE0.csv
+PhylogenyFilename         output/phylo_4F503F1A-3105-4C96-AE2F-ADCAA7AC2CE0.tre
+SpeciesStatsFilename      output/species_stats_4F503F1A-3105-4C96-AE2F-ADCAA7AC2CE0.csv
 Debug                     NO
 VaryHeight                YES
 VaryTemp                  YES
 RunOnce                   NO
 NumBins                   50
-MutationProb              0.007
+MutationProb              0.0114376806102033
 TemperatureDrift          13
 SpeciesSimilarity         61
 timestep                  0.5
@@ -17,7 +17,7 @@ maxiter                   100
 PRNGseed                  0
 TempSeries                data/temp_series_degreesC_0_65MYA_by_0.001MY.csv
 InitialAltitude           0
-InitialPopSize            10000
+InitialPopSize            1000
 LogitTempWeight           0.03
 LogitOffset               -2.197225
 LogitCAweight             0.01
