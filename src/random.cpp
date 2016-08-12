@@ -5,14 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <functional>
-
-#ifdef _OPENMP
-	#include <omp.h>
-#else
-	#define omp_get_thread_num()  0
-	#define omp_get_num_threads() 1
-	#define omp_get_max_threads()	1
-#endif
+#include <limits>
 
 our_random_engine& rand_engine(){
   static our_random_engine e[PRNG_THREAD_MAX];

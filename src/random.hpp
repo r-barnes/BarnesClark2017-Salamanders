@@ -6,6 +6,14 @@
 ///Maximum number of threads this class should deal with
 #define PRNG_THREAD_MAX 32
 
+#ifdef _OPENMP
+  #include <omp.h>
+#else
+  #define omp_get_thread_num()  0
+  #define omp_get_num_threads() 1
+  #define omp_get_max_threads() 1
+#endif
+
 #include <random>
 
 typedef std::mt19937 our_random_engine;
@@ -28,7 +36,10 @@ double uniform_rand_real(double from, double thru);
 //deviation. Thread-safe
 double normal_rand(double mean, double stddev);
 
-uint32_t uniform_rand_int_wrng();
-
+template<class T>
+T uniform_bits(){
+  std::uniform_int_distribution<T> dist(std::numeric_limits<T>::lowest(),std::numeric_limits<T>::max());
+  return dist( rand_engine() );
+}
 
 #endif
