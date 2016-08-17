@@ -10,7 +10,6 @@ Salamander::Salamander(){
   genes                = 0;
   otempdegC            = 0;
   species              = -1;
-  temperature_drift_sd = 1e-3;
 }
 
 
@@ -26,7 +25,7 @@ Salamander Salamander::breed(const Salamander &b) const {
 
   //Child optimum temperature is the average of its parents, plus a mutation,
   //drawn from a standard normal distribution with mean = 0 and sd = 0.001.
-  child.otempdegC = (otempdegC+b.otempdegC)/2+normal_rand(0,temperature_drift_sd);
+  child.otempdegC = (otempdegC+b.otempdegC)/2+normal_rand(0,TheParams.tempDrift());
 
   //Find those genes the parents do not have in common.
   Salamander::genetype not_common_genes = (genes ^ b.genes);

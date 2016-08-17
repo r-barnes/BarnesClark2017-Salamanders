@@ -30,8 +30,10 @@ class Params {
   //genome that determines relatedness, speciation, and ability to breed. It 
   //does not directly alter optimum temperature.
   double    mutation_probability;
-  //A value [0, Inf] dictating the standard deviation of the random, normal
-  //change in temperature tolerance that occurs between parents and offspring.
+  ///Drift rate for temperature optimum per timestep - used by
+  //salamander::breed() to determine the change in optimum temperature between 
+  //children and parents. Note - this changes the temperature optimum, but does 
+  //not directly influence relatedness, speciation, and ability to breed.
   double    temperature_drift_sd;
   //A value [0,1] indicating how similar to salamanders must be to be the same species
   int       species_sim_thresh;

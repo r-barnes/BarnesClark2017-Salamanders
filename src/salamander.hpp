@@ -66,12 +66,6 @@ class Salamander {
   ///mutation rate described in mutate().
   double otempdegC;
 
-  ///Drift rate for temperature optimum per timestep - used by breed() to
-  //determine the change in optimum temperature between children and parents.
-  //Note - this changes the temperature optimum, but does not directly
-  //influence relatedness, speciation, and ability to breed.
-  double temperature_drift_sd;
-
   ///The phylogenetic node this salamander is part of (i.e., from what lineage
   ///did this salamander arise?) Is set to -1 for uninitialized salamanders, but
   ///should always be set to a positive number indicating the salamander's
