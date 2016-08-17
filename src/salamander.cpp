@@ -10,7 +10,6 @@ Salamander::Salamander(){
   genes                = 0;
   otempdegC            = 0;
   species              = -1;
-  mutation_probability = 1e-4;
   temperature_drift_sd = 1e-3;
 }
 

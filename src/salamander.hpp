@@ -66,12 +66,6 @@ class Salamander {
   ///mutation rate described in mutate().
   double otempdegC;
 
-  ///Mutation probability per timestep - used by mutate() to determine the
-  //probability of mutation in the genome. Note - this changes the genome that
-  //determines relatedness, speciation, and ability to breed. It does not
-  //directly alter optimum temperature.
-  double mutation_probability;
-
   ///Drift rate for temperature optimum per timestep - used by breed() to
   //determine the change in optimum temperature between children and parents.
   //Note - this changes the temperature optimum, but does not directly
