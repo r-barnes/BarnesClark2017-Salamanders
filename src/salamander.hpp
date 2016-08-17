@@ -48,7 +48,11 @@ class Salamander {
   ///its optimum temperature, and with ~90% probability if it is more than 12
   ///degrees from its optimum temperature. Returns TRUE if the salamander
   ///dies.
-  bool pDie(const double tempdegC, const double conspecific_abundance, const double heterospecific_abundance) const;
+  bool pDie(
+    const double tempdegC,
+    const double conspecific_abundance,
+    const double heterospecific_abundance
+  ) const;
 
   ///Neutral genes. Determined by the parents of the salamander and used to
   ///determine if the salamander is of the same species as another salamander.
@@ -61,18 +65,6 @@ class Salamander {
   ///of their parents' otemp, and changes between generations based on a
   ///mutation rate described in mutate().
   double otempdegC;
-
-  ///Mutation probability per timestep - used by mutate() to determine the
-  //probability of mutation in the genome. Note - this changes the genome that
-  //determines relatedness, speciation, and ability to breed. It does not
-  //directly alter optimum temperature.
-  double mutation_probability;
-
-  ///Drift rate for temperature optimum per timestep - used by breed() to
-  //determine the change in optimum temperature between children and parents.
-  //Note - this changes the temperature optimum, but does not directly
-  //influence relatedness, speciation, and ability to breed.
-  double temperature_drift_sd;
 
   ///The phylogenetic node this salamander is part of (i.e., from what lineage
   ///did this salamander arise?) Is set to -1 for uninitialized salamanders, but

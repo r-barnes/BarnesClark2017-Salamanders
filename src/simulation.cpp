@@ -24,7 +24,8 @@ void Simulation::runSimulation(){
     mtbin_order.push_back(i);
 
   if(TheParams.initialAltitude()<0 || (int)mts.size()<=TheParams.initialAltitude()){
-    std::cerr<<"Initial bin was outside of range. Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
+    std::cerr<<"Initial bin was outside of range. ";
+    std::cerr<<"Should be in [0,"<<(mts.size()-1)<<"]."<<std::endl;
     throw std::runtime_error("Initial bin outside of range.");
   }
 
@@ -42,7 +43,8 @@ void Simulation::runSimulation(){
   //temperatures corresponding to the  temperatures at the base of the
   //mountains. We ensure that Eve is well-adapted for her time by setting her
   //optimal temperature to be equal to the temperature of the bin she starts in.
-  Eve.otempdegC = Temperature.getTemp(0)-9.8*mts[TheParams.initialAltitude()].heightkm();
+  Eve.otempdegC = Temperature.getTemp(0) - 
+                      9.8*mts[TheParams.initialAltitude()].heightkm();
 
   //We set Eve initially to have a genome in which all of the bits are off.
   //Since the genomes are used solely to determine speciation and speciation is
@@ -144,7 +146,8 @@ void Simulation::runSimulation(){
   }
 
   //Records the time at which the simulation ended
-  if(tMyrs>=65.001) tMyrs-=TheParams.timestep(); //Since the last step goes past the end of time
+  if(tMyrs>=65.001)
+    tMyrs-=TheParams.timestep(); //Since the last step goes past the end of time
   endtime = tMyrs;
 
   //Records the average optimal temperature of the salamanders alive at present
@@ -223,12 +226,21 @@ void Simulation::printMt(double tMyrs) const {
   std::cout<<"t:           "<<tMyrs<<"\n";
   std::cout<<"Total Pop:   "<<alive()+surrounding_lowlands.alive()<<"\n";
   std::cout<<"Lowland Pop: "<<surrounding_lowlands.alive()<<"\n";
-  std::cout<<std::setw(2)<<"i"<<" "<<std::setw(5)<<"elev"<<"  "<<std::setw(20)<<"Dist"<<"  "<<"       %  Count\n";
-  std::cout<<std::setw(2)<<"-"<<" "<<std::setw(5)<<"LOW" <<" |"<<std::setw(20)<<" "<<"| "<<"         "<<std::setw(6)<<surrounding_lowlands.alive()<<"\n";
+  std::cout<<std::setw(2)<<"i"<<" "
+           <<std::setw(5)<<"elev"<<"  "
+           <<std::setw(20)<<"Dist"<<"  "<<"       %  Count\n";
+  std::cout<<std::setw(2)<<"-"<<" "
+           <<std::setw(5)<<"LOW" <<" |"
+           <<std::setw(20)<<" "<<"| "<<"         "
+           <<std::setw(6)<<surrounding_lowlands.alive()<<"\n";
   for(unsigned int i=0;i<mts.size();i++){
     std::cout<<std::setw(2)<<i<<" "<<std::setw(5);
     if(mts[i].heightkm()<MtBin::heightMaxKm(tMyrs))
-      std::cout<<mts[i].heightkm()<<" |"<<std::setw(20)<<std::string(20*mts[i].alive()/maxalive,'#')<<"| "<<std::setw(7)<<std::setprecision(4)<<(mts[i].alive()/(double)nalive*100.0)<<"% "<<std::setw(6)<<mts[i].alive();
+      std::cout<<mts[i].heightkm()<<" |"
+               <<std::setw(20)<<std::string(20*mts[i].alive()/maxalive,'#')<<"| "
+               <<std::setw(7)<<std::setprecision(4)
+               <<(mts[i].alive()/(double)nalive*100.0)<<"% "
+               <<std::setw(6)<<mts[i].alive();
     else
       std::cout<<"XXXXX"<<" |"<<std::setw(20)<<std::string(20,'-')<<"|";
     std::cout<<"\n";
