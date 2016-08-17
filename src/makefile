@@ -1,4 +1,5 @@
-#For 'march' options see: https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html
+#For 'march' options see:
+#https://gcc.gnu.org/onlinedocs/gcc-4.9.2/gcc/i386-and-x86-64-Options.html
 #Itasca: -march=nehalem
 CC=g++
 CFLAGS=-Wall --std=c++11 -flto -ffast-math -march=native -fopenmp  #-DNDEBUG

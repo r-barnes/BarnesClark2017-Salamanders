@@ -368,7 +368,8 @@ std::string Phylogeny::printNewick(int n, int depth) const {
   //emergence of the parent. Having this here ensures that every time this
   //function returns the result is a valid phylogeny including a distance to
   //root
-  my_phylo+=":"+std::to_string(nodes[my_children.back()].emergence-nodes[n].emergence);
+  my_phylo+=":";
+  my_phylo+=std::to_string(nodes[my_children.back()].emergence-nodes[n].emergence);
 
   //All done: let's wrap things up nicely
   if(depth==0)
@@ -382,10 +383,11 @@ std::string Phylogeny::printNewick(int n, int depth) const {
 //species throughout the duration of its existence
 void Phylogeny::speciesSummaries(int run_num, std::ofstream &out) const {
   if(run_num==0)
-    out<<"RunNum, Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
+    out<<"RunNum, Species, Time, NumAlive, ElevMin, "
+       <<"ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
+  //For each node, there is a stats record of each time the species was alive
   for(unsigned int i=0;i<nodes.size();++i)
-  //for(unsigned int i=(nodes.size()-1);i<nodes.size();++i)
-  for(auto &ss: nodes[i].stats){  //There is a stats record of each time the species was alive
+  for(auto &ss: nodes[i].stats){  
     if(ss.t==65) {
      out<<run_num                        <<","
         <<i                              <<","

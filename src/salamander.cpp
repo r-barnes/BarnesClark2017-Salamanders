@@ -7,9 +7,9 @@
 using namespace std;
 
 Salamander::Salamander(){
-  genes                = 0;
-  otempdegC            = 0;
-  species              = -1;
+  genes     = 0;
+  otempdegC = 0;
+  species   = -1;
 }
 
 
@@ -73,7 +73,10 @@ void Salamander::mutate(){
 
 //Determine whether the genomes of two salamanders are more similar than the
 //given threshold.
-bool Salamander::pSimilarGenome(const Salamander::genetype &b, int species_sim_thresh) const {
+bool Salamander::pSimilarGenome(
+  const Salamander::genetype &b,
+  int species_sim_thresh
+) const {
   //Create genetype where only the bits which match in genes and b are on
   Salamander::genetype combined=~(genes ^ b);
 
