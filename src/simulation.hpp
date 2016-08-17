@@ -40,7 +40,8 @@ class Simulation {
   Phylogeny phylos;
   //Dumps the phylogeny object to save space
   void dumpPhylogeny();
-  //Empirical cumulative distribution (ECDF) of average branch lengths between extant taxa
+  //Empirical cumulative distribution (ECDF) of average branch lengths between
+  //extant taxa
   double    ecdf;
   //Time at which the simulation ended
   double    endtime = 0;

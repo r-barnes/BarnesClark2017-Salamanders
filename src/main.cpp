@@ -19,7 +19,7 @@
 #include "omp.h"
 using namespace std;
 
-std::string SimulationSummaryHeader() {
+string SimulationSummaryHeader() {
   return "RunNum, MutationProb, TempDriftSD, SimThresh, Nspecies, ECDF, "
          "AvgOtempdegC, Nalive, EndTime, AvgElevation";
 }
@@ -51,26 +51,39 @@ int main(int argc, char **argv){
     cout<<"\tPersistenceGraphFilename  Filename               \n";
     cout<<"\tPhylogenyFilename         Filename               \n";
     cout<<"\tSpeciesStatsFilename      Filename               \n";
-    cout<<"\tDebug                     YES/NO      Print real-time stats about simulation.\n";
+    cout<<"\tDebug                     YES/NO      ";
+      cout<<"Print real-time stats about simulation.\n";
     cout<<"\tVaryHeight                YES/NO                 \n";
     cout<<"\tVaryTemp                  YES/NO                 \n";
     cout<<"\tRunOnce                   YES/NO                 \n";
-    cout<<"\tNumBins                   Integer     Number of elevation bins which comprise the mountain.\n";
+    cout<<"\tNumBins                   Integer     ";
+      cout<<"Number of elevation bins which comprise the mountain.\n";
     cout<<"\tMutationProb              Double                 \n";
     cout<<"\tTemperatureDrift          Double                 \n";
     cout<<"\tSpeciesSimilarity         Integer                \n";
-    cout<<"\ttimestep                  Double      Units are in My.\n";
-    cout<<"\tDispersalProb             Double      Prob of salamander trying to move between bins.\n";
-    cout<<"\tDispersalType             String      Must be: Global, Better, MaybeWorse\n";
-    cout<<"\tmaxiter                   Integer     Numer of times to run each parameter combination.\n";
-    cout<<"\tPRNGseed                  Integer     Use 0 for true entropy; otherwise, seed engine to given value.\n";
-    cout<<"\tTempSeries                Filename    If not specified, a default time series is used. NO SPACES ALLOWED!\n";
-    cout<<"\tInitialAltitude           Integer     Altitude of progenitor species. Must be a valid bin number.\n";
-    cout<<"\tInitialPopSize            Integer     How many salamanders to put in the initial bin.\n";
-    cout<<"\tLogitTempWeight           Double      Adjusts how salamander mortality relates to temperature.\n";
+    cout<<"\ttimestep                  Double      ";
+      cout<<"Units are in My.\n";
+    cout<<"\tDispersalProb             Double      ";
+      cout<<"Prob of salamander trying to move between bins.\n";
+    cout<<"\tDispersalType             String      ";
+      cout<<"Must be: Global, Better, MaybeWorse\n";
+    cout<<"\tmaxiter                   Integer     ";
+      cout<<"Numer of times to run each parameter combination.\n";
+    cout<<"\tPRNGseed                  Integer     ";
+      cout<<"Use 0 for true entropy; otherwise, seed engine to given value.\n";
+    cout<<"\tTempSeries                Filename    ";
+      cout<<"If not specified, a default time series is used. NO SPACES ALLOWED!\n";
+    cout<<"\tInitialAltitude           Integer     ";
+      cout<<"Altitude of progenitor species. Must be a valid bin number.\n";
+    cout<<"\tInitialPopSize            Integer     ";
+      cout<<"How many salamanders to put in the initial bin.\n";
+    cout<<"\tLogitTempWeight           Double      ";
+      cout<<"Adjusts how salamander mortality relates to temperature.\n";
     cout<<"\tLogitOffset               Double      \n";
-    cout<<"\tLogitCAweight             Double      Conspecific abundance weighting in mortality.\n";
-    cout<<"\tLogitHAweight             Double      Heterospecific abundance weighting in mortality.\n";
+    cout<<"\tLogitCAweight             Double      ";
+      cout<<"Conspecific abundance weighting in mortality.\n";
+    cout<<"\tLogitHAweight             Double      ";
+      cout<<"Heterospecific abundance weighting in mortality.\n";
     cout<<"\tMaxOffspringPerBinPerDt   Integer     \n";
     cout<<"\tMaxTriesToBreed           Integer     \n";
     cout<<"\tToLowlandsProb            Double      \n";
@@ -81,45 +94,35 @@ int main(int argc, char **argv){
 
   TheParams.load(argv[1]);
 
+  //Seed random number generator for each thread
   timer_calc.start();
   seed_rand(TheParams.randomSeed());
   timer_calc.stop();
 
+  //Load temperature data into global object
   timer_io.start();
   Temperature.init(TheParams.tempSeriesFilename());
   timer_io.stop();
 
-  if(!TheParams.pVaryTemp()) {
+  //If the temperature is set not to vary, then set it to 34 here, which was the
+  //sea level temperature 65Mya. It doesn't really matter, though, because Eve
+  //is initialized with an optimum temperature equal to that of her starting
+  //bin. Since the temperature never changes, the absolute values are therefore
+  //unimportant.
+  if(!TheParams.pVaryTemp())
     Temperature.testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
-  }
 
+  //TODO: Cut
   if(TheParams.pRunOnce()){
-    std::cerr<<"Feature deprecated!"<<std::endl;
-    // Simulation sim();
-    // sim.runSimulation();
-
-    // std::ofstream f_persist  ((TheParams.outPersistFilename()+".csv"));
-    // std::ofstream f_phylogeny((TheParams.outPhylogenyFilename()+".tre"));
-    // std::ofstream f_summary  (TheParams.outSummaryFilename());
-    // f_summary<<SimulationSummaryHeader()<<endl;
-    // printSimulationSummary(f_summary, 0, sim);
-    // sim.phylos.persistGraph(f_persist);
-    // f_phylogeny<<sim.phylos.printNewick()<<endl;
+    cerr<<"Feature deprecated!"<<std::endl;
     return -1;
   }
 
   //Create a vector to hold the runs
-  std::vector<Simulation> runs;
+  vector<Simulation> runs;
 
-  //Set up the runs NOTE: OpenMP cannot perform parallel looping with floating-
-  //point numbers. So don't try a "pragam omp parallel collapse (5)" here, or
-  //some such nonesense.
-  //Generate a list of simulations to run
-
-  //NOTE: These are set right now to not change the any of the parameters - this
-  //means that the output is a series of 'maxiter' runs all of which have
-  //identical parameters, but will vary because of random factors. The bounds of
-  //the loops below could be altered to sweep the parameter space.
+  //Load a number of runs into the vector. Each run has the same parameters, but
+  //the runs will differ due to random factors.
   for(int i=0;i<TheParams.maxiter();i++)
     runs.emplace_back();
 
@@ -145,21 +148,21 @@ int main(int argc, char **argv){
   
   timer_io.start();
   //Print out the summary statistics of all of the runs
-  std::ofstream f_summary(TheParams.outSummaryFilename());
+  ofstream f_summary(TheParams.outSummaryFilename());
   f_summary<<SimulationSummaryHeader()<<endl;
   for(unsigned int r=0;r<runs.size();++r)
     printSimulationSummary(f_summary, r, runs[r]);
 
   //Output persistence table for each run within the boundaries
   {
-    std::ofstream f_persist(TheParams.outPersistFilename());
+    ofstream f_persist(TheParams.outPersistFilename());
     for(unsigned int i=0;i<runs.size();i++)
       runs[i].phylos.persistGraph(i, f_persist);
   }
 
   //Output phylogeny for each run within the boundaries
   {
-    std::ofstream f_phylogeny(TheParams.outPhylogenyFilename());
+    ofstream f_phylogeny(TheParams.outPhylogenyFilename());
     for(unsigned int i=0;i<runs.size();i++)
       f_phylogeny<<i<<" "<<runs[i].phylos.printNewick()<<endl;
   }
@@ -167,16 +170,16 @@ int main(int argc, char **argv){
   //Output summaries of the distribution of species properties at each point
   //in time
   {
-    std::ofstream f_species_stats(TheParams.outSpeciesStatsFilename());
+    ofstream f_species_stats(TheParams.outSpeciesStatsFilename());
     for(unsigned int i=0;i<runs.size();i++)
       runs[i].phylos.speciesSummaries(i, f_species_stats);
   }
   timer_io.stop();
   timer_overall.stop();
 
-  std::cerr<<"Time overall: "<<timer_overall.accumulated() <<std::endl;
-  std::cerr<<"Time calc:    "<<timer_calc.accumulated()    <<std::endl;
-  std::cerr<<"Time IO:      "<<timer_io.accumulated()      <<std::endl;
+  cerr<<"Time overall: "<<timer_overall.accumulated() <<endl;
+  cerr<<"Time calc:    "<<timer_calc.accumulated()    <<endl;
+  cerr<<"Time IO:      "<<timer_io.accumulated()      <<endl;
 
   return 0;
 }

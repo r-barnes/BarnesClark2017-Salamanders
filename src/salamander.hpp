@@ -48,7 +48,11 @@ class Salamander {
   ///its optimum temperature, and with ~90% probability if it is more than 12
   ///degrees from its optimum temperature. Returns TRUE if the salamander
   ///dies.
-  bool pDie(const double tempdegC, const double conspecific_abundance, const double heterospecific_abundance) const;
+  bool pDie(
+    const double tempdegC,
+    const double conspecific_abundance,
+    const double heterospecific_abundance
+  ) const;
 
   ///Neutral genes. Determined by the parents of the salamander and used to
   ///determine if the salamander is of the same species as another salamander.

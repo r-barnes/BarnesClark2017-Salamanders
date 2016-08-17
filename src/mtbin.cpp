@@ -41,7 +41,7 @@ double MtBin::heightMaxKm(double tMyrs) {
   //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
   const double height_65mya = 2.8; //km
   const double height_0mya  = 1.6; //km
-  const double erosion_rate = (height_65mya-height_0mya)/65.0; //Erosion rate per 1Myr
+  const double erosion_rate = (height_65mya-height_0mya)/65.0; //Erosion per 1Myr
   return 2.8-erosion_rate*tMyrs;   //km
 }
 
@@ -69,17 +69,9 @@ void MtBin::mortaliate(double tMyrs, int max_species, int species_sim_thresh) {
 
   double mytemp = temp(tMyrs);  //Current temperature of bin
 
-  //TODO: Cut carrying capacity enforcement
-//  unsigned int maxalive = kkap(tMyrs);  //Current carrying capacity of the bin
-  //Since the carrying capacity of the bin may have been reduced or exceeded
-  //since we last mortaliated, kill individuals at random until we are within
-  //carrying capacity.
-//  while(alive()>maxalive)
-//    killSalamander(randomSalamander());
-
   if(alive()>30000){
-    std::cerr<<"Uh oh, 30ksals were found in a bin. Killing the simulation."<<std::endl;
-    throw std::runtime_error("Uh oh, 30ksals were found in a bin. Killing the simulation.");
+    std::cerr<<"30ksals found in a bin. Killing the simulation."<<std::endl;
+    throw std::runtime_error("30ksals found in a bin. Killing the simulation.");
   }
 
   //If individuals have the same parent species they are part of the same
@@ -123,35 +115,6 @@ double MtBin::temp(double tMyrs) const {
 }
 
 
-//Get the carrying capacity of this bin, taking into account its elevation.
-/* TODO: Cut?
-unsigned int MtBin::kkap(double tMyrs) const {
-  if(!TheParams.pVaryHeight()) tMyrs=65;
-
-  //Input "t" is in millions of years - transform this into thousands of years
-  double timeKyrs = tMyrs*1000;
-
-  //NOTE: Area isn't integrated over the height of the band. This is the
-  //simplest way of handling area, but could be refined. However, we do not
-  //expect such a refinement would alter our conclusions.
-
-  //Maximum elevation of the mountain range over time
-  //Based on linear shrinking of mountain height from 2.8km at 65Mya (according
-  //to the USGS website on "Geologic Provinces of the Untied States: Appalachian
-  //Highlands Province") to current elevation (1.6km) from Kozak and Wiens 2010.
-  double const height_65mya = 2.8; //km
-  double const height_0mya  = 1.6; //km
-  double const erosion_rate = (height_65mya-height_0mya)/65000; //Erosion rate per 1kyr
-  double maxelevation       = 2.8-erosion_rate*timeKyrs; //km
-  double minarea_today      = area(maxelevation, tMyrs);
-
-  //Returns a number [0, binmax].The smallest area (at the top of the mountain)
-  //will always have a carrying capacity of at least 1 salamander and all other
-  //bins are scaled to this bin's size.
-  return std::min( area(heightkm, tMyrs)/minarea_today, (double) binmax);
-} */
-
-
 //Add the indicated salamander to the bin
 void MtBin::addSalamander(const Salamander &s) {
   bin.push_back(s);
@@ -169,10 +132,6 @@ unsigned int MtBin::alive() const {
 //Give salamanders in this bin the opportunity to breed
 void MtBin::breed(double tMyrs, int species_sim_thresh){
   if(bin.empty()) return;          //No one is alive here; there can be no breeding.
-
-  //TODO: Cut?
-  //unsigned int maxalive=kkap(t);   //Current carrying capacity of the bin
-  //if(alive()>=maxalive) return;    //The bin is too full for us to breed
 
   //Maximum number of tries to find a pair to mate; prevents infinite loops.
   int maxtries = TheParams.maxTriesToBreed();
@@ -209,18 +168,13 @@ void MtBin::moveSalamanderTo(const MtBin::container::iterator &s, MtBin &b){
 }
 
 
-//Give salamanders in this bin the opportunity to move to neighbouring bins if advantageous
+//Give salamanders in this bin the opportunity to move to neighbouring bins if
+//advantageous
 void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
-  //The following code allows salamanders to move into neighbouring bins in a
-  //way which may exceed their carrying capacity; however, in the Mortaliate()
-  //step, random salamanders are killed until the bin is back at the carrying
-  //capacity. Salamanders move without respecting carrying capacities and nature
-  //does not choose who wins and loses in this process.
-
   for(container::iterator s=bin.begin();s!=bin.end();s++){
-    //10% chance of wanting to migrate
+    //Do I want to migrate?
     if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
@@ -229,7 +183,8 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
     //bin, the salamander tries to migrate up the mountain.
     if( upper
         && s->otempdegC<temp(tMyrs)
-        && std::abs( s->otempdegC - upper->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+        && std::abs( s->otempdegC - upper->temp(tMyrs) ) 
+                              < std::abs( s->otempdegC - temp(tMyrs) )
         && upper->heightkm()<heightMaxKm(tMyrs)
     ){
       moveSalamanderTo(s,*upper);
@@ -240,7 +195,8 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
     } else if(
         lower
         && s->otempdegC>temp(tMyrs)
-        && std::abs( s->otempdegC - lower->temp(tMyrs) ) < std::abs( s->otempdegC - temp(tMyrs) )
+        && std::abs( s->otempdegC - lower->temp(tMyrs) )
+                              < std::abs( s->otempdegC - temp(tMyrs) )
         && lower->heightkm()<heightMaxKm(tMyrs)
     ){
       moveSalamanderTo(s,*lower);
@@ -253,17 +209,12 @@ void MtBin::diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper) {
 void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
   if(bin.empty()) return;
 
-  //The following code allows salamanders to move into neighbouring bins in a
-  //way which may exceed their carrying capacity; however, in the Mortaliate()
-  //step, random salamanders are killed until the bin is back at the carrying
-  //capacity. Salamanders move without respecting carrying capacities and nature
-  //does not choose who wins and loses in this process. TODO
-
   for(container::iterator s=bin.begin();s!=bin.end();s++){
-    //10% chance of wanting to migrate
+    //Does the salamander want to migrate?
     if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
-      continue;
+      continue; //No
 
+    //Am I moving up or down? Be sure not to move off the bottom or top
     if(uniform_rand_real(0,1)>0.5){
       if(upper && upper->heightkm()<heightMaxKm(tMyrs)){
         moveSalamanderTo(s,*upper);
@@ -283,7 +234,7 @@ void MtBin::diffuseLocal(double tMyrs, MtBin *lower, MtBin *upper) {
 //surrounding lowlands.
 void MtBin::diffuseToLowlands(MtBin &lowlands){
   for(container::iterator s=bin.begin();s!=bin.end();s++){
-    //10% chance of wanting to migrate
+    //Do I want to migrate?
     if(uniform_rand_real(0,1)>=TheParams.toLowlandsProb())
       continue;
 
@@ -297,7 +248,7 @@ void MtBin::diffuseToLowlands(MtBin &lowlands){
 //the active simulation.
 void MtBin::diffuseFromLowlands(MtBin &frontrange){
   for(container::iterator s=bin.begin();s!=bin.end();s++){
-    //10% chance of wanting to migrate
+    //Do I want to migrate?
     if(uniform_rand_real(0,1)>=TheParams.fromLowlandsProb())
       continue;
 
@@ -312,18 +263,14 @@ void MtBin::diffuseFromLowlands(MtBin &frontrange){
 void MtBin::diffuseGlobal(double tMyrs, std::vector<MtBin> &mts) {
   if(bin.empty()) return;
 
-  //The following code allows salamanders to move into neighbouring bins in a
-  //way which may exceed their carrying capacity; however, in the Mortaliate()
-  //step, random salamanders are killed until the bin is back at the carrying
-  //capacity. Salamanders move without respecting carrying capacities and nature
-  //does not choose who wins and loses in this process.
-
   for(container::iterator s=bin.begin();s!=bin.end();s++){
-    //10% chance of wanting to migrate
+    //Do I want to migrate?
     if(uniform_rand_real(0,1)>=TheParams.dispersalProb())
       continue;
 
     int to_bin = -1;
+    //Choose a bin to migrate to. Loop until the chosen bin is valid, in the
+    //sense of not being above the top of the mountain.
     while(to_bin==-1 || mts[to_bin].heightkm() >= heightMaxKm(tMyrs))
       to_bin = uniform_rand_int(0,mts.size()-1);
 
@@ -349,7 +296,8 @@ double MtBin::area(double elevationkm, double tMyrs) const {
   //calculate_area_parameters.R script
   const double elek     = 1202975;
 
-  //Standard deviation of an analogous normal distribution to above, but 65Mya, IN KILOMETERS
+  //Standard deviation of an analogous normal distribution to above, but 65Mya,
+  //IN KILOMETERS
   const double elesigma = 0.3858345;
 
   //Mean of the above normal distribution IN KILOMETERS
@@ -395,6 +343,7 @@ MtBin::container::iterator MtBin::randomSalamander(int maxsal){
 }
 
 
+//TODO
 //This runs a series of tests designed to ensure that the simulation is behaving
 //as we expect.
 void MtBinUnitTest::run() const {

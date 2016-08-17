@@ -59,7 +59,8 @@ class MtBin {
 	///species_sim_thresh, which takes values [0,1].
 	void breed(double tMyrs, int species_sim_thresh);
 
-	///Salamanders have the opportunity to move up or down the mountain if advantageous
+	///Salamanders have the opportunity to move up or down the mountain if
+	///advantageous
 	void diffuseToBetter(double tMyrs, MtBin *lower, MtBin *upper);
 
 	///Salamanders have the opportunity to move up or down the mountain

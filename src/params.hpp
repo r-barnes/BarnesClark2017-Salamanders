@@ -22,7 +22,7 @@ class Params {
 
   bool vary_height; ///If this is set to true, the mountains erode over time.
   bool vary_temp;
-  bool run_once;
+  bool run_once;    //TODO: Cut
   bool debug_val;   ///Shows real-time stats about simulation state
 
   //A value [0,1] indicating the probability of mutation (see salamander.hpp)
