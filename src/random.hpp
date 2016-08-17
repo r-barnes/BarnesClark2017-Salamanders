@@ -38,7 +38,8 @@ double normal_rand(double mean, double stddev);
 
 template<class T>
 T uniform_bits(){
-  std::uniform_int_distribution<T> dist(std::numeric_limits<T>::lowest(),std::numeric_limits<T>::max());
+  std::uniform_int_distribution<T> 
+    dist(std::numeric_limits<T>::lowest(),std::numeric_limits<T>::max());
   return dist( rand_engine() );
 }
 
