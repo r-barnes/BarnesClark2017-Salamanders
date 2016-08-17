@@ -8,6 +8,7 @@
 #include "temp.hpp"
 #include "random.hpp"
 #include "params.hpp"
+#include "timer.hpp"
 #include <array>
 #include <vector>
 #include <iostream>
@@ -38,6 +39,10 @@ void printSimulationSummary(ofstream &out, int r, const Simulation &sim){
 }
 
 int main(int argc, char **argv){
+  Timer timer_overall, timer_calc, timer_io;
+
+  timer_overall.start();
+
   if(argc!=2){
     cout<<"Syntax: "<<argv[0]<<" <Parameters File>\n";
     cout<<"Parmeters file can contain:\n";
@@ -76,9 +81,14 @@ int main(int argc, char **argv){
 
   TheParams.load(argv[1]);
 
+  timer_calc.start();
   seed_rand(TheParams.randomSeed());
+  timer_calc.stop();
 
+  timer_io.start();
   Temperature.init(TheParams.tempSeriesFilename());
+  timer_io.stop();
+
   if(!TheParams.pVaryTemp()) {
     Temperature.testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
   }
@@ -121,6 +131,7 @@ int main(int argc, char **argv){
   }
 
   //Run the simulations in parallel using OpenMP
+  timer_calc.start();
   #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
     #pragma omp critical
@@ -128,9 +139,11 @@ int main(int argc, char **argv){
     runs[i].runSimulation();
     //runs[i].dumpPhylogeny();
   }
+  timer_calc.stop();
 
   cerr<<"Printing output information..."<<endl;
   
+  timer_io.start();
   //Print out the summary statistics of all of the runs
   std::ofstream f_summary(TheParams.outSummaryFilename());
   f_summary<<SimulationSummaryHeader()<<endl;
@@ -158,6 +171,12 @@ int main(int argc, char **argv){
     for(unsigned int i=0;i<runs.size();i++)
       runs[i].phylos.speciesSummaries(i, f_species_stats);
   }
+  timer_io.stop();
+  timer_overall.stop();
+
+  std::cerr<<"Time overall: "<<timer_overall.accumulated() <<std::endl;
+  std::cerr<<"Time calc:    "<<timer_calc.accumulated()    <<std::endl;
+  std::cerr<<"Time IO:      "<<timer_io.accumulated()      <<std::endl;
 
   return 0;
 }
