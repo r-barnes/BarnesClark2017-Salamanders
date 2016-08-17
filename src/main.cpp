@@ -134,14 +134,14 @@ int main(int argc, char **argv){
   timer_calc.start();
   #pragma omp parallel for
   for(unsigned int i=0;i<runs.size();++i){
-    #pragma omp critical
-      cout<<"Run #"<<i<<endl;
+    //#pragma omp critical
+    //  cout<<"Run #"<<i<<endl;
     runs[i].runSimulation();
     //runs[i].dumpPhylogeny();
   }
   timer_calc.stop();
 
-  cerr<<"Printing output information..."<<endl;
+  //cerr<<"Printing output information..."<<endl;
   
   timer_io.start();
   //Print out the summary statistics of all of the runs

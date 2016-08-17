@@ -284,13 +284,15 @@ void Phylogeny::persistGraph(int run_num, std::ofstream &out) const {
   //species emergence and lastchild on the horizontal axis.
   if(run_num==0)
     out<<"RunNum, Emergence, Species, Last Child, Species, otempdegC"<<std::endl;
-  for(unsigned int i=0;i<nodes.size();++i)
-    out<<run_num           <<","
-       <<nodes[i].emergence<<","
-       <<i                 <<","
-       <<nodes[i].lastchild<<","
-       <<i                 <<","
-       <<nodes[i].otempdegC<<std::endl;
+  if(0) {
+    for(unsigned int i=0;i<nodes.size();++i)
+      out<<run_num           <<","
+         <<nodes[i].emergence<<","
+         <<i                 <<","
+         <<nodes[i].lastchild<<","
+         <<i                 <<","
+         <<nodes[i].otempdegC<<std::endl;
+  }
 }
 
 
@@ -382,7 +384,9 @@ void Phylogeny::speciesSummaries(int run_num, std::ofstream &out) const {
   if(run_num==0)
     out<<"RunNum, Species, Time, NumAlive, ElevMin, ElevMax, ElevAvg, TempMin, TempMax, TempAvg\n";
   for(unsigned int i=0;i<nodes.size();++i)
+  //for(unsigned int i=(nodes.size()-1);i<nodes.size();++i)
   for(auto &ss: nodes[i].stats){  //There is a stats record of each time the species was alive
+    if(ss.t==65) {
      out<<run_num                        <<","
         <<i                              <<","
         <<ss.t                           <<","
@@ -393,5 +397,6 @@ void Phylogeny::speciesSummaries(int run_num, std::ofstream &out) const {
         <<ss.opt_temp_min                <<","
         <<ss.opt_temp_max                <<","
         <<(ss.opt_temp_avg/ss.num_alive) << std::endl;
+    }
   }
 }
