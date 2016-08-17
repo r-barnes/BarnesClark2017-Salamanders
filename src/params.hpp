@@ -26,14 +26,15 @@ class Params {
   bool debug_val;   ///Shows real-time stats about simulation state
 
   ///Mutation probability per timestep - used by salamander::mutate() to
-  //determine the probability of mutation in the genome. Note - this changes the 
-  //genome that determines relatedness, speciation, and ability to breed. It 
-  //does not directly alter optimum temperature.
+  ///determine the probability of mutation in the genome. Note - this changes
+  ///the genome that determines relatedness, speciation, and ability to breed.
+  ///It does not directly alter optimum temperature. Should be [0,1].
   double    mutation_probability;
   ///Drift rate for temperature optimum per timestep - used by
-  //salamander::breed() to determine the change in optimum temperature between 
-  //children and parents. Note - this changes the temperature optimum, but does 
-  //not directly influence relatedness, speciation, and ability to breed.
+  ///salamander::breed() to determine the change in optimum temperature between
+  ///children and parents. Note - this changes the temperature optimum, but does
+  ///not directly influence relatedness, speciation, and ability to breed.
+  ///Should be [0,Inf).
   double    temperature_drift_sd;
   //A value [0,1] indicating how similar to salamanders must be to be the same species
   int       species_sim_thresh;
