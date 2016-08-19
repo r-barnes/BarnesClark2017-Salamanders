@@ -12,3 +12,4 @@ run.out
 *.log
 *.out
 *.spl
+parms/z_optimized_param.param
