@@ -76,3 +76,13 @@ Output Files
 
 The output files are in CSV format and contain self-documenting headers.
 The `.tre` files contain the salamanders' phylogenies in Newick format.
+
+
+
+Data Files
+----------
+
+The `data` directory contains the temperature time series referred to in the
+manuscript. The file is ordered such that the most recent data points at at the
+top. The intervals between lines are 1,000 years and the data series begins 65
+Mya.
