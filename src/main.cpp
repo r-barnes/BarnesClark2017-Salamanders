@@ -112,7 +112,7 @@ int main(int argc, char **argv){
   if(!TheParams.pVaryTemp())
     Temperature.testOn(34); //km CHANGE ADDED TO TEST NO TEMP CHANGE
 
-  //TODO: Cut
+  //DEPRECATED
   if(TheParams.pRunOnce()){
     cerr<<"Feature deprecated!"<<std::endl;
     return -1;

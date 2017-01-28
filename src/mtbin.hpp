@@ -41,11 +41,6 @@ class MtBin {
 	///millions of years.
 	double area(double elevationkm, double tMyrs) const;
 
-	//TODO: Cut?
-	///Karrying Kapacity of the bin given its area at a given time tMyrs.
-	///Returns a number [0, binmax].
-	//unsigned int kkap(double tMyrs) const;
-
 	///Add a salamander to the bin. Fail silently if there's no room.
 	void addSalamander(const Salamander &s);
 

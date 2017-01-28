@@ -26,8 +26,7 @@ class Params {
   ///If this is set to true, the temperature changes over time.
   bool vary_temp;
 
-  //TODO: Cut. This is an old variable that used to cause a simulation to run
-  //only once. It's been retained to avoid having to modify the optimizer.
+  //DEPRECATED
   bool run_once;    
 
   ///Shows real-time stats about simulation state. Forces the simulation to
