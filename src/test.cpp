@@ -48,7 +48,4 @@ int main(int argc, char **argv){
   for(int i=0;i<10000;i++)
     cout<<std::bitset<64>(uniform_bits<uint64_t>())<<" ";
   cout<<endl;
-
-  MtBinUnitTest mtbintest;
-  mtbintest.run();
 }

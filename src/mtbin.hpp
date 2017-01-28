@@ -95,15 +95,6 @@ class MtBin {
 
 	///Height of this bin above sealevel across all times IN KILOMETERS
 	double heightkm_val;
-
-	friend class MtBinUnitTest;
 };
-
-
-class MtBinUnitTest{
- public:
-  void run() const;
-};
-
 
 #endif
