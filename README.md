@@ -9,7 +9,7 @@ History in Eastern North American Plethodontid Salamanders
  * Richard Barnes (richard.barnes@berkeley.edu)
  * Adam Clark (adam.tclark@gmail.com)
 
-**DOI Number of Manuscript**: TODO
+**DOI Number of Manuscript**: [10.1086/691796](http://dx.doi.org/10.1086/691796)
 
 **Code Repositories**
  * [Author's GitHub Repository](https://github.com/r-barnes/BarnesClark2017-Salamanders)
